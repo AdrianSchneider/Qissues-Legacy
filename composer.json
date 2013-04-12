@@ -3,6 +3,11 @@
         "php": ">=5.3.2",
         "symfony/console": "2.1.*",
         "symfony/process": "2.1.*",
-        "symfony/finder": "2.1.*"
-    }
+        "symfony/finder": "2.1.*",
+        "phpunit/phpunit": "3.7.*"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "minimum-stability": "dev"
 }

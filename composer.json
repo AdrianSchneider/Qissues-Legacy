@@ -4,8 +4,23 @@
         "symfony/console": "2.1.*",
         "symfony/process": "2.1.*",
         "symfony/finder": "2.1.*",
-        "phpunit/phpunit": "3.7.*"
+        "phpunit/phpunit": "3.7.*",
+        "provisionists/bitbucket": "*"
     },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "provisionists/bitbucket",
+                "version" :"dev-master",
+                "source": {
+                    "url": "https://AdrianSchneider@bitbucket.org/AdrianSchneider/bitbucket-php-5.3-api-library",
+                    "type": "hg",
+                    "reference": "default"
+                }
+            }
+        }
+    ],
     "config": {
         "bin-dir": "bin"
     },

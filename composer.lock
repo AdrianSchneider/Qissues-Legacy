@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "e9eea3dbedb5d09f89c04564da22e556",
+    "hash": "7ad762ae5896e843e04fd5bb1e027d77",
     "packages": [
         {
             "name": "phpunit/php-code-coverage",
@@ -358,6 +358,17 @@
                 "xunit"
             ],
             "time": "2013-02-05 07:46:41"
+        },
+        {
+            "name": "provisionists/bitbucket",
+            "version": "dev-master",
+            "source": {
+                "type": "hg",
+                "url": "https://AdrianSchneider@bitbucket.org/AdrianSchneider/bitbucket-php-5.3-api-library",
+                "reference": "default"
+            },
+            "type": "library",
+            "time": "2013-04-12 15:06:51"
         },
         {
             "name": "symfony/console",

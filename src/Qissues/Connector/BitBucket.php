@@ -12,19 +12,20 @@ class BitBucket implements Connector
         'trivial'  => 1
     );
 
-    protected $user = '';
-    protected $pass = '';
-    protected $repo = '';
-    protected $ownr = '';
+    protected $config;
+
+    public function __construct(array $config)
+    {
+        $this->config = $config;
+    }
 
     public function find($id)
     {
         $url = sprintf(
-            'https://%s:%s@api.bitbucket.org/1.0/repositories/%s/%s/issues/%d',
-            $this->user,
-            $this->pass,
-            $this->repo,
-            $this->ownr,
+            'https://%s:%s@api.bitbucket.org/1.0/repositories/%s/issues/%d',
+            $this->config['username'],
+            $this->config['password'],
+            $this->config['repository'],
             $id
         );
 
@@ -44,11 +45,10 @@ class BitBucket implements Connector
     public function findAll(array $options = array())
     {
         $url = sprintf(
-            'https://%s:%s@api.bitbucket.org/1.0/repositories/%s/%s/issues',
-            $this->user,
-            $this->pass,
-            $this->repo,
-            $this->ownr
+            'https://%s:%s@api.bitbucket.org/1.0/repositories/%s/issues',
+            $this->config['username'],
+            $this->config['password'],
+            $this->config['repository']
         );
 
         $issues = json_decode(file_get_contents($url), true);

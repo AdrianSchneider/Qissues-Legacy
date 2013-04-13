@@ -1,3 +1,4 @@
+/.config
 /bin/*
 /composer.phar
 /qissues.phar

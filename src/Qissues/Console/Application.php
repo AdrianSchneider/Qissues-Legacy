@@ -9,14 +9,20 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Yaml\Parser;
 
 class Application extends BaseApplication
 {
+    protected $config;
+
     /**
      * {@inheritDoc}
      */
     public function doRun(InputInterface $input, OutputInterface $output)
     {
+        $parser = new Parser();
+        $this->config = $parser->parse(file_get_contents(__DIR__ . '/../../../.config'));
+
         $this->registerCommands();
         $this->registerStyles($output);
 
@@ -55,5 +61,10 @@ class Application extends BaseApplication
             $class = "Qissues\\Command\\" . basename($file, ".php");
             $this->add(new $class());
         }
+    }
+
+    public function getConfig()
+    {
+        return $this->config;
     }
 }

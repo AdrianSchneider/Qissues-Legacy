@@ -40,7 +40,8 @@ class QueryCommand extends Command
     {
         list($width, $height) = $this->getApplication()->getTerminalDimensions();
 
-        $repo = new BitBucket();
+        $config = $this->getApplication()->getConfig();
+        $repo = new BitBucket($config['bitbucket']);
         $issues = $repo->findAll($this->buildOptions($input));
 
         $maxLength = 0;

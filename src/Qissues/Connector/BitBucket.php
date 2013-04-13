@@ -19,6 +19,12 @@ class BitBucket implements Connector
         $this->config = $config;
     }
 
+    public function create(array $issue)
+    {
+        $issue['local_id'] = rand(1, 50);
+        return $issue;
+    }
+
     public function find($id)
     {
         $url = sprintf(

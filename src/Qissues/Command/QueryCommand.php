@@ -33,6 +33,7 @@ class QueryCommand extends Command
             ->addOption('assignee', 'a', InputOption::VALUE_OPTIONAL, 'Filter by assignee', null)
             ->addOption('priority', 'p', InputOption::VALUE_OPTIONAL, 'Filter by priority', null)
             ->addOption('kind', 'k', InputOption::VALUE_OPTIONAL, 'Filter by kind', null)
+            ->addOption('mine', null, InputOption::VALUE_NONE, 'Only show things assigned to me', null)
         ;
     }
     
@@ -40,9 +41,8 @@ class QueryCommand extends Command
     {
         list($width, $height) = $this->getApplication()->getTerminalDimensions();
 
-        $config = $this->getApplication()->getConfig();
-        $repo = new BitBucket($config['bitbucket']);
-        $issues = $repo->findAll($this->buildOptions($input));
+        $connector = $this->getApplication()->getConnector('BitBucket');
+        $issues = $connector->findAll($this->buildOptions($input));
 
         $maxLength = 0;
         foreach ($issues as $issue) {
@@ -84,9 +84,14 @@ class QueryCommand extends Command
 
         $searchFor = array('sort', 'assignee', 'priority', 'kind');
         foreach ($searchFor as $field) {
-            if ($value = $input->getoption($field)) {
+            if ($value = $input->getOption($field)) {
                 $options[$field] = $value;
             }
+        }
+
+        if ($input->getOption('mine')) {
+            $config = $this->getApplication()->getConfig();
+            $options['assignee'] = $config['bitbucket']['username'];
         }
 
         return $options;

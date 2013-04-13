@@ -23,8 +23,8 @@ class ViewCommand extends Command
     
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $repo = new BitBucket();
-        if (!$issue = $repo->find($input->getArgument('issue'))) {
+        $connector = $this->getApplication()->getConnector('BitBucket');
+        if (!$issue = $connector->find($input->getArgument('issue'))) {
             return $output->writeln('<error>Issue not found.</error>');
         }
 

@@ -26,6 +26,10 @@ class CreateCommand extends Command
         $issue = $this->getIssueDetailsFromExternal();
         $issue = $connector->create($issue);
 
+        if ($issue['title'] == 'Title') {
+            return $output->writeln('<error>No changes were made</error>');
+        }
+
         $output->writeln("Issue <info>#$issue[local_id]</info> has been created");
     }
 

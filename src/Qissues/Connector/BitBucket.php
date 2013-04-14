@@ -19,12 +19,53 @@ class BitBucket implements Connector
         $this->config = $config;
     }
 
+    /**
+     * Creates a new Issue
+     *
+     * @param array issue details
+     * @return array created issue from BitBucket
+     */
     public function create(array $issue)
     {
         $issue['local_id'] = rand(1, 50);
-        return $issue;
+
+        $ch = curl_init();
+
+        $post = array(
+            'title'       => $issue['title'],
+            'priority'    => $issue['priority'],
+            'content'     => $issue['description'],
+            'kind'        => $issue['kind'],
+            'responsible' => $issue['assignee']
+        );
+
+        $url = sprintf(
+            'https://api.bitbucket.org/1.0/repositories/%s/issues',
+            $this->config['repository']
+        );
+
+        curl_setopt($ch, \CURLOPT_URL, $url);
+        curl_setopt($ch, \CURLOPT_POST, true);
+        curl_setopt($ch, \CURLOPT_POSTFIELDS, $post);
+        curl_setopt($ch, \CURLOPT_USERPWD, sprintf('%s:%s', $this->config['username'], $this->config['password']));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+
+        $result = curl_exec($ch);
+
+        if ($error = curl_error($ch)) {
+            throw new \Exception($error);
+        }
+
+        $issue = json_decode($result, true);
+        return $this->prepareIssue($issue);
     }
 
+    /**
+     * Find an issue by its ID
+     *
+     * @param integer ID
+     * @return array issue details
+     */
     public function find($id)
     {
         $url = sprintf(
@@ -80,12 +121,25 @@ class BitBucket implements Connector
         return $issues;
     }
 
+    /**
+     * Normalize incoming issues for application use
+     *
+     * @param array issue from bitbucket
+     * @return array issue ready for use
+     */
     protected function prepareIssue($issue)
     {
         $issue['priority'] = $this->priorities[$issue['priority']];
         return $issue;
     }
 
+    /**
+     * Sort priority
+     *
+     * @param issue a
+     * @param issue b
+     * @return -1 0 or 1
+     */
     protected function sortByPriority($a, $b)
     {
         if ($a['priority'] == $b['priority']) {

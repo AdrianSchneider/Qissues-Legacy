@@ -156,6 +156,37 @@ class BitBucket implements Connector
     }
 
     /**
+     * Comment on an issue
+     *
+     * @param array issue details
+     * @param string comment
+     */
+    public function comment(array $issue, $message)
+    {
+        $ch = curl_init();
+
+        $post = array('content' => $message);
+
+        $url = sprintf(
+            'https://api.bitbucket.org/1.0/repositories/%s/issues/%d/comments',
+            $this->config['repository'],
+            $issue['local_id']
+        );
+
+        curl_setopt($ch, \CURLOPT_URL, $url);
+        curl_setopt($ch, \CURLOPT_POST, true);
+        curl_setopt($ch, \CURLOPT_POSTFIELDS, $post);
+        curl_setopt($ch, \CURLOPT_USERPWD, sprintf('%s:%s', $this->config['username'], $this->config['password']));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $result = curl_exec($ch);
+
+        if ($error = curl_error($ch)) {
+            throw new \Exception($error);
+        }
+    }
+
+    /**
      * Normalize incoming issues for application use
      *
      * @param array issue from bitbucket

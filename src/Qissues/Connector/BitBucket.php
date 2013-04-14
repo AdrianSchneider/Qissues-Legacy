@@ -27,8 +27,6 @@ class BitBucket implements Connector
      */
     public function create(array $issue)
     {
-        $issue['local_id'] = rand(1, 50);
-
         $ch = curl_init();
 
         $post = array(
@@ -48,7 +46,7 @@ class BitBucket implements Connector
         curl_setopt($ch, \CURLOPT_POST, true);
         curl_setopt($ch, \CURLOPT_POSTFIELDS, $post);
         curl_setopt($ch, \CURLOPT_USERPWD, sprintf('%s:%s', $this->config['username'], $this->config['password']));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         $result = curl_exec($ch);
 
@@ -58,6 +56,42 @@ class BitBucket implements Connector
 
         $issue = json_decode($result, true);
         return $this->prepareIssue($issue);
+    }
+
+    /**
+     * Edit an existing issue
+     *
+     * @param array changes
+     * @param array existing issue
+     */
+    public function update(array $changes, array $issue)
+    {
+        $ch = curl_init();
+
+        $post = array(
+            'title'       => $changes['title'],
+            'priority'    => $changes['priority'],
+            'content'     => $changes['description'],
+            'kind'        => $changes['kind'],
+            'responsible' => $changes['assignee']
+        );
+
+        $url = sprintf(
+            'https://api.bitbucket.org/1.0/repositories/%s/issues/' . $issue['local_id'],
+            $this->config['repository']
+        );
+
+        curl_setopt($ch, \CURLOPT_URL, $url);
+        curl_setopt($ch, \CURLOPT_CUSTOMREQUEST, "PUT");
+        curl_setopt($ch, \CURLOPT_POSTFIELDS, http_build_query($post));
+        curl_setopt($ch, \CURLOPT_USERPWD, sprintf('%s:%s', $this->config['username'], $this->config['password']));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $result = curl_exec($ch);
+
+        if ($error = curl_error($ch)) {
+            throw new \Exception($error);
+        }
     }
 
     /**
@@ -85,7 +119,7 @@ class BitBucket implements Connector
 
     /**
      * Query issues
-     * 
+     *
      * @param array filters/options
      * @return array issues
      */
@@ -130,6 +164,8 @@ class BitBucket implements Connector
     protected function prepareIssue($issue)
     {
         $issue['priority'] = $this->priorities[$issue['priority']];
+        $issue['assignee'] = $issue['responsible']['username'];
+        $issue['kind'] = $issue['metadata']['kind'];
         return $issue;
     }
 

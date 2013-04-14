@@ -36,7 +36,7 @@ class EditCommand extends Command
     protected function getIssueDetailsFromExternal($existing)
     {
         $filename = tempnam('.', 'qissues');
-        file_put_contents($filename, "$existing[title]\n\nPriority: $existing[prioritynumber]\nKind: $existing[kind]\nAssignee: $existing[assignee]\n\n$existing[content]\n");
+        file_put_contents($filename, "$existing[title]\n\nPriority: $existing[prioritytext]\nKind: $existing[kind]\nAssignee: $existing[assignee]\n\n$existing[content]\n");
         exec("vim $filename > `tty`");
         $data = file_get_contents($filename);
         unlink($filename);

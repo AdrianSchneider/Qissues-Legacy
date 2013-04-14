@@ -44,6 +44,79 @@ class QueryCommand extends Command
         $connector = $this->getApplication()->getConnector('BitBucket');
         $issues = $connector->findAll($this->buildOptions($input));
 
+        if ($width > 150) {
+            return $this->renderDetailedView($issues, $output);
+        }
+
+        if ($width > 100) {
+            return $this->renderBasicView($issues, $output);
+        }
+
+        return $this->renderTinyView($issues, $output);
+    }
+
+    protected function renderDetailedView(array $issues, OutputInterface $output)
+    {
+        list($width, $height) = $this->getApplication()->getTerminalDimensions();
+
+        $renderIssues = array();
+        foreach ($issues as $issue) {
+            $renderIssues[] = array(
+                'Id' => $issue['local_id'],
+                'Title' => sprintf('%s', $issue['title']),
+                'Kind' => $issue['metadata']['kind'],
+                'Priority' => $issue['prioritytext'],
+                'Assignee' => isset($issue['responsible']) ? $issue['responsible']['username'] : ''
+            );
+
+        }
+
+        $renderer = new \Qissues\Renderer\TableRenderer();
+        $output->writeln(' +' . str_repeat('-', $width - 4) . '+ ');
+        foreach ($renderer->render($renderIssues) as $i => $row) {
+            $output->writeln(' | ' . implode(' | ', $row) . ' | ');
+            if (!$i) {
+                $output->writeln(' +' . str_repeat('-', $width - 4) . '+ ');
+            }
+        }
+        $output->writeln(' +' . str_repeat('-', $width - 4) . '+ ');
+    }
+
+    protected function renderBasicView(array $issues, OutputInterface $output)
+    {
+        list($width, $height) = $this->getApplication()->getTerminalDimensions();
+
+        $maxLength = 0;
+        foreach ($issues as $issue) {
+            if (strlen($issue['local_id']) > $maxLength) {
+                $maxLength = strlen($issue['local_id']);
+            }
+        }
+
+        $allowedSize = $width
+            - 4          // icons
+            - $maxLength // number area
+            - 1          // space
+        ;
+
+        foreach ($issues as $issue) {
+            $output->writeln(sprintf(
+                '%s %s <comment>%s%d</comment> <message>%s</message>',
+                $this->priorities[$issue['priority']],
+                $issue['metadata']['kind'] == 'bug' ? $this->types['bug'] : ' ',
+                str_repeat(' ', $maxLength - strlen($issue['local_id'])),
+                $issue['local_id'],
+                strlen($issue['title']) > $allowedSize
+                    ? (substr($issue['title'], 0, $allowedSize - 3) . '...')
+                    : $issue['title']
+            ));
+        }
+    }
+
+    protected function renderTinyView(array $issues, OutputInterface $output)
+    {
+        list($width, $height) = $this->getApplication()->getTerminalDimensions();
+
         $maxLength = 0;
         foreach ($issues as $issue) {
             if (strlen($issue['local_id']) > $maxLength) {

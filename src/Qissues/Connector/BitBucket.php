@@ -163,6 +163,7 @@ class BitBucket implements Connector
      */
     protected function prepareIssue($issue)
     {
+        $issue['prioritynumber'] = $issue['priority'];
         $issue['priority'] = $this->priorities[$issue['priority']];
         $issue['assignee'] = $issue['responsible']['username'];
         $issue['kind'] = $issue['metadata']['kind'];

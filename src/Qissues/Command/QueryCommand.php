@@ -28,6 +28,7 @@ class QueryCommand extends Command
         $this
             ->setName('query')
             ->setDescription('List all issues, optionally filtering them.')
+            ->addOption('view', 'z', InputOption::VALUE_OPTIONAL, 'View mode (tiny, basic or detailed) defaults based on width)', null)
             ->addOption('status', 's', InputOption::VALUE_OPTIONAL, 'Filter by status', null)
             ->addOption('sort', 'o', InputOption::VALUE_OPTIONAL, 'Sort results by [priority]', null)
             ->addOption('assignee', 'a', InputOption::VALUE_OPTIONAL, 'Filter by assignee', null)
@@ -44,11 +45,21 @@ class QueryCommand extends Command
         $connector = $this->getApplication()->getConnector('BitBucket');
         $issues = $connector->findAll($this->buildOptions($input));
 
-        if ($width > 150) {
+        if (!$view = $input->getOption('view')) {
+            if ($width > 150) {
+                $view = 'detailed';
+            } elseif ($width > 100) {
+                $view = 'basic';
+            } else {
+                $view = 'tiny';
+            }
+        }
+
+        if ($view == 'detailed') {
             return $this->renderDetailedView($issues, $output);
         }
 
-        if ($width > 100) {
+        if ($view == 'basic') {
             return $this->renderBasicView($issues, $output);
         }
 

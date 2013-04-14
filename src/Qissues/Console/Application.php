@@ -13,7 +13,7 @@ use Symfony\Component\Yaml\Parser;
 
 class Application extends BaseApplication
 {
-    protected $config;
+    protected $config = array();
 
     public function getConnector($name)
     {
@@ -31,7 +31,14 @@ class Application extends BaseApplication
     public function doRun(InputInterface $input, OutputInterface $output)
     {
         $parser = new Parser();
-        $this->config = $parser->parse(file_get_contents(__DIR__ . '/../../../.config'));
+
+        $me = posix_getpwuid(getmyuid());
+        if (file_exists("$me[dir]/.qissues")) {
+            $this->config = array_merge_recursive($this->config, $parser->parse(file_get_contents("$me[dir]/.qissues")));
+        }
+        if (file_exists('./.qissues')) {
+            $this->config = array_merge_recursive($this->config, $parser->parse(file_get_contents('./.qissues')));
+        }
 
         $this->registerCommands();
         $this->registerStyles($output);

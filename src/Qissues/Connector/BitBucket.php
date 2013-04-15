@@ -250,7 +250,7 @@ class BitBucket implements Connector
         $issue['priority'] = $this->priorities[$issue['priority']];
         $issue['assignee'] = isset($issue['responsible']) ? $issue['responsible']['username'] : '';
         $issue['kind'] = $issue['metadata']['kind'];
-        $issue['created'] = $this->parseDate($issue['created_on']);
+        $issue['created'] = $this->parseDate($issue['created_on'], 'Europe/Amsterdam');
         $issue['updated'] = $this->parseDate($issue['utc_last_updated']);
         $issue['comments'] = $issue['comment_count'];
 
@@ -287,9 +287,9 @@ class BitBucket implements Connector
         return $a['priority'] > $b['priority'] ? -1 : 1;
     }
 
-    protected function parseDate($utcDate)
+    protected function parseDate($utcDate, $timezone = 'Etc/UTC')
     {
-        $date = new \DateTime($utcDate, new \DateTimeZone('Etc/UTC'));
+        $date = new \DateTime($utcDate, new \DateTimeZone($timezone));
         $date->setTimeZone(new \DateTimeZone('America/Vancouver'));
 
         return $date;

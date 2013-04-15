@@ -11,22 +11,22 @@ class Jira implements Connector
 
     public function create(array $issue)
     {
-
+        throw new \Exception('not yet implemented');
     }
 
     public function update(array $changes, array $issue)
     {
-
+        throw new \Exception('not yet implemented');
     }
 
     public function changeStatus(array $issue, $newStatus)
     {
-
+        throw new \Exception('not yet implemented');
     }
 
     public function assign(array $issue, $username)
     {
-
+        throw new \Exception('not yet implemented');
     }
 
     public function find($id)
@@ -120,6 +120,6 @@ class Jira implements Connector
 
     public function comment(array $issue, $message)
     {
-
+        throw new \Exception('not yet implemented');
     }
 }

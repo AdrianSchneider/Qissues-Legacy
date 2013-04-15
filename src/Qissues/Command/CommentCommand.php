@@ -22,7 +22,7 @@ class CommentCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $connector = $this->getApplication()->getConnector('BitBucket');
+        $connector = $this->getApplication()->getConnector();
         if (!$issue = $connector->find($input->getArgument('issue'))) {
             return $output->writeln('<error>Issue not found.</error>');
         }
@@ -30,7 +30,7 @@ class CommentCommand extends Command
         $message = $this->getMessage();
         $connector->comment($issue, $message);
 
-        $output->writeln("Left a comment on #$issue[local_id]");
+        $output->writeln("Left a comment on #$issue[id]");
     }
 
     protected function getMessage()

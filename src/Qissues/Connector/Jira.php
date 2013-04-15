@@ -120,6 +120,27 @@ class Jira implements Connector
 
     public function comment(array $issue, $message)
     {
-        throw new \Exception('not yet implemented');
+        throw new \Exception('content type not sending properly:(');
+        $post = json_encode(array('body' => $message));
+
+        $url = sprintf(
+            'https://%s.atlassian.net/rest/api/2/issue/%s/comment',
+            urlencode($this->config['project']),
+            $this->config['prefix'] . '-' . $issue['id']
+        );
+
+        $ch = curl_init();
+        curl_setopt($ch, \CURLOPT_URL, $url);
+        curl_setopt($ch, \CURLOPT_POST, true);
+        curl_setopt($ch, \CURLOPT_POSTFIELDS, $post);
+        curl_setopt($ch, \CURLOPT_USERPWD, sprintf('%s:%s', $this->config['username'], $this->config['password']));
+        curl_setopt($ch, \CURLOPT_HTTPHEADER, array('content-type' => 'application/json'));
+        curl_setopt($ch, \CURLOPT_RETURNTRANSFER, true);
+
+        $result = curl_exec($ch);
+
+        if ($error = curl_error($ch)) {
+            throw new \Exception($error);
+        }
     }
 }

@@ -32,6 +32,7 @@ class Application extends BaseApplication
     {
         $parser = new Parser();
 
+        // Load Configuration
         $me = posix_getpwuid(getmyuid());
         if (file_exists("$me[dir]/.qissues")) {
             $this->config = array_merge_recursive($this->config, $parser->parse(file_get_contents("$me[dir]/.qissues")));
@@ -43,7 +44,59 @@ class Application extends BaseApplication
         $this->registerCommands();
         $this->registerStyles($output);
 
-        return parent::doRun($input, $output);
+        $name = $this->getCommandName($input);
+
+        if (true === $input->hasParameterOption(array('--ansi'))) {
+            $output->setDecorated(true);
+        } elseif (true === $input->hasParameterOption(array('--no-ansi'))) {
+            $output->setDecorated(false);
+        }
+
+        if (true === $input->hasParameterOption(array('--help', '-h'))) {
+            if (!$name) {
+                $name = 'help';
+                $input = new ArrayInput(array('command' => 'help'));
+            } else {
+                $this->wantHelps = true;
+            }
+        }
+
+        if (true === $input->hasParameterOption(array('--no-interaction', '-n'))) {
+            $input->setInteractive(false);
+        }
+
+        if (function_exists('posix_isatty') && $this->getHelperSet()->has('dialog')) {
+            $inputStream = $this->getHelperSet()->get('dialog')->getInputStream();
+            if (!posix_isatty($inputStream)) {
+                $input->setInteractive(false);
+            }
+        }
+
+        if (true === $input->hasParameterOption(array('--quiet', '-q'))) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+        } elseif (true === $input->hasParameterOption(array('--verbose', '-v'))) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_VERBOSE);
+        }
+
+        if (true === $input->hasParameterOption(array('--version', '-V'))) {
+            $output->writeln($this->getLongVersion());
+
+            return 0;
+        }
+
+        if (!$name) {
+            $name = 'query';
+            $input = new ArrayInput(array('command' => 'query'));
+        }
+
+        // the command name MUST be the first element of the input
+        $command = $this->find($name);
+
+        $this->runningCommand = $command;
+        $statusCode = $command->run($input, $output);
+        $this->runningCommand = null;
+
+        return is_numeric($statusCode) ? $statusCode : 0;
     }
 
     protected function registerStyles($output)

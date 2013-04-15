@@ -156,6 +156,28 @@ class BitBucket implements Connector
     }
 
     /**
+     * Query comments for a given issuse
+     *
+     * @param array issue details
+     * @return array comments
+     */
+    public function findComments(array $issue)
+    {
+        $url = sprintf(
+            'https://%s:%s@api.bitbucket.org/1.0/repositories/%s/issues/%d/comments',
+            $this->config['username'],
+            $this->config['password'],
+            $this->config['repository'],
+            $issue['local_id']
+        );
+
+        $comments = json_decode(file_get_contents($url), true);
+
+
+        return array_map(array($this, 'prepareComment'), $comments);
+    }
+
+    /**
      * Comment on an issue
      *
      * @param array issue details
@@ -199,6 +221,21 @@ class BitBucket implements Connector
         $issue['assignee'] = isset($issue['responsible']) ? $issue['responsible']['username'] : '';
         $issue['kind'] = $issue['metadata']['kind'];
         return $issue;
+    }
+
+    /**
+     * Normalize incoming comment for application use
+     *
+     * @param array comment from bitbucket
+     * @return array comment ready for use
+     */
+    protected function prepareComment($comment)
+    {
+        $comment['username'] = $comment['author_info']['username'];
+        $comment['date'] = new \DateTime($comment['utc_created_on'], new \DateTimeZone('Etc/UTC'));
+        $comment['date']->setTimeZone(new \DateTimeZone('America/Vancouver'));
+
+        return $comment;
     }
 
     /**

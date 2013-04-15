@@ -18,6 +18,7 @@ class ViewCommand extends Command
             ->setName('view')
             ->setDescription('View details for an issue')
             ->addArgument('issue', InputArgument::REQUIRED, 'The issue ID')
+            ->addOption('no-comments', null, InputOption::VALUE_NONE, 'Don\'t print comments', null)
         ;
     }
     
@@ -28,18 +29,22 @@ class ViewCommand extends Command
             return $output->writeln('<error>Issue not found.</error>');
         }
 
-        $output->writeln("\n\n");
-        $output->writeln("<question></question>");
-        $output->writeln("<comment>Issue:</comment> <info>$issue[local_id]. $issue[title]</info>");
-        $output->writeln("<comment>Description:</comment>");
+        $output->writeln("<comment>$issue[local_id] - $issue[title]</comment>");
+        $output->writeln("  Priority: <info>$issue[prioritytext]</info> - Kind: <info>$issue[kind]</info>\n");
 
         list($width, $height) = $this->getApplication()->getTerminalDimensions();
         $issue['content'] = wordwrap($issue['content'], $width - 4, "\n", true);
 
         foreach (explode("\n", $issue['content']) as $row) {
-            $output->writeln("    <info>$row</info>");
+            $output->writeln($row);
         }
 
-        $output->writeln("\n\n");
+        $output->writeln("");
+        if (!$input->getOption('no-comments')) {
+            foreach (array_reverse($connector->findComments($issue)) as $comment) {
+                $date = $comment['date']->format('Y-m-d g:ia');
+                $output->writeln("[$date] <info>$comment[username]</info>: $comment[content]");
+            }
+        }
     }
 }

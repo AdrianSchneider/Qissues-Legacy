@@ -66,24 +66,43 @@ class BitBucket implements Connector
      */
     public function update(array $changes, array $issue)
     {
-        $ch = curl_init();
-
-        $post = array(
+        $this->changeFields($issue, array(
             'title'       => $changes['title'],
             'priority'    => $changes['priority'],
             'content'     => $changes['description'],
             'kind'        => $changes['kind'],
             'responsible' => $changes['assignee']
-        );
+        ));
+    }
 
+    /**
+     * Change the status of an issue
+     *
+     * @param array issue
+     * @param string new status
+     */
+    public function changeStatus(array $issue, $status)
+    {
+        $this->changeFields($issue, array('status' => $status));
+    }
+
+    /**
+     * Change arbitrary fields
+     *
+     * @param array issue
+     * @param array changes
+     */
+    protected function changeFields(array $issue, array $changes)
+    {
         $url = sprintf(
             'https://api.bitbucket.org/1.0/repositories/%s/issues/' . $issue['local_id'],
             $this->config['repository']
         );
 
+        $ch = curl_init();
         curl_setopt($ch, \CURLOPT_URL, $url);
         curl_setopt($ch, \CURLOPT_CUSTOMREQUEST, "PUT");
-        curl_setopt($ch, \CURLOPT_POSTFIELDS, http_build_query($post));
+        curl_setopt($ch, \CURLOPT_POSTFIELDS, http_build_query($changes));
         curl_setopt($ch, \CURLOPT_USERPWD, sprintf('%s:%s', $this->config['username'], $this->config['password']));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -95,32 +114,14 @@ class BitBucket implements Connector
     }
 
     /**
-     * Change the status of an issue
+     * (Re-)assign the issue
      *
      * @param array issue
-     * @param string new status
+     * @param string username
      */
-    public function changeStatus(array $issue, $status)
+    public function assign(array $issue, $username)
     {
-        $post = array('status' => $status);
-
-        $url = sprintf(
-            'https://api.bitbucket.org/1.0/repositories/%s/issues/' . $issue['local_id'],
-            $this->config['repository']
-        );
-
-        $ch = curl_init();
-        curl_setopt($ch, \CURLOPT_URL, $url);
-        curl_setopt($ch, \CURLOPT_CUSTOMREQUEST, "PUT");
-        curl_setopt($ch, \CURLOPT_POSTFIELDS, http_build_query($post));
-        curl_setopt($ch, \CURLOPT_USERPWD, sprintf('%s:%s', $this->config['username'], $this->config['password']));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $result = curl_exec($ch);
-
-        if ($error = curl_error($ch)) {
-            throw new \Exception($error);
-        }
+        $this->changeFields($issue, array('responsible' => $username));
     }
 
     /**

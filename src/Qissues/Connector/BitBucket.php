@@ -95,6 +95,35 @@ class BitBucket implements Connector
     }
 
     /**
+     * Change the status of an issue
+     *
+     * @param array issue
+     * @param string new status
+     */
+    public function changeStatus(array $issue, $status)
+    {
+        $post = array('status' => $status);
+
+        $url = sprintf(
+            'https://api.bitbucket.org/1.0/repositories/%s/issues/' . $issue['local_id'],
+            $this->config['repository']
+        );
+
+        $ch = curl_init();
+        curl_setopt($ch, \CURLOPT_URL, $url);
+        curl_setopt($ch, \CURLOPT_CUSTOMREQUEST, "PUT");
+        curl_setopt($ch, \CURLOPT_POSTFIELDS, http_build_query($post));
+        curl_setopt($ch, \CURLOPT_USERPWD, sprintf('%s:%s', $this->config['username'], $this->config['password']));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $result = curl_exec($ch);
+
+        if ($error = curl_error($ch)) {
+            throw new \Exception($error);
+        }
+    }
+
+    /**
      * Find an issue by its ID
      *
      * @param integer ID

@@ -24,18 +24,21 @@ class ViewCommand extends Command
     
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $connector = $this->getApplication()->getConnector('BitBucket');
+        $connector = $this->getApplication()->getConnector();
         if (!$issue = $connector->find($input->getArgument('issue'))) {
             return $output->writeln('<error>Issue not found.</error>');
         }
 
-        $output->writeln("<comment>$issue[local_id] - $issue[title]</comment>");
-        $output->writeln("  Priority: <info>$issue[prioritytext]</info> - Kind: <info>$issue[kind]</info>\n");
-
         list($width, $height) = $this->getApplication()->getTerminalDimensions();
-        $issue['content'] = wordwrap($issue['content'], $width - 4, "\n", true);
+        $issue['title'] = wordwrap($issue['title'], min($width - 4, 100), "\n", true);
 
-        foreach (explode("\n", $issue['content']) as $row) {
+        $output->writeln("");
+        $output->writeln("<comment>$issue[id] - $issue[title]</comment>");
+        $output->writeln("  Priority: <info>$issue[priority_text]</info> - Kind: <info>$issue[type]</info>\n");
+
+        $issue['description'] = wordwrap($issue['description'], min($width - 4, 100), "\n", true);
+
+        foreach (explode("\n", $issue['description']) as $row) {
             $output->writeln($row);
         }
 

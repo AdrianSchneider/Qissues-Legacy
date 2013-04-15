@@ -31,7 +31,19 @@ class Jira implements Connector
 
     public function find($id)
     {
+        $url = sprintf(
+            'https://%s:%s@%s.atlassian.net/rest/api/2/issue/%s',
+            $this->config['username'],
+            $this->config['password'],
+            urlencode($this->config['project']),
+            $this->config['prefix'] . '-' . $id
+        );
 
+        if (!$issue = json_decode(file_get_contents($url), true)) {
+            return;
+        }
+
+        return $this->prepareIssue($issue);
     }
 
     public function findAll(array $options = array())
@@ -102,7 +114,8 @@ class Jira implements Connector
 
     public function findComments(array $issue)
     {
-
+        // TODO
+        return array();
     }
 
     public function comment(array $issue, $message)

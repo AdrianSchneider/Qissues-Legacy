@@ -77,7 +77,11 @@ class QueryCommand extends Command
                 'Title' => sprintf('%s', $issue['title']),
                 'Kind' => $issue['metadata']['kind'],
                 'Priority' => $issue['prioritytext'],
-                'Assignee' => isset($issue['responsible']) ? $issue['responsible']['username'] : ''
+                'Assignee' => isset($issue['responsible']) ? $issue['responsible']['username'] : '',
+                'Date Created' => $issue['created']->format('Y-m-d g:ia'),
+                'Date updated' => $issue['updated']->format('Y-m-d g:ia'),
+                'Comments' => $issue['comments']
+
             );
 
         }

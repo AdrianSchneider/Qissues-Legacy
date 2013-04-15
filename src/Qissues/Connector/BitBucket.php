@@ -220,6 +220,10 @@ class BitBucket implements Connector
         $issue['priority'] = $this->priorities[$issue['priority']];
         $issue['assignee'] = isset($issue['responsible']) ? $issue['responsible']['username'] : '';
         $issue['kind'] = $issue['metadata']['kind'];
+        $issue['created'] = $this->parseDate($issue['created_on']);
+        $issue['updated'] = $this->parseDate($issue['utc_last_updated']);
+        $issue['comments'] = $issue['comment_count'];
+
         return $issue;
     }
 
@@ -232,8 +236,7 @@ class BitBucket implements Connector
     protected function prepareComment($comment)
     {
         $comment['username'] = $comment['author_info']['username'];
-        $comment['date'] = new \DateTime($comment['utc_created_on'], new \DateTimeZone('Etc/UTC'));
-        $comment['date']->setTimeZone(new \DateTimeZone('America/Vancouver'));
+        $comment['date'] = $this->parseDate($comment['utc_created_on']);
 
         return $comment;
     }
@@ -252,5 +255,13 @@ class BitBucket implements Connector
         }
 
         return $a['priority'] > $b['priority'] ? -1 : 1;
+    }
+
+    protected function parseDate($utcDate)
+    {
+        $date = new \DateTime($utcDate, new \DateTimeZone('Etc/UTC'));
+        $date->setTimeZone(new \DateTimeZone('America/Vancouver'));
+
+        return $date;
     }
 }

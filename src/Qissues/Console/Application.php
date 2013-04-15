@@ -15,8 +15,11 @@ class Application extends BaseApplication
 {
     protected $config = array();
 
-    public function getConnector($name)
+    public function getConnector($name = '')
     {
+        if (!$name) {
+            $name = $this->config['connector'];
+        }
         $class = "Qissues\\Connector\\$name";
         if (!class_exists($class)) {
             throw new \Exception("$name connector not found");

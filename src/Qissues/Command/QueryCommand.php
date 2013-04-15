@@ -43,7 +43,7 @@ class QueryCommand extends Command
     {
         list($width, $height) = $this->getApplication()->getTerminalDimensions();
 
-        $connector = $this->getApplication()->getConnector('BitBucket');
+        $connector = $this->getApplication()->getConnector();
         $issues = $connector->findAll($this->buildOptions($input));
 
         if (!$view = $input->getOption('view')) {

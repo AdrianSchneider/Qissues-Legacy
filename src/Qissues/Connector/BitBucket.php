@@ -255,15 +255,19 @@ class BitBucket implements Connector
      */
     protected function prepareIssue($issue)
     {
-        $issue['prioritytext'] = $issue['priority'];
-        $issue['priority'] = $this->priorities[$issue['priority']];
-        $issue['assignee'] = isset($issue['responsible']) ? $issue['responsible']['username'] : '';
-        $issue['kind'] = $issue['metadata']['kind'];
-        $issue['created'] = $this->parseDate($issue['created_on'], 'Europe/Amsterdam');
-        $issue['updated'] = $this->parseDate($issue['utc_last_updated']);
-        $issue['comments'] = $issue['comment_count'];
-
-        return $issue;
+        return array(
+            'id'            => $issue['local_id'],
+            'title'         => $issue['title'],
+            'description'   => $issue['content'],
+            'type'          => $issue['metadata']['kind'],
+            'assignee'      => isset($issue['responsible']) ? $issue['responsible']['username'] : '',
+            'created'       => $this->parseDate($issue['created_on'], 'Europe/Amsterdam'),
+            'updated'       => $this->parseDate($issue['utc_last_updated']),
+            'comments'      => $issue['comment_count'],
+            'priority'      => $this->priorities[$issue['priority']],
+            'priority_text' => $issue['priority'],
+            'status'        => $issue['status']
+        );
     }
 
     /**

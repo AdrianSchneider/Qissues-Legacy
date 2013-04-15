@@ -2,7 +2,6 @@
 
 namespace Qissues\Command;
 
-use Qissues\Connector\BitBucket;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -23,6 +22,9 @@ class QueryCommand extends Command
         'bug' => '<p5>B</p5>'
     );
 
+    /**
+     * {@inheritDoc}
+     */
     protected function configure()
     {
         $this
@@ -39,6 +41,9 @@ class QueryCommand extends Command
         ;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         list($width, $height) = $this->getApplication()->getTerminalDimensions();
@@ -67,6 +72,12 @@ class QueryCommand extends Command
         return $this->renderTinyView($issues, $output);
     }
 
+    /**
+     * Renders a detailed table view of the issues
+     *
+     * @param array issues from connector
+     * @param OutputInterface
+     */
     protected function renderDetailedView(array $issues, OutputInterface $output)
     {
         list($width, $height) = $this->getApplication()->getTerminalDimensions();
@@ -74,18 +85,19 @@ class QueryCommand extends Command
         $renderIssues = array();
         foreach ($issues as $issue) {
             $renderIssues[] = array(
-                'Id' => $issue['local_id'],
-                'Title' => sprintf('%s', $issue['title']),
-                'Status' => $issue['status'],
-                'Kind' => $issue['metadata']['kind'],
-                'Priority' => $issue['prioritytext'],
-                'Assignee' => isset($issue['responsible']) ? $issue['responsible']['username'] : '',
+                'Id'           => $issue['id'],
+                'Title'        => strlen($issue['title']) > $width * 0.4 
+                    ? (substr($issue['title'], 0, $width * 0.4) . '...')
+                    : $issue['title'],
+                'Status'       => $issue['status'],
+                'Kind'         => $issue['type'],
+                'Priority'     => $issue['priority_text'],
+                'Assignee'     => $issue['assignee'],
                 'Date Created' => $issue['created']->format('Y-m-d g:ia'),
                 'Date updated' => $issue['updated']->format('Y-m-d g:ia'),
-                'Comments' => $issue['comments']
+                'Comments'     => $issue['comments']
 
             );
-
         }
 
         $renderer = new \Qissues\Renderer\TableRenderer();
@@ -99,6 +111,13 @@ class QueryCommand extends Command
         $output->writeln(' +' . str_repeat('-', $width - 4) . '+ ');
     }
 
+    /**
+     * Renders a basic view of the issues
+     * XXX NOT DONE
+     *
+     * @param array issues from connector
+     * @param OutputInterface
+     */
     protected function renderBasicView(array $issues, OutputInterface $output)
     {
         list($width, $height) = $this->getApplication()->getTerminalDimensions();
@@ -130,6 +149,12 @@ class QueryCommand extends Command
         }
     }
 
+    /**
+     * Renders a tiny view for sidebars (ex in tmux)
+     *
+     * @param array issues from connector
+     * @param OutputInterface
+     */
     protected function renderTinyView(array $issues, OutputInterface $output)
     {
         list($width, $height) = $this->getApplication()->getTerminalDimensions();
@@ -181,7 +206,7 @@ class QueryCommand extends Command
 
         if ($input->getOption('mine')) {
             $config = $this->getApplication()->getConfig();
-            $options['assignee'] = $config['bitbucket']['username'];
+            $options['assignee'] = $config[strtolower($config['connector'])]['username'];
         }
 
         return $options;

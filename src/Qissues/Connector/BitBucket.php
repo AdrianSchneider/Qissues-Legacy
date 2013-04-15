@@ -156,10 +156,11 @@ class BitBucket implements Connector
     public function findAll(array $options = array())
     {
         $url = sprintf(
-            'https://%s:%s@api.bitbucket.org/1.0/repositories/%s/issues',
+            'https://%s:%s@api.bitbucket.org/1.0/repositories/%s/issues?limit=%d',
             $this->config['username'],
             $this->config['password'],
-            $this->config['repository']
+            $this->config['repository'],
+            $options['limit']
         );
 
         $issues = json_decode(file_get_contents($url), true);
@@ -173,6 +174,14 @@ class BitBucket implements Connector
         if (!empty($options['assignee'])) {
             $issues = array_filter($issues, function($issue) use ($options) {
                 return isset($issue['responsible']) && $issue['responsible']['username'] == $options['assignee'];
+            });
+        }
+        if (!empty($options['status'])) {
+            $issues = array_filter($issues, function($issue) use ($options) {
+                if (strpos($options['status'], ',') !== false) {
+                    return in_array($issue['status'], explode(',', $options['status']));
+                }
+                return $issue['status'] == $options['status'];
             });
         }
 

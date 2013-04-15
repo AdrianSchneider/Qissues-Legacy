@@ -29,12 +29,13 @@ class QueryCommand extends Command
             ->setName('query')
             ->setDescription('List all issues, optionally filtering them.')
             ->addOption('view', 'z', InputOption::VALUE_OPTIONAL, 'View mode (tiny, basic or detailed) defaults based on width)', null)
-            ->addOption('status', 's', InputOption::VALUE_OPTIONAL, 'Filter by status', null)
+            ->addOption('status', 's', InputOption::VALUE_OPTIONAL, 'Filter by status', "new,open")
             ->addOption('sort', 'o', InputOption::VALUE_OPTIONAL, 'Sort results by [priority]', null)
             ->addOption('assignee', 'a', InputOption::VALUE_OPTIONAL, 'Filter by assignee', null)
             ->addOption('priority', 'p', InputOption::VALUE_OPTIONAL, 'Filter by priority', null)
             ->addOption('kind', 'k', InputOption::VALUE_OPTIONAL, 'Filter by kind', null)
             ->addOption('mine', null, InputOption::VALUE_NONE, 'Only show things assigned to me', null)
+            ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit the results', 50)
         ;
     }
     
@@ -75,6 +76,7 @@ class QueryCommand extends Command
             $renderIssues[] = array(
                 'Id' => $issue['local_id'],
                 'Title' => sprintf('%s', $issue['title']),
+                'Status' => $issue['status'],
                 'Kind' => $issue['metadata']['kind'],
                 'Priority' => $issue['prioritytext'],
                 'Assignee' => isset($issue['responsible']) ? $issue['responsible']['username'] : '',
@@ -170,7 +172,7 @@ class QueryCommand extends Command
     {
         $options = array();
 
-        $searchFor = array('sort', 'assignee', 'priority', 'kind');
+        $searchFor = array('sort', 'assignee', 'priority', 'kind', 'status', 'limit');
         foreach ($searchFor as $field) {
             if ($value = $input->getOption($field)) {
                 $options[$field] = $value;

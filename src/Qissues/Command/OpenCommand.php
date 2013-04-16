@@ -34,7 +34,7 @@ class OpenCommand extends Command
             $connector->comment($issue, $message);
         }
 
-        $output->writeln("Issue <info>#$issue[local_id]</info> has been (re-)opened.");
+        $output->writeln("Issue <info>#$issue[id]</info> has been (re-)opened.");
     }
 
     protected function getComment()

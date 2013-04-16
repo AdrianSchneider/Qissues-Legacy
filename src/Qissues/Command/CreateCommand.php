@@ -40,7 +40,8 @@ class CreateCommand extends Command
 
         $filename = tempnam('.', 'qissues');
         file_put_contents($filename, "Title\n\nPriority: minor\nType: bug\nAssignee: $me\n\nDescription\n");
-        exec("vim $filename > `tty`");
+        $editor = getenv('EDITOR') ?: 'vim';
+        exec("$editor $filename > `tty`");
         $data = file_get_contents($filename);
         unlink($filename);
         $lines = explode("\n", $data);

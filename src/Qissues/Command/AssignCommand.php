@@ -43,7 +43,8 @@ class AssignCommand extends Command
     {
         $filename = tempnam('.', 'qissues');
         file_put_contents($filename, 'Leave a comment?');
-        exec("vim $filename > `tty`");
+        $editor = getenv('EDITOR') ?: 'vim';
+        exec("$editor $filename > `tty`");
         $data = file_get_contents($filename);
         unlink($filename);
 

@@ -40,7 +40,8 @@ class OpenCommand extends Command
     protected function getComment()
     {
         $filename = tempnam('.', 'qissues');
-        exec("vim $filename > `tty`");
+        $editor = getenv('EDITOR') ?: 'vim';
+        exec("$editor $filename > `tty`");
         $data = file_get_contents($filename);
         unlink($filename);
 

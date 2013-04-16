@@ -37,7 +37,8 @@ class EditCommand extends Command
     {
         $filename = tempnam('.', 'qissues');
         file_put_contents($filename, "$existing[title]\n\nPriority: $existing[priority_text]\nType: $existing[type]\nAssignee: $existing[assignee]\n\n$existing[description]\n");
-        exec("vim $filename > `tty`");
+        $editor = getenv('EDITOR') ?: 'vim';
+        exec("$editor $filename > `tty`");
         $data = file_get_contents($filename);
         unlink($filename);
         $lines = explode("\n", $data);

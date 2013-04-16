@@ -36,7 +36,8 @@ class CommentCommand extends Command
     protected function getMessage()
     {
         $filename = tempnam('.', 'qissues');
-        exec("vim $filename > `tty`");
+        $editor = getenv('EDITOR') ?: 'vim';
+        exec("$editor $filename > `tty`");
         $data = file_get_contents($filename);
         unlink($filename);
 

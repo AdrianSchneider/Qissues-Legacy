@@ -42,7 +42,12 @@ class ViewCommand extends Command
 
         $output->writeln("");
         $output->writeln("<comment>$issue[id] - $issue[title]</comment>");
-        $output->writeln("  Priority: <info>$issue[priority_text]</info> - Kind: <info>$issue[type]</info>\n");
+        $output->writeln(sprintf(
+            "  Priority: <info>%s</info> - Kind: <info>%s</info> - Assignee: <info>%s</info>\n",
+            $issue['priority_text'],
+            $issue['type'],
+            $issue['assignee'] ?: 'unassigned'
+        ));
 
         $issue['description'] = wordwrap($issue['description'], min($width - 4, 100), "\n", true);
 

@@ -30,7 +30,7 @@ class CreateCommand extends Command
             return $output->writeln('<error>No changes were made</error>');
         }
 
-        $output->writeln("Issue <info>#$issue[local_id]</info> has been created");
+        $output->writeln("Issue <info>#$issue[id]</info> has been created");
     }
 
     protected function getIssueDetailsFromExternal()
@@ -39,7 +39,7 @@ class CreateCommand extends Command
         $me = $config['bitbucket']['username'];
 
         $filename = tempnam('.', 'qissues');
-        file_put_contents($filename, "Title\n\nPriority: minor\nKind: bug\nAssignee: $me\n\nDescription\n");
+        file_put_contents($filename, "Title\n\nPriority: minor\nType: bug\nAssignee: $me\n\nDescription\n");
         exec("vim $filename > `tty`");
         $data = file_get_contents($filename);
         unlink($filename);
@@ -48,7 +48,7 @@ class CreateCommand extends Command
         return array(
             'title' => trim($lines[0]),
             'priority' => trim(str_replace('Priority:', '', $lines[2])),
-            'kind' => trim(str_replace('Kind:', '', $lines[3])),
+            'type' => trim(str_replace('Type:', '', $lines[3])),
             'assignee' => trim(str_replace('Assignee:', '', $lines[4])),
             'description' => trim(implode("\n", array_slice($lines, 5)))
         );

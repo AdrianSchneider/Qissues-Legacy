@@ -9,13 +9,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Process\Process;
 
-class OpenCommand extends Command
+class CloseCommand extends Command
 {
     protected function configure()
     {
         $this
-            ->setName('open')
-            ->setDescription('Open or re-open an issue')
+            ->setName('close')
+            ->setDescription('Close or re-open an issue')
             ->addArgument('issue', InputArgument::REQUIRED, 'The issue ID')
         ;
     }
@@ -28,13 +28,14 @@ class OpenCommand extends Command
         }
 
         $message = $this->getComment();
-        $connector->changeStatus($issue, 'open');
+        // TODO Jira
+        $connector->changeStatus($issue, 'resolved');
 
         if ($message) {
             $connector->comment($issue, $message);
         }
 
-        $output->writeln("Issue <info>#$issue[id]</info> has been (re-)opened.");
+        $output->writeln("Issue <info>#$issue[id]</info> has been closed.");
     }
 
     protected function getComment()

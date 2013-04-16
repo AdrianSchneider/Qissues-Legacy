@@ -188,7 +188,7 @@ class BitBucket implements Connector
         }
         if (!empty($options['assignee'])) {
             $issues = array_filter($issues, function($issue) use ($options) {
-                return isset($issue['responsible']) && $issue['responsible']['username'] == $options['assignee'];
+                return isset($issue['assignee']) && $issue['assignee'] == $options['assignee'];
             });
         }
         if (!empty($options['status'])) {

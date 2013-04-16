@@ -38,10 +38,10 @@ class Application extends BaseApplication
         // Load Configuration
         $me = posix_getpwuid(getmyuid());
         if (file_exists("$me[dir]/.qissues")) {
-            $this->config = array_merge_recursive($this->config, $parser->parse(file_get_contents("$me[dir]/.qissues")));
+            $this->config = $this->mergeConfig($this->config, $parser->parse(file_get_contents("$me[dir]/.qissues")));
         }
         if (file_exists('./.qissues')) {
-            $this->config = array_merge_recursive($this->config, $parser->parse(file_get_contents('./.qissues')));
+            $this->config = $this->mergeConfig($this->config, $parser->parse(file_get_contents('./.qissues')));
         }
 
         $this->registerCommands();
@@ -139,5 +139,22 @@ class Application extends BaseApplication
     public function getConfig()
     {
         return $this->config;
+    }
+
+    protected function mergeConfig($a, $b)
+    {
+        foreach ($b as $key => $value) {
+            if (is_array($value)) {
+                if (!isset($a[$key])) {
+                    $a[$key] = $value;
+                } else {
+                    $a[$key] = $this->mergeConfig($a[$key], $value);
+                }
+            } else {
+                $a[$key] = $value;
+            }
+        }
+
+        return $a;
     }
 }

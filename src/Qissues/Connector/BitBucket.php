@@ -144,6 +144,7 @@ class BitBucket implements Connector
         if (!$issue) {
             return;
         }
+
         return $this->prepareIssue($issue);
     }
 
@@ -157,8 +158,8 @@ class BitBucket implements Connector
     {
         $url = sprintf(
             'https://%s:%s@api.bitbucket.org/1.0/repositories/%s/issues?limit=%d',
-            $this->config['username'],
-            $this->config['password'],
+            urlencode($this->config['username']),
+            urlencode($this->config['password']),
             $this->config['repository'],
             $options['limit']
         );
@@ -207,7 +208,7 @@ class BitBucket implements Connector
             $this->config['username'],
             $this->config['password'],
             $this->config['repository'],
-            $issue['local_id']
+            $issue['id']
         );
 
         $comments = json_decode(file_get_contents($url), true);

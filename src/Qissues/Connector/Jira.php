@@ -148,4 +148,22 @@ class Jira implements Connector
             throw new \Exception($error);
         }
     }
+
+    public function getBrowseUrl()
+    {
+        return sprintf(
+            'https://%s.atlassian.net/issues',
+            $this->config['project']
+        );
+    }
+
+    public function getIssueUrl(array $issue)
+    {
+        return sprintf(
+            'https://%s.atlassian.net/browse/%s-%d',
+            $this->config['project'],
+            $this->config['prefix'],
+            $issue['id']
+        );
+    }
 }

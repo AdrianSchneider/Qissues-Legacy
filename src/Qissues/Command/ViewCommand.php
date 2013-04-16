@@ -19,6 +19,7 @@ class ViewCommand extends Command
             ->setDescription('View details for an issue')
             ->addArgument('issue', InputArgument::REQUIRED, 'The issue ID')
             ->addOption('no-comments', null, InputOption::VALUE_NONE, 'Don\'t print comments', null)
+            ->addOption('web', 'w', InputOption::VALUE_NONE, 'Open in web browser.', null)
         ;
     }
     
@@ -27,6 +28,13 @@ class ViewCommand extends Command
         $connector = $this->getApplication()->getConnector();
         if (!$issue = $connector->find($input->getArgument('issue'))) {
             return $output->writeln('<error>Issue not found.</error>');
+        }
+
+        if ($input->getOption('web')) {
+            return exec(sprintf(
+                'xdg-open %s',
+                escapeshellarg($connector->getIssueUrl($issue))
+            ));
         }
 
         list($width, $height) = $this->getApplication()->getTerminalDimensions();

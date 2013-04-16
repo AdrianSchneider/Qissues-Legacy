@@ -38,6 +38,7 @@ class QueryCommand extends Command
             ->addOption('type', 't', InputOption::VALUE_OPTIONAL, 'Filter by type', null)
             ->addOption('mine', null, InputOption::VALUE_NONE, 'Only show things assigned to me', null)
             ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit the results', 50)
+            ->addOption('web', 'w', InputOption::VALUE_NONE, 'Open in web browser.', null)
         ;
     }
     
@@ -46,9 +47,17 @@ class QueryCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        list($width, $height) = $this->getApplication()->getTerminalDimensions();
-
         $connector = $this->getApplication()->getConnector();
+
+        if ($input->getOption('web')) {
+            return exec(sprintf(
+                'xdg-open %s',
+                escapeshellarg($connector->getBrowseUrl())
+            ));
+        }
+
+
+        list($width, $height) = $this->getApplication()->getTerminalDimensions();
         $issues = $connector->findAll($this->buildOptions($input));
 
         if (!$view = $input->getOption('view')) {
@@ -96,7 +105,6 @@ class QueryCommand extends Command
                 'Date Created' => $issue['created']->format('Y-m-d g:ia'),
                 'Date updated' => $issue['updated']->format('Y-m-d g:ia'),
                 'Comments'     => $issue['comments']
-
             );
         }
 

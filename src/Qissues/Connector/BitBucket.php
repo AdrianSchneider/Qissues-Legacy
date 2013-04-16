@@ -326,4 +326,21 @@ class BitBucket implements Connector
 
         return $date;
     }
+
+    public function getBrowseUrl()
+    {
+        return sprintf(
+            'https://bitbucket.org/%s/issues',
+            $this->config['repository']
+        );
+    }
+
+    public function getIssueUrl(array $issue)
+    {
+        return sprintf(
+            'https://bitbucket.org/%s/issue/%d',
+            $this->config['repository'],
+            $issue['id']
+        );
+    }
 }

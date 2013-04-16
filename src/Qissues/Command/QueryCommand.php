@@ -109,14 +109,7 @@ class QueryCommand extends Command
         }
 
         $renderer = new \Qissues\Renderer\TableRenderer();
-        $output->writeln(' +' . str_repeat('-', $width - 4) . '+ ');
-        foreach ($renderer->render($renderIssues) as $i => $row) {
-            $output->writeln(' | ' . implode(' | ', $row) . ' | ');
-            if (!$i) {
-                $output->writeln(' +' . str_repeat('-', $width - 4) . '+ ');
-            }
-        }
-        $output->writeln(' +' . str_repeat('-', $width - 4) . '+ ');
+        $output->writeln($renderer->render($renderIssues, $width));
     }
 
     /**

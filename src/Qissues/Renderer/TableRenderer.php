@@ -4,7 +4,7 @@ namespace Qissues\Renderer;
 
 class TableRenderer
 {
-    public function render(array $data, $h = '-', $v = '|', $c = '+')
+    public function render(array $data, $width)
     {
         $rows = array();
         $rows[0] = array_keys($data[0]);
@@ -28,6 +28,16 @@ class TableRenderer
             }
         }
 
-        return $rows;
+        $lines = array();
+        $lines[] =' +' . str_repeat('-', $width - 4) . '+ ';
+        foreach ($rows as $i => $row) {
+            $lines[] = ' | ' . implode(' | ', $row) . ' | ';
+            if (!$i) {
+                $lines[] = ' +' . str_repeat('-', $width - 4) . '+ ';
+            }
+        }
+        $lines[] = ' +' . str_repeat('-', $width - 4) . '+ ';
+
+        return $lines;
     }
 }

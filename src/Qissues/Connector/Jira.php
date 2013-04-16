@@ -113,14 +113,32 @@ class Jira implements Connector
             'priority'      => $issue['fields']['priority']['id'],
             'priority_text' => strtolower($issue['fields']['priority']['name']),
             'type'          => strtolower($issue['fields']['issuetype']['name']),
-            'comments'      => 0
+            'comments'      => 'n/a'
         );
     }
 
+    protected function prepareComment(array $comment)
+    {
+        return array(
+            'username' => $comment['author']['name'],
+            'message'  => $comment['body'],
+            'date'     => new \DateTime($comment['created'])
+        );
+    }
+
+
     public function findComments(array $issue)
     {
-        // TODO
-        return array();
+        $url = sprintf(
+            'https://%s:%s@%s.atlassian.net/rest/api/2/issue/%s/comment',
+            $this->config['username'],
+            $this->config['password'],
+            urlencode($this->config['project']),
+            $this->config['prefix'] . '-' . $issue['id']
+        );
+
+        $comments = json_decode(file_get_contents($url), true);
+        return array_map(array($this, 'prepareComment'), $comments['comments']);
     }
 
     public function comment(array $issue, $message)

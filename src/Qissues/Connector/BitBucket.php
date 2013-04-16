@@ -297,10 +297,11 @@ class BitBucket implements Connector
      */
     protected function prepareComment($comment)
     {
-        $comment['username'] = $comment['author_info']['username'];
-        $comment['date'] = $this->parseDate($comment['utc_created_on']);
-
-        return $comment;
+        return array(
+            'username' => $comment['author_info']['username'],
+            'date'     => $this->parseDate($comment['utc_created_on']),
+            'message'  => $comment['content']
+        );
     }
 
     /**

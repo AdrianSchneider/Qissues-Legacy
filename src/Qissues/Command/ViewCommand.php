@@ -54,7 +54,7 @@ class ViewCommand extends Command
         if (!$input->getOption('no-comments')) {
             foreach (array_reverse($connector->findComments($issue)) as $comment) {
                 $date = $comment['date']->format('Y-m-d g:ia');
-                $output->writeln("[$date] <info>$comment[username]</info>: $comment[content]");
+                $output->writeln("[$date] <info>$comment[username]</info>: $comment[message]");
             }
         }
     }

@@ -11,17 +11,6 @@ use Symfony\Component\Process\Process;
 
 class QueryCommand extends Command
 {
-    protected $priorities = array(
-        5 => '▲',
-        4 => '▴',
-        3 => '-',
-        2 => '▾',
-        1 => '▼'
-    );
-    protected $types = array(
-        'bug' => '<p5>B</p5>'
-    );
-
     /**
      * {@inheritDoc}
      */
@@ -150,10 +139,21 @@ class QueryCommand extends Command
     {
         list($width, $height) = $this->getApplication()->getTerminalDimensions();
 
+        $priorities = array(
+            5 => '▲',
+            4 => '▴',
+            3 => '-',
+            2 => '▾',
+            1 => '▼'
+        );
+        $types = array(
+            'bug' => '<p5>B</p5>'
+        );
+
         $maxLength = 0;
         foreach ($issues as $issue) {
-            if (strlen($issue['local_id']) > $maxLength) {
-                $maxLength = strlen($issue['local_id']);
+            if (strlen($issue['id']) > $maxLength) {
+                $maxLength = strlen($issue['id']);
             }
         }
 
@@ -166,10 +166,10 @@ class QueryCommand extends Command
         foreach ($issues as $issue) {
             $output->writeln(sprintf(
                 '%s %s <comment>%s%d</comment> <message>%s</message>',
-                $this->priorities[$issue['priority']],
-                $issue['type'] == 'bug' ? $this->types['bug'] : ' ',
-                str_repeat(' ', $maxLength - strlen($issue['local_id'])),
-                $issue['local_id'],
+                $priorities[$issue['priority']],
+                $issue['type'] == 'bug' ? $types['bug'] : ' ',
+                str_repeat(' ', $maxLength - strlen($issue['id'])),
+                $issue['id'],
                 strlen($issue['title']) > $allowedSize
                     ? (substr($issue['title'], 0, $allowedSize - 3) . '...')
                     : $issue['title']

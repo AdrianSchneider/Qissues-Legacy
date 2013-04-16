@@ -35,7 +35,7 @@ class QueryCommand extends Command
             ->addOption('sort', 'o', InputOption::VALUE_OPTIONAL, 'Sort results by [priority]', null)
             ->addOption('assignee', 'a', InputOption::VALUE_OPTIONAL, 'Filter by assignee', null)
             ->addOption('priority', 'p', InputOption::VALUE_OPTIONAL, 'Filter by priority', null)
-            ->addOption('kind', 'k', InputOption::VALUE_OPTIONAL, 'Filter by kind', null)
+            ->addOption('type', 't', InputOption::VALUE_OPTIONAL, 'Filter by type', null)
             ->addOption('mine', null, InputOption::VALUE_NONE, 'Only show things assigned to me', null)
             ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit the results', 50)
         ;
@@ -90,7 +90,7 @@ class QueryCommand extends Command
                     ? (substr($issue['title'], 0, $width * 0.4) . '...')
                     : $issue['title'],
                 'Status'       => $issue['status'],
-                'Kind'         => $issue['type'],
+                'Type'         => $issue['type'],
                 'Priority'     => $issue['priority_text'],
                 'Assignee'     => $issue['assignee'],
                 'Date Created' => $issue['created']->format('Y-m-d g:ia'),
@@ -139,9 +139,9 @@ class QueryCommand extends Command
             $output->writeln(sprintf(
                 '%s %s <comment>%s%d</comment> <message>%s</message>',
                 $this->priorities[$issue['priority']],
-                $issue['metadata']['kind'] == 'bug' ? $this->types['bug'] : ' ',
-                str_repeat(' ', $maxLength - strlen($issue['local_id'])),
-                $issue['local_id'],
+                $issue['type'] == 'bug' ? $this->types['bug'] : ' ',
+                str_repeat(' ', $maxLength - strlen($issue['id'])),
+                $issue['id'],
                 strlen($issue['title']) > $allowedSize
                     ? (substr($issue['title'], 0, $allowedSize - 3) . '...')
                     : $issue['title']
@@ -176,7 +176,7 @@ class QueryCommand extends Command
             $output->writeln(sprintf(
                 '%s %s <comment>%s%d</comment> <message>%s</message>',
                 $this->priorities[$issue['priority']],
-                $issue['metadata']['kind'] == 'bug' ? $this->types['bug'] : ' ',
+                $issue['type'] == 'bug' ? $this->types['bug'] : ' ',
                 str_repeat(' ', $maxLength - strlen($issue['local_id'])),
                 $issue['local_id'],
                 strlen($issue['title']) > $allowedSize
@@ -197,7 +197,7 @@ class QueryCommand extends Command
     {
         $options = array();
 
-        $searchFor = array('sort', 'assignee', 'priority', 'kind', 'status', 'limit');
+        $searchFor = array('sort', 'assignee', 'priority', 'type', 'status', 'limit');
         foreach ($searchFor as $field) {
             if ($value = $input->getOption($field)) {
                 $options[$field] = $value;

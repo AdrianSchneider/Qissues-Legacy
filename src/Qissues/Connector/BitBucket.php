@@ -181,9 +181,9 @@ class BitBucket implements Connector
         $issues = json_decode(file_get_contents($url), true);
         $issues = array_map(array($this, 'prepareIssue'), $issues['issues']);
 
-        if (!empty($options['kind'])) {
+        if (!empty($options['type'])) {
             $issues = array_filter($issues, function($issue) use ($options) {
-                return $issue['metadata']['kind'] == $options['kind'];
+                return $issue['type'] == $options['type'];
             });
         }
         if (!empty($options['assignee'])) {

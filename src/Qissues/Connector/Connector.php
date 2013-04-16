@@ -6,6 +6,7 @@ interface Connector
 {
     function create(array $issue);
     function update(array $changes, array $issue);
+    function delete(array $issue);
 
     function changeStatus(array $issue, $newStatus);
     function assign(array $issue, $username);

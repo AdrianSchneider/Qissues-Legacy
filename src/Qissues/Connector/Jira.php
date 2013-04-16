@@ -19,6 +19,11 @@ class Jira implements Connector
         throw new \Exception('not yet implemented');
     }
 
+    public function delete(array $issue)
+    {
+        throw new \Exception('not yet implemented');
+    }
+
     public function changeStatus(array $issue, $newStatus)
     {
         throw new \Exception('not yet implemented');

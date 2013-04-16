@@ -75,6 +75,26 @@ class BitBucket implements Connector
     }
 
     /**
+     * Deletes an issue
+     *
+     * @param array issue
+     */
+    public function delete(array $issue)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, \CURLOPT_URL, $issue['url_endpoint']);
+        curl_setopt($ch, \CURLOPT_CUSTOMREQUEST, "DELETE");
+        curl_setopt($ch, \CURLOPT_USERPWD, sprintf('%s:%s', $this->config['username'], $this->config['password']));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $result = curl_exec($ch);
+
+        if ($error = curl_error($ch)) {
+            throw new \Exception($error);
+        }
+    }
+
+    /**
      * Change the status of an issue
      *
      * @param array issue
@@ -93,13 +113,8 @@ class BitBucket implements Connector
      */
     protected function changeFields(array $issue, array $changes)
     {
-        $url = sprintf(
-            'https://api.bitbucket.org/1.0/repositories/%s/issues/' . $issue['id'],
-            $this->config['repository']
-        );
-
         $ch = curl_init();
-        curl_setopt($ch, \CURLOPT_URL, $url);
+        curl_setopt($ch, \CURLOPT_URL, $issue['url_endpoint']);
         curl_setopt($ch, \CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, \CURLOPT_POSTFIELDS, http_build_query($changes));
         curl_setopt($ch, \CURLOPT_USERPWD, sprintf('%s:%s', $this->config['username'], $this->config['password']));
@@ -265,7 +280,12 @@ class BitBucket implements Connector
             'comments'      => $issue['comment_count'],
             'priority'      => $this->priorities[$issue['priority']],
             'priority_text' => $issue['priority'],
-            'status'        => $issue['status']
+            'status'        => $issue['status'],
+            'url_endpoint'  => sprintf(
+                'https://api.bitbucket.org/1.0/repositories/%s/issues/%d',
+                $this->config['repository'],
+                $issue['local_id']
+            )
         );
     }
 

@@ -131,7 +131,7 @@ class QueryCommand extends Command
                     : $issue['title'],
                 'Status'       => $issue['status'],
                 'Type'         => $issue['type'],
-                'P'     => $issue['priority'],
+                'P'            => $issue['priority'],
                 'Date updated' => $issue['updated']->format('Y-m-d g:ia')
             );
         }

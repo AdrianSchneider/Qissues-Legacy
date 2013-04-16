@@ -27,13 +27,11 @@ class BitBucket implements Connector
      */
     public function create(array $issue)
     {
-        $ch = curl_init();
-
         $post = array(
             'title'       => $issue['title'],
             'priority'    => $issue['priority'],
             'content'     => $issue['description'],
-            'kind'        => $issue['kind'],
+            'kind'        => $issue['type'],
             'responsible' => $issue['assignee']
         );
 
@@ -42,6 +40,7 @@ class BitBucket implements Connector
             $this->config['repository']
         );
 
+        $ch = curl_init();
         curl_setopt($ch, \CURLOPT_URL, $url);
         curl_setopt($ch, \CURLOPT_POST, true);
         curl_setopt($ch, \CURLOPT_POSTFIELDS, $post);
@@ -70,7 +69,7 @@ class BitBucket implements Connector
             'title'       => $changes['title'],
             'priority'    => $changes['priority'],
             'content'     => $changes['description'],
-            'kind'        => $changes['kind'],
+            'kind'        => $changes['type'],
             'responsible' => $changes['assignee']
         ));
     }
@@ -95,7 +94,7 @@ class BitBucket implements Connector
     protected function changeFields(array $issue, array $changes)
     {
         $url = sprintf(
-            'https://api.bitbucket.org/1.0/repositories/%s/issues/' . $issue['local_id'],
+            'https://api.bitbucket.org/1.0/repositories/%s/issues/' . $issue['id'],
             $this->config['repository']
         );
 
@@ -225,16 +224,15 @@ class BitBucket implements Connector
      */
     public function comment(array $issue, $message)
     {
-        $ch = curl_init();
-
         $post = array('content' => $message);
 
         $url = sprintf(
             'https://api.bitbucket.org/1.0/repositories/%s/issues/%d/comments',
             $this->config['repository'],
-            $issue['local_id']
+            $issue['id']
         );
 
+        $ch = curl_init();
         curl_setopt($ch, \CURLOPT_URL, $url);
         curl_setopt($ch, \CURLOPT_POST, true);
         curl_setopt($ch, \CURLOPT_POSTFIELDS, $post);

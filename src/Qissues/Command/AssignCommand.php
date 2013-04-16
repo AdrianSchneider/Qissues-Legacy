@@ -36,7 +36,7 @@ class AssignCommand extends Command
             $connector->comment($issue, $message);
         }
 
-        $output->writeln("Issue <info>#$issue[local_id]</info> has been assigned to <info>$assignee</info>");
+        $output->writeln("Issue <info>#$issue[id]</info> has been assigned to <info>$assignee</info>");
     }
 
     protected function getComment()

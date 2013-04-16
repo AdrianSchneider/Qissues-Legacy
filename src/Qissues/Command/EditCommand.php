@@ -30,13 +30,13 @@ class EditCommand extends Command
         $changes = $this->getIssueDetailsFromExternal($issue);
         $connector->update($changes, $issue);
 
-        $output->writeln("Issue <info>#$issue[local_id]</info> has been updated");
+        $output->writeln("Issue <info>#$issue[id]</info> has been updated");
     }
 
     protected function getIssueDetailsFromExternal($existing)
     {
         $filename = tempnam('.', 'qissues');
-        file_put_contents($filename, "$existing[title]\n\nPriority: $existing[prioritytext]\nKind: $existing[kind]\nAssignee: $existing[assignee]\n\n$existing[content]\n");
+        file_put_contents($filename, "$existing[title]\n\nPriority: $existing[priority_text]\nType: $existing[type]\nAssignee: $existing[assignee]\n\n$existing[description]\n");
         exec("vim $filename > `tty`");
         $data = file_get_contents($filename);
         unlink($filename);
@@ -45,7 +45,7 @@ class EditCommand extends Command
         return array(
             'title' => trim($lines[0]),
             'priority' => trim(str_replace('Priority:', '', $lines[2])),
-            'kind' => trim(str_replace('Kind:', '', $lines[3])),
+            'type' => trim(str_replace('Type:', '', $lines[3])),
             'assignee' => trim(str_replace('Assignee:', '', $lines[4])),
             'description' => trim(implode("\n", array_slice($lines, 5)))
         );

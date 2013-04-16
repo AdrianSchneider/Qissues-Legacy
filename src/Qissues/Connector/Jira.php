@@ -64,7 +64,7 @@ class Jira implements Connector
     {
         $where = array('project = "' . $this->config['project'] . '"');
 
-        if ($options['assignee']) {
+        if (!empty($options['assignee'])) {
             $where[] = 'assignee = "' . $options['assignee'] . '"';
         }
 

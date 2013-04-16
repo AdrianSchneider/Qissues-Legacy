@@ -114,7 +114,6 @@ class QueryCommand extends Command
 
     /**
      * Renders a basic view of the issues
-     * XXX NOT DONE
      *
      * @param array issues from connector
      * @param OutputInterface
@@ -123,31 +122,22 @@ class QueryCommand extends Command
     {
         list($width, $height) = $this->getApplication()->getTerminalDimensions();
 
-        $maxLength = 0;
+        $renderIssues = array();
         foreach ($issues as $issue) {
-            if (strlen($issue['local_id']) > $maxLength) {
-                $maxLength = strlen($issue['local_id']);
-            }
+            $renderIssues[] = array(
+                'Id'           => $issue['id'],
+                'Title'        => strlen($issue['title']) > $width * 0.4 
+                    ? (substr($issue['title'], 0, $width * 0.4) . '...')
+                    : $issue['title'],
+                'Status'       => $issue['status'],
+                'Type'         => $issue['type'],
+                'P'     => $issue['priority'],
+                'Date updated' => $issue['updated']->format('Y-m-d g:ia')
+            );
         }
 
-        $allowedSize = $width
-            - 4          // icons
-            - $maxLength // number area
-            - 1          // space
-        ;
-
-        foreach ($issues as $issue) {
-            $output->writeln(sprintf(
-                '%s %s <comment>%s%d</comment> <message>%s</message>',
-                $this->priorities[$issue['priority']],
-                $issue['type'] == 'bug' ? $this->types['bug'] : ' ',
-                str_repeat(' ', $maxLength - strlen($issue['id'])),
-                $issue['id'],
-                strlen($issue['title']) > $allowedSize
-                    ? (substr($issue['title'], 0, $allowedSize - 3) . '...')
-                    : $issue['title']
-            ));
-        }
+        $renderer = new \Qissues\Renderer\TableRenderer();
+        $output->writeln($renderer->render($renderIssues, $width));
     }
 
     /**

@@ -2,11 +2,14 @@
 
 namespace Qissues\Connector;
 
+use Guzzle\Http\Client;
+
 class Jira implements Connector
 {
     public function __construct(array $config)
     {
         $this->config = $config;
+        $this->client = new Client( sprintf('https://%s.atlassian.net/', $this->config['project']));
     }
 
     public function create(array $issue)
@@ -26,43 +29,30 @@ class Jira implements Connector
 
     public function changeStatus(array $issue, $newStatus)
     {
-        throw new \Exception('not yet implemented');
+        $request = $this->request('put', sprintf('/issue/%s-%d', $this->config['prefix'], $issue['id']));
+        $request->setBody(json_encode(array('fields' => array('status' => $newstatus))), 'application/json');
+        $request->send();
     }
 
     public function assign(array $issue, $username)
     {
-        throw new \Exception('not yet implemented');
+        $request = $this->request('put', sprintf('/issue/%s-%d/assignee', $this->config['prefix'], $issue['id']));
+        $request->setBody(json_encode(array('name' => $username)), 'application/json');
+        $request->send();
     }
 
     public function find($id)
     {
-        $url = sprintf(
-            'https://%s:%s@%s.atlassian.net/rest/api/2/issue/%s',
-            $this->config['username'],
-            $this->config['password'],
-            urlencode($this->config['project']),
-            $this->config['prefix'] . '-' . $id
-        );
-
-        if (!$issue = json_decode(file_get_contents($url), true)) {
-            return;
-        }
-
+        $request = $this->request('get', sprintf('/issue/%s-%d', $this->config['prefix'], $id));
+        $issue = $request->send()->json();
         return $this->prepareIssue($issue);
     }
 
     public function findAll(array $options = array())
     {
-        $url = sprintf(
-            'https://%s:%s@%s.atlassian.net/rest/api/2/search?jql=%s',
-            $this->config['username'],
-            $this->config['password'],
-            urlencode($this->config['project']),
-            urlencode($this->generateJql($options))
-        );
-
-        $issues = json_decode(file_get_contents($url), true);
-        return array_map(array($this, 'prepareIssue'), $issues['issues']);
+        $request = $this->request('get', '/search?jql=' . $this->generateJql($options));
+        $response = $request->send()->json();
+        return array_map(array($this, 'prepareIssue'), $response['issues']);
     }
 
     protected function generateJql(array $options)
@@ -87,11 +77,11 @@ class Jira implements Connector
             $sort[] = 'updatedDate DESC';
         }
 
-        return sprintf(
+        return urlencode(sprintf(
             '%s ORDER BY %s',
             implode(' AND ', $where),
             implode(', ', $sort)
-        );
+        ));
     }
 
     /**
@@ -129,42 +119,18 @@ class Jira implements Connector
 
     public function findComments(array $issue)
     {
-        $url = sprintf(
-            'https://%s:%s@%s.atlassian.net/rest/api/2/issue/%s/comment',
-            $this->config['username'],
-            $this->config['password'],
-            urlencode($this->config['project']),
-            $this->config['prefix'] . '-' . $issue['id']
-        );
+        $request = $this->client->get(sprintf('/rest/api/2/issue/%s-%d/comment', $this->config['prefix'], $issue['id']));
+        $request->setAuth($this->config['username'], $this->config['password']);
 
-        $comments = json_decode(file_get_contents($url), true);
-        return array_map(array($this, 'prepareComment'), $comments['comments']);
+        $response = $request->send()->json();
+        return array_map(array($this, 'prepareComment'), $response['comments']);
     }
 
     public function comment(array $issue, $message)
     {
-        throw new \Exception('content type not sending properly:(');
-        $post = json_encode(array('body' => $message));
-
-        $url = sprintf(
-            'https://%s.atlassian.net/rest/api/2/issue/%s/comment',
-            urlencode($this->config['project']),
-            $this->config['prefix'] . '-' . $issue['id']
-        );
-
-        $ch = curl_init();
-        curl_setopt($ch, \CURLOPT_URL, $url);
-        curl_setopt($ch, \CURLOPT_POST, true);
-        curl_setopt($ch, \CURLOPT_POSTFIELDS, $post);
-        curl_setopt($ch, \CURLOPT_USERPWD, sprintf('%s:%s', $this->config['username'], $this->config['password']));
-        curl_setopt($ch, \CURLOPT_HTTPHEADER, array('content-type' => 'application/json'));
-        curl_setopt($ch, \CURLOPT_RETURNTRANSFER, true);
-
-        $result = curl_exec($ch);
-
-        if ($error = curl_error($ch)) {
-            throw new \Exception($error);
-        }
+        $request = $this->request('POST', sprintf('/issue/%s-%d/comment', $this->config['prefix'], $issue['id']));
+        $request->setBody(json_encode(array('body' => $message)), 'application/json');
+        $request->send();
     }
 
     public function getBrowseUrl()
@@ -183,5 +149,24 @@ class Jira implements Connector
             $this->config['prefix'],
             $issue['id']
         );
+    }
+
+    /**
+     * Generate an authenticated request
+     *
+     * @param string HTTP method
+     * @param string URL 
+     * @return Request
+     */
+    protected function request($method, $url)
+    {
+        if (strpos($url, 'http') === false) {
+            $url = sprintf('https://%s.atlassian.net/rest/api/2%s', $this->config['project'], $url);
+        }
+
+        $request = call_user_func(array($this->client, $method), $url);
+        $request->setAuth($this->config['username'], $this->config['password']);
+
+        return $request;
     }
 }

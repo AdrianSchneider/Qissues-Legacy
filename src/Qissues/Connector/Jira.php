@@ -9,7 +9,9 @@ class Jira implements Connector
     public function __construct(array $config)
     {
         $this->config = $config;
-        $this->client = new Client( sprintf('https://%s.atlassian.net/', $this->config['project']));
+        $this->client = new Client( sprintf('https://%s.atlassian.net/', $this->config['project']), array(
+            'ssl.certificate_authority' => 'system'
+        ));
     }
 
     public function create(array $issue)
@@ -61,6 +63,9 @@ class Jira implements Connector
 
         if (!empty($options['assignee'])) {
             $where[] = 'assignee = "' . $options['assignee'] . '"';
+        }
+        if (!empty($options['type'])) {
+            $where[] = 'issuetype = "' . $options['type'] . '"';
         }
 
         // XXX

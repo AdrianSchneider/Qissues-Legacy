@@ -17,6 +17,7 @@ class CommentCommand extends Command
             ->setName('comment')
             ->setDescription('Comment on an issue')
             ->addArgument('issue', InputArgument::REQUIRED, 'The issue ID')
+            ->addOption('message', 'm', InputOption::VALUE_OPTIONAL, 'Specify message', null)
         ;
     }
 
@@ -27,7 +28,7 @@ class CommentCommand extends Command
             return $output->writeln('<error>Issue not found.</error>');
         }
 
-        $message = $this->getMessage();
+        $message = $input->getOption('message') ?: $this->getMessage();
         $connector->comment($issue, $message);
 
         if ($message) {

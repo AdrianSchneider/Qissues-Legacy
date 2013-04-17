@@ -30,7 +30,11 @@ class CommentCommand extends Command
         $message = $this->getMessage();
         $connector->comment($issue, $message);
 
-        $output->writeln("Left a comment on #$issue[id]");
+        if ($message) {
+            $output->writeln("Left a comment on #$issue[id]");
+        } else {
+            $output->writeln("<error>No message left</error>");
+        }
     }
 
     protected function getMessage()
@@ -41,6 +45,6 @@ class CommentCommand extends Command
         $data = file_get_contents($filename);
         unlink($filename);
 
-        return $data;
+        return trim($data);
     }
 }

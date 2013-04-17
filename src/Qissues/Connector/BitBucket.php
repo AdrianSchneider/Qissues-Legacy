@@ -228,7 +228,7 @@ class BitBucket implements Connector
         $comments = json_decode(file_get_contents($url), true);
 
 
-        return array_map(array($this, 'prepareComment'), $comments);
+        return array_reverse(array_map(array($this, 'prepareComment'), $comments));;
     }
 
     /**

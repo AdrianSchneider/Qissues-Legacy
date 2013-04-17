@@ -83,7 +83,7 @@ class QueryCommand extends Command
         $renderIssues = array();
         foreach ($issues as $issue) {
             $renderIssues[] = array(
-                'Id'           => $issue['id'],
+                '#'            => $issue['id'],
                 'Title'        => strlen($issue['title']) > $width * 0.4 
                     ? (substr($issue['title'], 0, $width * 0.4) . '...')
                     : $issue['title'],

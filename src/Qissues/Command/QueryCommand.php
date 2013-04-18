@@ -198,7 +198,7 @@ class QueryCommand extends Command
 
         if ($input->getOption('mine')) {
             $config = $this->getApplication()->getConfig();
-            $options['assignee'] = $config[strtolower($config['connector'])]['username'];
+            $options['assignee'][] = $config[strtolower($config['connector'])]['username'];
         }
 
         return $options;

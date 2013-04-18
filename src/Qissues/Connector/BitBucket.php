@@ -3,6 +3,7 @@
 namespace Qissues\Connector;
 
 use Guzzle\Http\Client;
+use Guzzle\Http\QueryAggregator\DuplicateAggregator;
 
 class BitBucket implements Connector
 {
@@ -165,43 +166,48 @@ class BitBucket implements Connector
     public function findAll(array $options = array())
     {
         $request = $this->request('get', '/issues');
-        $request->getQuery()->merge(array(
-            'limit' => $options['limit'],
-            'status' => $options['status'],
-            'kind' => $options['type']
-        ));
+        $request->getQuery()->setAggregator(new DuplicateAggregator());
+        $request->getQuery()->overwriteWith($this->getQuery($options));
 
         $response = $request->send()->json();
-        var_dump($response); exit;
-        return array_map(array($this, 'prepareIssue'), $response['issues']);
+        $issues = array_map(array($this, 'prepareIssue'), $response['issues']);
 
-
-        $issues = json_decode(file_get_contents($url), true);
-        $issues = array_map(array($this, 'prepareIssue'), $issues['issues']);
-
-        if (!empty($options['type'])) {
-            $issues = array_filter($issues, function($issue) use ($options) {
-                return in_array($issue['type'], $options['type']);
-            });
-        }
-        if (!empty($options['assignee'])) {
-            $issues = array_filter($issues, function($issue) use ($options) {
-                return in_array($issue['assignee'], $options['assignee']);
-            });
-        }
-        if (!empty($options['status'])) {
-            $issues = array_filter($issues, function($issue) use ($options) {
-                return in_array($issue['status'], $options['status']);
-            });
-        }
-
-        if (!empty($options['sort'])) {
-            if ($options['sort'] == 'priority') {
-                usort($issues, array($this, 'sortByPriority'));
-            }
+        if (in_array($options['sort'][0], array('updated', 'created', 'priority'))) {
+            $issues = array_reverse($issues);
         }
 
         return $issues;
+    }
+
+    /**
+     * Generates the array of query string parameters to be used for the API call
+     *
+     * @param array options from input
+     * @return array query to send
+     */
+    protected function getQuery(array $options)
+    {
+        $query = array();
+
+        if (!empty($options['type'])) {
+            $query['type'] = $options['type'];
+        }
+        if (!empty($options['assignee'])) {
+            $query['assignee'] = $options['assignee'];
+        }
+        if (!empty($options['status'])) {
+            $query['status'] = $options['status'];
+        }
+        if (!empty($options['sort'])) {
+            $fields = array(
+                'priority' => 'priority',
+                'updated' => 'utc_last_updated',
+                'created' => 'created_on'
+            );
+            $query['sort'] = $fields[$options['sort'][0]];
+        }
+
+        return $query;
     }
 
     /**

@@ -57,29 +57,45 @@ class Jira implements Connector
         return array_map(array($this, 'prepareIssue'), $response['issues']);
     }
 
+    /**
+     * Generates the JQL given our options
+     *
+     * @param array options from input
+     * @return string urlencoded JQL
+     */
     protected function generateJql(array $options)
     {
         $where = array('project = "' . $this->config['project'] . '"');
 
+        $quote = function($text) { return sprintf('"%s"', addslashes($text)); };
+
         if (!empty($options['assignee'])) {
-            $where[] = 'assignee = "' . $options['assignee'] . '"';
+            $where[] = 'assignee IN (' . implode(',', array_map($quote, $options['assignee'])) . ')';
         }
         if (!empty($options['type'])) {
-            $where[] = 'issuetype = "' . $options['type'] . '"';
+            $where[] = 'issuetype IN (' . implode(',', array_map($quote, $options['type'])) . ')';
         }
 
-        // XXX
-        if ($options['status'] == 'new,open') {
-            $where[] = 'resolution = Unresolved';
-        }
-
-        $sort = array();
-        if (!empty($options['sort'])) {
-            if ($options['sort'] == 'priority') {
-                $sort[] = 'priority DESC';
+        if (!empty($options['status'])) {
+            if (in_array('open', $options['status'])) {
+                $where[] = 'resolution = Unresolved';
+                $options['status'] = array_diff($options['status'], array('open'));
             }
-        } else {
-            $sort[] = 'updatedDate DESC';
+            if (!empty($options['status'])) {
+                $where[] = 'status IN (' . implode(',', array_map($quote, $options['status'])) . ')';
+            }
+        }
+
+        $sortMapping = array(
+            'priority' => 'priority DESC',
+            'updated' => 'updatedDate DESC',
+            'created' => 'createdDate DESC'
+        );
+        $sort = array();
+        foreach ($options['sort'] as $by) {
+            if (isset($sortMapping[$by])) {
+                $sort[] = $sortMapping[$by];
+            }
         }
 
         return urlencode(sprintf(

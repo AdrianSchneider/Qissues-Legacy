@@ -19,7 +19,7 @@ class QueryCommand extends Command
             ->setName('query')
             ->setDescription('List all issues, optionally filtering them.')
             ->addOption('size', 'z', InputOption::VALUE_OPTIONAL, 'View mode (tiny, basic or detailed) defaults based on width)', null)
-            ->addOption('status', 's', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by status', array('open'))
+            ->addOption('status', 's', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by status', array())
             ->addOption('sort', 'o', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Sort results by [priority]', array('updated'))
             ->addOption('assignee', 'a', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by assignee', null)
             ->addOption('priority', 'p', InputOption::VALUE_OPTIONAL, 'Filter by priority', null)

@@ -48,6 +48,10 @@ class QueryCommand extends Command
         list($width, $height) = $this->getApplication()->getTerminalDimensions();
         $issues = $connector->findAll($this->buildOptions($input));
 
+        if (!$issues) {
+            return $output->writeln("<info>No issues found!</info>");
+        }
+
         if (!$view = $input->getOption('view')) {
             if ($width > 150) {
                 $view = 'detailed';

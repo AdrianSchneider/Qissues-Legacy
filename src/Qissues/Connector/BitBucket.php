@@ -2,6 +2,8 @@
 
 namespace Qissues\Connector;
 
+use Guzzle\Http\Client;
+
 class BitBucket implements Connector
 {
     protected $priorities = array(
@@ -17,6 +19,9 @@ class BitBucket implements Connector
     public function __construct(array $config)
     {
         $this->config = $config;
+        $this->client = new Client('https://api.bitbucket.org/', array(
+            'ssl.certificate_authority' => 'system'
+        ));
     }
 
     /**
@@ -146,19 +151,8 @@ class BitBucket implements Connector
      */
     public function find($id)
     {
-        $url = sprintf(
-            'https://%s:%s@api.bitbucket.org/1.0/repositories/%s/issues/%d',
-            $this->config['username'],
-            $this->config['password'],
-            $this->config['repository'],
-            $id
-        );
-
-        $issue = json_decode(file_get_contents($url), true);
-        if (!$issue) {
-            return;
-        }
-
+        $request = $this->request('get', sprintf('/issues/%d', $id));
+        $issue = $request->send()->json();
         return $this->prepareIssue($issue);
     }
 
@@ -170,33 +164,34 @@ class BitBucket implements Connector
      */
     public function findAll(array $options = array())
     {
-        $url = sprintf(
-            'https://%s:%s@api.bitbucket.org/1.0/repositories/%s/issues?limit=%d',
-            urlencode($this->config['username']),
-            urlencode($this->config['password']),
-            $this->config['repository'],
-            $options['limit']
-        );
+        $request = $this->request('get', '/issues');
+        $request->getQuery()->merge(array(
+            'limit' => $options['limit'],
+            'status' => $options['status'],
+            'kind' => $options['type']
+        ));
+
+        $response = $request->send()->json();
+        var_dump($response); exit;
+        return array_map(array($this, 'prepareIssue'), $response['issues']);
+
 
         $issues = json_decode(file_get_contents($url), true);
         $issues = array_map(array($this, 'prepareIssue'), $issues['issues']);
 
         if (!empty($options['type'])) {
             $issues = array_filter($issues, function($issue) use ($options) {
-                return $issue['type'] == $options['type'];
+                return in_array($issue['type'], $options['type']);
             });
         }
         if (!empty($options['assignee'])) {
             $issues = array_filter($issues, function($issue) use ($options) {
-                return isset($issue['assignee']) && $issue['assignee'] == $options['assignee'];
+                return in_array($issue['assignee'], $options['assignee']);
             });
         }
         if (!empty($options['status'])) {
             $issues = array_filter($issues, function($issue) use ($options) {
-                if (strpos($options['status'], ',') !== false) {
-                    return in_array($issue['status'], explode(',', $options['status']));
-                }
-                return $issue['status'] == $options['status'];
+                return in_array($issue['status'], $options['status']);
             });
         }
 
@@ -343,5 +338,17 @@ class BitBucket implements Connector
             $this->config['repository'],
             $issue['id']
         );
+    }
+
+    protected function request($method, $url)
+    {
+        if (strpos($url, 'http') === false) {
+            $url = sprintf('https://api.bitbucket.org/1.0/repositories/%s%s', $this->config['repository'], $url);
+        }
+
+        $request = call_user_func(array($this->client, $method), $url);
+        $request->setAuth($this->config['username'], $this->config['password']);
+
+        return $request;
     }
 }

@@ -18,12 +18,12 @@ class QueryCommand extends Command
         $this
             ->setName('query')
             ->setDescription('List all issues, optionally filtering them.')
-            ->addOption('view', 'z', InputOption::VALUE_OPTIONAL, 'View mode (tiny, basic or detailed) defaults based on width)', null)
-            ->addOption('status', 's', InputOption::VALUE_OPTIONAL, 'Filter by status', "new,open")
+            ->addOption('size', 'z', InputOption::VALUE_OPTIONAL, 'View mode (tiny, basic or detailed) defaults based on width)', null)
+            ->addOption('status', 's', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by status', array())
             ->addOption('sort', 'o', InputOption::VALUE_OPTIONAL, 'Sort results by [priority]', null)
-            ->addOption('assignee', 'a', InputOption::VALUE_OPTIONAL, 'Filter by assignee', null)
+            ->addOption('assignee', 'a', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by assignee', null)
             ->addOption('priority', 'p', InputOption::VALUE_OPTIONAL, 'Filter by priority', null)
-            ->addOption('type', 't', InputOption::VALUE_OPTIONAL, 'Filter by type', null)
+            ->addOption('type', 't', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by type', null)
             ->addOption('mine', null, InputOption::VALUE_NONE, 'Only show things assigned to me', null)
             ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit the results', 50)
             ->addOption('web', 'w', InputOption::VALUE_NONE, 'Open in web browser.', null)
@@ -52,21 +52,21 @@ class QueryCommand extends Command
             return $output->writeln("<info>No issues found!</info>");
         }
 
-        if (!$view = $input->getOption('view')) {
+        if (!$size = $input->getOption('size')) {
             if ($width > 150) {
-                $view = 'detailed';
+                $size = 'detailed';
             } elseif ($width > 100) {
-                $view = 'basic';
+                $size = 'basic';
             } else {
-                $view = 'tiny';
+                $size = 'tiny';
             }
         }
 
-        if ($view == 'detailed') {
+        if ($size == 'detailed') {
             return $this->renderDetailedView($issues, $output);
         }
 
-        if ($view == 'basic') {
+        if ($size == 'basic') {
             return $this->renderBasicView($issues, $output);
         }
 
@@ -193,9 +193,7 @@ class QueryCommand extends Command
 
         $searchFor = array('sort', 'assignee', 'priority', 'type', 'status', 'limit');
         foreach ($searchFor as $field) {
-            if ($value = $input->getOption($field)) {
-                $options[$field] = $value;
-            }
+            $options[$field] = $input->getOption($field);
         }
 
         if ($input->getOption('mine')) {

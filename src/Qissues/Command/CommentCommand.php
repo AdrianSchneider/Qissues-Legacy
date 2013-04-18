@@ -6,7 +6,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Process\Process;
 
 class CommentCommand extends Command
@@ -16,7 +15,7 @@ class CommentCommand extends Command
         $this
             ->setName('comment')
             ->setDescription('Comment on an issue')
-            ->addArgument('issue', InputArgument::REQUIRED, 'The issue ID')
+            ->addArgument('issue', InputArgument::OPTIONAL, 'The issue ID')
             ->addOption('message', 'm', InputOption::VALUE_OPTIONAL, 'Specify message', null)
         ;
     }
@@ -24,7 +23,7 @@ class CommentCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $connector = $this->getApplication()->getConnector();
-        if (!$issue = $connector->find($input->getArgument('issue'))) {
+        if (!$issue = $connector->find($this->getIssueId($input))) {
             return $output->writeln('<error>Issue not found.</error>');
         }
 

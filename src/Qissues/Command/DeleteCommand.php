@@ -6,7 +6,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Process\Process;
 
 class DeleteCommand extends Command
@@ -16,7 +15,7 @@ class DeleteCommand extends Command
         $this
             ->setName('delete')
             ->setDescription('Open or re-open an issue')
-            ->addArgument('issue', InputArgument::REQUIRED, 'The issue ID')
+            ->addArgument('issue', InputArgument::OPTIONAL, 'The issue ID')
             ->addOption('force', null, InputOption::VALUE_NONE, 'Force deletion.', null)
         ;
     }
@@ -24,7 +23,7 @@ class DeleteCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $connector = $this->getApplication()->getConnector('BitBucket');
-        if (!$issue = $connector->find($input->getArgument('issue'))) {
+        if (!$issue = $connector->find($this->getIssueId($input))) {
             return $output->writeln('<error>Issue not found.</error>');
         }
 

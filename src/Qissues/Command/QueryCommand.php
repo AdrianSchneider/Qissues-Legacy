@@ -19,13 +19,14 @@ class QueryCommand extends Command
             ->setName('query')
             ->setDescription('List all issues, optionally filtering them.')
             ->addOption('size', 'z', InputOption::VALUE_OPTIONAL, 'View mode (tiny, basic or detailed) defaults based on width)', null)
-            ->addOption('status', 's', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by status', array())
+            ->addOption('status', 's', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by status', array('open'))
             ->addOption('sort', 'o', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Sort results by [priority]', array('updated'))
             ->addOption('assignee', 'a', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by assignee', null)
             ->addOption('priority', 'p', InputOption::VALUE_OPTIONAL, 'Filter by priority', null)
             ->addOption('type', 't', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by type', array())
             ->addOption('mine', null, InputOption::VALUE_NONE, 'Only show things assigned to me', null)
             ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit the results', 50)
+            ->addOption('report', 'r', InputOption::VALUE_OPTIONAL, 'Load a report from configuration', null)
             ->addOption('web', 'w', InputOption::VALUE_NONE, 'Open in web browser.', null)
         ;
     }
@@ -189,17 +190,21 @@ class QueryCommand extends Command
      */
     protected function buildOptions($input)
     {
-        $options = array();
+        $config = $this->getApplication()->getConfig();
+        if ($report = $input->getOption('report') and !empty($config['reports'][$report])) {
+            return $config['reports'][$report];
+        }
 
+        $options = array();
         $searchFor = array('sort', 'assignee', 'priority', 'type', 'status', 'limit');
         foreach ($searchFor as $field) {
             $options[$field] = $input->getOption($field);
         }
 
         if ($input->getOption('mine')) {
-            $config = $this->getApplication()->getConfig();
             $options['assignee'][] = $config[strtolower($config['connector'])]['username'];
         }
+
 
         return $options;
     }

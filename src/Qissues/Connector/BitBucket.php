@@ -193,7 +193,7 @@ class BitBucket implements Connector
             $query['type'] = $options['type'];
         }
         if (!empty($options['assignee'])) {
-            $query['assignee'] = $options['assignee'];
+            $query['responsible'] = $options['assignee'];
         }
         if (!empty($options['status'])) {
             $query['status'] = $options['status'];

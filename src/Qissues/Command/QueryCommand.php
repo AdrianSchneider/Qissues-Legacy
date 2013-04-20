@@ -191,6 +191,9 @@ class QueryCommand extends Command
     protected function buildOptions($input)
     {
         $config = $this->getApplication()->getConfig();
+        if ($report = $input->getOption('report') and empty($config['reports'][$report])) {
+            throw new \LogicException('Invalid report.');
+        }
         if ($report = $input->getOption('report') and !empty($config['reports'][$report])) {
             return $config['reports'][$report];
         }

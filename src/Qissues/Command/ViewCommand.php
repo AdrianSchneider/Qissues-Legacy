@@ -37,9 +37,11 @@ class ViewCommand extends Command
         }
 
         list($width, $height) = $this->getApplication()->getTerminalDimensions();
+
+        $output->writeln(str_repeat('-', $width));
+
         $issue['title'] = wordwrap($issue['title'], min($width - 4, 100), "\n", true);
 
-        $output->writeln("");
         $output->writeln("<comment>$issue[id] - $issue[title]</comment>");
         $output->writeln(sprintf(
             "  Priority: <info>%s</info> - Kind: <info>%s</info> - Assignee: <info>%s</info>\n",
@@ -61,5 +63,7 @@ class ViewCommand extends Command
                 $output->writeln("[$date] <info>$comment[username]</info>: $comment[message]");
             }
         }
+
+        $output->writeln(str_repeat('-', $width));
     }
 }

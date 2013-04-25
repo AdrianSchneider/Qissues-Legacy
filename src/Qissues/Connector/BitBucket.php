@@ -206,6 +206,9 @@ class BitBucket implements Connector
             );
             $query['sort'] = $fields[$options['sort'][0]];
         }
+        if (!empty($options['limit'])) {
+            $query['limit'] = max(min($options['limit'], 50), 0);
+        }
 
         return $query;
     }

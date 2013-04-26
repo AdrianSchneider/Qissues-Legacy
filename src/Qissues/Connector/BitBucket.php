@@ -301,6 +301,10 @@ class BitBucket implements Connector
      */
     protected function prepareComment($comment)
     {
+        if (strpos($comment['content'], '<<cset') !== false) {
+            $comment['content'] = str_replace("\n\n\n→ <<", " <<", $comment['content']);
+        }
+
         return array(
             'username' => $comment['author_info']['username'],
             'date'     => $this->parseDate($comment['utc_created_on']),

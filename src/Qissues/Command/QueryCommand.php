@@ -194,8 +194,8 @@ class QueryCommand extends Command
         if ($report = $input->getOption('report') and empty($config['reports'][$report])) {
             throw new \LogicException('Invalid report.');
         }
-        if ($report = $input->getOption('report') and !empty($config['reports'][$report])) {
-            return $config['reports'][$report];
+        if (count($_SERVER['argv']) == 1 and !empty($config['reports']['default'])) {
+            return $config['reports']['default'];
         }
 
         $options = array();

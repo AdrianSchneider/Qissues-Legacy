@@ -197,6 +197,9 @@ class QueryCommand extends Command
         if (count($_SERVER['argv']) == 1 and !empty($config['reports']['default'])) {
             return $config['reports']['default'];
         }
+        if ($report) {
+            return $config['reports'][$report];
+        }
 
         $options = array();
         $searchFor = array('sort', 'assignee', 'priority', 'type', 'status', 'limit');

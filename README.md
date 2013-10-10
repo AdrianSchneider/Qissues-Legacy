@@ -11,11 +11,11 @@ I've also began work on a Trello connector, but it's nowhere near ready for use.
 
 # Features
 
-**Query** - Query your repository with various options, and see results in your terminal.
-**Reports** - Save common queries as reports so you can re-run them later. Ex: `qissues -r bugs`
-**Views** - Supports alternate views (large table view, smaller list with metadata, and tiny list). Automatically detects, but can be overridden.
-**Modify Issues** - Submit and modify reports from the terminal, launching the editor of your choice.
-**Git Integration** - Easily query active issue based on branch name. "feature-x"
+- **Query** - Query your repository with various options, and see results in your terminal.
+- **Reports** - Save common queries as reports so you can re-run them later. Ex: `qissues -r bugs`
+- **Views** - Supports alternate views (large table view, smaller list with metadata, and tiny list). Automatically detects, but can be overridden.
+- **Modify Issues** - Submit and modify reports from the terminal, launching the editor of your choice.
+- **Git Integration** - Easily query active issue based on branch name. "feature-x"
 
 # Setup
 

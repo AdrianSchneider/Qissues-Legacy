@@ -76,7 +76,7 @@ class Jira implements Connector
             $where[] = 'issuetype IN (' . implode(',', array_map($quote, $options['type'])) . ')';
         }
         if (!empty($options['ids'])) {
-            $where[] = 'key IN (' . implode(',', $options['ids']) . ')';
+            $where[] = 'key IN (' . implode(',', array_map($quote, array_map(array($this, 'qualify'), $options['ids']))) . ')';
         }
 
         if (!empty($options['status'])) {
@@ -106,6 +106,16 @@ class Jira implements Connector
             implode(' AND ', $where),
             implode(', ', $sort)
         ));
+    }
+
+    /**
+     * Qualify an ID with the full project ID
+     * @param integer $id
+     * @return string PROJ-$id
+     */
+    protected function qualify($id)
+    {
+        return sprintf('%s-%d', $this->config['prefix'], $id);
     }
 
     /**

@@ -27,6 +27,7 @@ class QueryCommand extends Command
             ->addOption('mine', null, InputOption::VALUE_NONE, 'Only show things assigned to me', null)
             ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit the results', 50)
             ->addOption('report', 'r', InputOption::VALUE_OPTIONAL, 'Load a report from configuration', null)
+            ->addOption('ids', 'i', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by IDs', null)
             ->addOption('web', 'w', InputOption::VALUE_NONE, 'Open in web browser.', null)
         ;
     }
@@ -202,7 +203,7 @@ class QueryCommand extends Command
         }
 
         $options = array();
-        $searchFor = array('sort', 'assignee', 'priority', 'type', 'status', 'limit');
+        $searchFor = array('sort', 'assignee', 'priority', 'type', 'status', 'limit', 'ids');
         foreach ($searchFor as $field) {
             $options[$field] = $input->getOption($field);
         }

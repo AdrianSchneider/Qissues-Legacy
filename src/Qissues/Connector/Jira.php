@@ -75,6 +75,9 @@ class Jira implements Connector
         if (!empty($options['type'])) {
             $where[] = 'issuetype IN (' . implode(',', array_map($quote, $options['type'])) . ')';
         }
+        if (!empty($options['ids'])) {
+            $where[] = 'key IN (' . implode(',', $options['ids']) . ')';
+        }
 
         if (!empty($options['status'])) {
             if (in_array('open', $options['status'])) {

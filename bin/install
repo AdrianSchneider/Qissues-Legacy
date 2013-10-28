@@ -1,0 +1,5 @@
+#!/bin/sh
+bin/compile
+chmod +x qissues.phar
+mkdir -p ~/bin
+mv qissues.phar ~/bin/qissues -f

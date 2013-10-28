@@ -19,16 +19,25 @@ I've also began work on a Trello connector, but it's nowhere near ready for use.
 
 # Setup
 
-Clone the repository, and you can install it one of two ways:
+Clone or download the repository, and run `bin/install`. This will compile the software, and place it in your user's bin directory. 
 
-## PHAR (recommended)
+If you don't already have `~/bin` in your path, you can add it via:
 
-It's recommended you compile a phar archive, and either move it within your PATH.
+    export PATH="$PATH":~/bin
 
-    bin/compile
-    chmod +x qissues.phar
-    sudo mv qissues.phar /usr/bin/qissues
+After that, running `qissues` should show the information.
 
-## Run it manually
+# Project Configuration
 
-`/path/to/repository/bin/qissues`
+To use qissues with a project, create a `.qissues` file in the root of it. It's also a good idea to add it to your global .gitignore. This is a YML format, and requires at the very least a connector:
+
+Example Configuration:
+
+    connector: JIRA
+    jira:
+        project: projectname
+        prefix: PREFIX
+        username: youraccountname
+        password: "your password"
+
+You can also move any common configuration up to a `~/.qissues` file to avoid having to copy your credentials each time.

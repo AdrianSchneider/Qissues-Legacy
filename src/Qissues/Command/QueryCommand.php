@@ -212,6 +212,9 @@ class QueryCommand extends Command
             $options['assignee'][] = $config[strtolower($config['connector'])]['username'];
         }
 
+        if (!empty($options['ids'][0]) and strpos($options['ids'][0], ',') !== false) {
+            $options['ids'] = explode(',', $options['ids'][0]);
+        }
 
         return $options;
     }

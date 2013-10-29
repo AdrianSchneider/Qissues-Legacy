@@ -25,6 +25,17 @@ class BitBucket implements Connector
         ));
     }
 
+    public function getEditorFields()
+    {
+        return array(
+            'title' => '',
+            'priority' => 'minor',
+            'type' => 'bug',
+            'assignee' => $this->config['username']
+        );
+
+    }
+
     /**
      * Creates a new Issue
      *

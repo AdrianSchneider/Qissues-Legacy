@@ -2,6 +2,9 @@
 
 namespace Qissues\Command;
 
+use Qissues\Connector\Connector;
+use Qissues\Input\TemplatedInput;
+use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -21,33 +24,54 @@ class EditCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $connector = $this->getApplication()->getConnector('BitBucket');
+        $connector = $this->getApplication()->getConnector();
         if (!$issue = $connector->find($this->getIssueId($input))) {
             return $output->writeln('<error>Issue not found.</error>');
         }
 
-        $changes = $this->getIssueDetailsFromExternal($issue);
+        $changes = $this->getIssueDetailsFromExternal($connector, $issue);
         $connector->update($changes, $issue);
 
         $output->writeln("Issue <info>#$issue[id]</info> has been updated");
     }
 
-    protected function getIssueDetailsFromExternal($existing)
+    /**
+     * Fetch input from user input
+     * @param Connector $connector
+     * @return array issue details
+     */
+    protected function getIssueDetailsFromExternal(Connector $connector, array $issue)
+    {
+        $template = '';
+        foreach ($connector->getEditorFields() as $key => $value) {
+            if (isset($issue[$key])) {
+                $value = $issue[$key];
+            }
+            $template .= "$key: $value\n";
+        }
+        $template .= "---\n$issue[description]";
+
+        $input = new TemplatedInput(new Parser());
+        return $input->parse($this->getFromEditor($template));
+    }
+
+    /**
+     * Load template into temp file, open in editor, 
+     * and return content once closed.
+     *
+     * @param string $template initial file contents
+     * @return string user input
+     */
+    protected function getFromEditor($template)
     {
         $filename = tempnam('.', 'qissues');
-        file_put_contents($filename, "$existing[title]\n\nPriority: $existing[priority_text]\nType: $existing[type]\nAssignee: $existing[assignee]\n\n$existing[description]\n");
+        file_put_contents($filename, $template);
+        
         $editor = getenv('EDITOR') ?: 'vim';
         exec("$editor $filename > `tty`");
-        $data = file_get_contents($filename);
-        unlink($filename);
-        $lines = explode("\n", $data);
+        $content = file_get_contents($filename);
 
-        return array(
-            'title' => trim($lines[0]),
-            'priority' => trim(str_replace('Priority:', '', $lines[2])),
-            'type' => trim(str_replace('Type:', '', $lines[3])),
-            'assignee' => trim(str_replace('Assignee:', '', $lines[4])),
-            'description' => trim(implode("\n", array_slice($lines, 5)))
-        );
+        unlink($filename);
+        return $content;
     }
 }

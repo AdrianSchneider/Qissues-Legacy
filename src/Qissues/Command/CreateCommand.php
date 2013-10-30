@@ -23,7 +23,7 @@ class CreateCommand extends Command
     
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $connector = $this->getApplication()->getConnector('BitBucket');
+        $connector = $this->getApplication()->getConnector();
 
         $issue = $this->getIssueDetailsFromExternal($connector);
         $issue = $connector->create($issue);

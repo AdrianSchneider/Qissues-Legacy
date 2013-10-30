@@ -15,14 +15,26 @@ class Application extends BaseApplication
 {
     protected $config = array();
 
-    public function getConnector($name = '')
+    /**
+     * Retrieve an instance of the IssueTracker
+     * @param string|null override tracker to get
+     * @return IssueTracker
+     */
+    public function getTracker($name = '')
     {
         if (!$name) {
-            $name = $this->config['connector'];
+            if (isset($this->config['tracker'])) {
+                $name = $this->config['tracker'];
+            } elseif (isset($this->config['connector'])) {
+                $name = $this->config['connector'];
+            } else {
+                throw new \Exception('No tracker defined in .qissues');
+            }
         }
-        $class = "Qissues\\Connector\\$name";
+
+        $class = "Qissues\\Trackers\\$name\\{$name}Tracker";
         if (!class_exists($class)) {
-            throw new \Exception("$name connector not found");
+            throw new \Exception("$name tracker not found ('$class')");
         }
 
         return new $class($this->config[strtolower($name)]);

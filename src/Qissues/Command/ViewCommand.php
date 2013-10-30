@@ -2,7 +2,8 @@
 
 namespace Qissues\Command;
 
-use Qissues\Connector\BitBucket;
+use Qissues\Model\Number;
+use Qissues\Model\IssueTracker;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -21,18 +22,19 @@ class ViewCommand extends Command
             ->addOption('web', 'w', InputOption::VALUE_NONE, 'Open in web browser.', null)
         ;
     }
-    
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $connector = $this->getApplication()->getConnector();
-        if (!$issue = $connector->find($this->getIssueId($input))) {
+        $tracker = $this->getApplication()->getTracker();
+        $number = new Number($this->getIssueId($input));
+        if (!$issue = $tracker->lookup($number)) {
             return $output->writeln('<error>Issue not found.</error>');
         }
 
         if ($input->getOption('web')) {
             return exec(sprintf(
-                'xdg-open %s',
-                escapeshellarg($connector->getIssueUrl($issue))
+                'xdg-open %s', // TODO config for opener prog
+                escapeshellarg($tracker->getIssueUrl($issue))
             ));
         }
 
@@ -40,30 +42,33 @@ class ViewCommand extends Command
 
         $output->writeln(str_repeat('-', $width));
 
-        $issue['title'] = wordwrap($issue['title'], min($width - 4, 100), "\n", true);
+        $title = wordwrap($issue['title'], min($width - 4, 100), "\n", true);
 
-        $output->writeln("<comment>$issue[id] - $issue[title]</comment>");
+        $output->writeln("<comment>$issue[id] - $title</comment>");
         $output->writeln(sprintf(
             "  Priority: <info>%s</info> - Kind: <info>%s</info> - Assignee: <info>%s</info>\n",
-            $issue['priority_text'],
+            $issue->getPriority(),
             $issue['type'],
             $issue['assignee'] ?: 'unassigned'
         ));
 
-        $issue['description'] = wordwrap($issue['description'], min($width - 4, 100), "\n", true);
-
-        foreach (explode("\n", $issue['description']) as $row) {
+        $description = wordwrap($issue['description'], min($width - 4, 100), "\n", true);
+        foreach (explode("\n", $description) as $row) {
             $output->writeln($row);
         }
 
         $output->writeln("");
+        $this->renderComments($input, $output, $tracker, $number);
+        $output->writeln(str_repeat('-', $width));
+    }
+
+    private function renderComments(InputInterface $input, OutputInterface $output, IssueTracker $tracker, Number $issue)
+    {
         if (!$input->getOption('no-comments')) {
-            foreach ($connector->findComments($issue) as $comment) {
+            foreach ($tracker->findComments($issue) as $comment) {
                 $date = $comment['date']->format('Y-m-d g:ia');
-                $output->writeln("[$date] <info>$comment[username]</info>: $comment[message]");
+                $output->writeln("[$date] <info>$comment[author]</info>: $comment[message]");
             }
         }
-
-        $output->writeln(str_repeat('-', $width));
     }
 }

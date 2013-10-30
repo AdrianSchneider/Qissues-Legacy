@@ -25,7 +25,7 @@ class EditCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tracker = $this->getApplication()->getTracker();
-        $number = new Number($this->getIssueId($input));
+        $number = new Number($this->get('console.input.git_id')->getId($input));
         if (!$issue = $tracker->lookup($number)) {
             return $output->writeln('<error>Issue not found.</error>');
         }

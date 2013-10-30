@@ -4,6 +4,9 @@ parameters:
     console.browser.command: "xdg-open"
 
 services:
+    console.input.git_id:
+        class: Qissues\Console\Input\GitId
+
     console.input.criteria_builder:
         class: Qissues\Console\Input\CriteriaBuilder
 

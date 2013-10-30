@@ -20,27 +20,4 @@ class Command extends BaseCommand
     {
         return $this->getApplication()->getContainer()->getParameter($service);
     }
-
-    /**
-     * Get the requested ID
-     *
-     * Attempts to grab from git branch if ommitted
-     *
-     * @param InputInterface input from console
-     * @return integer|null the id if found
-     */
-    protected function getIssueId(InputInterface $input)
-    {
-        if ($id = $input->getArgument('issue')) {
-            return $id;
-        }
-
-        if (is_dir('./.git')) {
-            $branch = trim(shell_exec('git rev-parse --symbolic-full-name --abbrev-ref HEAD'));
-            $matches = null;
-            if (preg_match('/^(.*)-([0-9]+)$/', $branch, $matches)) {
-                return $matches[2];
-            }
-        }
-    }
 }

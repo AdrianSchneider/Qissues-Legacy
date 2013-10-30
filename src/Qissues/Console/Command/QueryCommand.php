@@ -50,8 +50,7 @@ class QueryCommand extends Command
         }
 
         $criteria = $this->get('console.input.criteria_builder')->build($input);
-        $issues = $tracker->query($criteria);
-        if (!$issues) {
+        if (!$issues = $tracker->query($criteria)) {
             $output->writeln("<info>No issues found!</info>");
             return 0;
         }

@@ -1,7 +1,7 @@
 parameters:
     console.editor: "vim"
     console.tmp_file.prefix: "qissues"
-    console.browser.command: "xdg-open"
+    console.browser.command:
 
 services:
     console.input.git_id:

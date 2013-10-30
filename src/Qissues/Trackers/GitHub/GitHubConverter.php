@@ -7,11 +7,22 @@ use Qissues\Model\Comment;
 use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Meta\User;
+use Qissues\Model\Tracker\FieldMapping;
 use Qissues\Format\IssueConverter;
 use Qissues\Format\CommentConverter;
 
-class GitHubConverter implements IssueConverter, CommentConverter
+class GitHubConverter implements FieldMapping
 {
+    public function map($dtoField)
+    {
+
+    }
+
+    public function reverseMap($issueField)
+    {
+
+    }
+
     public function getFields()
     {
         return array(

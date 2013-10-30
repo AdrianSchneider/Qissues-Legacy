@@ -5,12 +5,12 @@ namespace Qissues\Tests\Trackers\GitHub;
 use Qissues\Model\Number;
 use Qissues\Model\Meta\Status;
 use Qissues\Model\Querying\SearchCriteria;
-use Qissues\Trackers\GitHub\GitHubTracker;
+use Qissues\Trackers\GitHub\GitHubRepository;
 use Guzzle\Http\Client;
 use Guzzle\Http\Message\Response;
 use Guzzle\Plugin\Mock\MockPlugin;
 
-class GitHubTrackerTest extends \PHPUnit_Framework_TestCase
+class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -28,8 +28,8 @@ class GitHubTrackerTest extends \PHPUnit_Framework_TestCase
     {
         $payload = array('issue_datas' => 'yup');
 
-        $converter = $this->getMockBuilder('Qissues\Trackers\GitHub\GitHubConverter')->disableOriginalConstructor()->getMock();
-        $converter
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping
             ->expects($this->once())
             ->method('toIssue')
             ->with($payload)
@@ -38,7 +38,7 @@ class GitHubTrackerTest extends \PHPUnit_Framework_TestCase
 
         $this->mock->addResponse(new Response(200, null, json_encode($payload)));
 
-        $tracker = new GitHubTracker($this->config, $this->client, $converter);
+        $tracker = new GitHubRepository($this->config, $mapping, $this->client);
         $issue = $tracker->lookup(new Number(5));
 
         $this->assertEquals($out, $issue);
@@ -48,8 +48,8 @@ class GitHubTrackerTest extends \PHPUnit_Framework_TestCase
     {
         $payload = array(array('issue'));
 
-        $converter = $this->getMockBuilder('Qissues\Trackers\GitHub\GitHubConverter')->disableOriginalConstructor()->getMock();
-        $converter
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping
             ->expects($this->once())
             ->method('toIssue')
             ->with(array('issue'))
@@ -58,7 +58,7 @@ class GitHubTrackerTest extends \PHPUnit_Framework_TestCase
 
         $this->mock->addResponse(new Response(200, null, json_encode($payload)));
 
-        $tracker = new GitHubTracker($this->config, $this->client, $converter);
+        $tracker = new GitHubRepository($this->config, $mapping, $this->client);
         $issues = $tracker->query(new SearchCriteria());
 
         $this->assertCount(1, $issues);
@@ -71,18 +71,19 @@ class GitHubTrackerTest extends \PHPUnit_Framework_TestCase
         $criteria->addStatus(new Status('a'));
         $criteria->addStatus(new Status('b'));
 
-        $this->setExpectedException('DomainException');
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $tracker = new GitHubRepository($this->config, $mapping, $this->client);
 
-        $tracker = new GitHubTracker($this->config, $this->client);
-        $issues = $tracker->query($criteria);
+        $this->setExpectedException('DomainException');
+        $tracker->query($criteria);
     }
 
     public function testFindComments()
     {
         $payload = array(array('comment'));
 
-        $converter = $this->getMockBuilder('Qissues\Trackers\GitHub\GitHubConverter')->disableOriginalConstructor()->getMock();
-        $converter
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping
             ->expects($this->once())
             ->method('toComment')
             ->with(array('comment'))
@@ -91,7 +92,7 @@ class GitHubTrackerTest extends \PHPUnit_Framework_TestCase
 
         $this->mock->addResponse(new Response(200, null, json_encode($payload)));
 
-        $tracker = new GitHubTracker($this->config, $this->client, $converter);
+        $tracker = new GitHubRepository($this->config, $mapping, $this->client);
         $comments = $tracker->findComments(new Number(1));
 
         $this->assertCount(1, $comments);

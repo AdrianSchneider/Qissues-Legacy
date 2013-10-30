@@ -3,26 +3,27 @@
 namespace Qissues\Trackers\GitHub;
 
 use Qissues\Model\Number;
-use Qissues\Model\IssueTracker;
 use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Querying\SearchCriteria;
+use Qissues\Model\Tracker\IssueRepository;
+use Qissues\Model\Tracker\FieldMapping;
 use Qissues\Model\Meta\Status;
 use Qissues\Model\Meta\User;
 use Guzzle\Http\Client;
 
-class GitHubTracker implements IssueTracker
+class GitHubRepository implements IssueRepository
 {
     /**
      * @param array $config connector config
+     * @param IssueTracker $tracker
+     * @param Client|null $client to override
      */
-    public function __construct(array $config, Client $client = null, GitHubConverter $converter = null)
+    public function __construct(array $config, FieldMapping $mapping, Client $client = null)
     {
-        $this->config    = $config;
-        $this->converter = $converter ?: new GitHubConverter();
-        $this->client    = $client ?: new Client('https://api.github.com/', array(
-            'ssl.certificate_authority' => 'system'
-        ));
+        $this->config  = $config;
+        $this->mapping = $mapping;
+        $this->client  = $client ?: new Client('https://api.github.com/', array('ssl.certificate_authority' => 'system'));
     }
 
     /**
@@ -40,7 +41,7 @@ class GitHubTracker implements IssueTracker
     {
         $request = $this->request('GET', $this->getIssueUrl($issue));
         $data = $request->send()->json();
-        return $this->converter->toIssue($data);
+        return $this->mapping->toIssue($data);
     }
 
     /**
@@ -62,7 +63,7 @@ class GitHubTracker implements IssueTracker
         }
 
         $response = $request->send()->json();
-        return array_map(array($this->converter, 'toIssue'), $response);
+        return array_map(array($this->mapping, 'toIssue'), $response);
     }
 
     /**
@@ -92,7 +93,7 @@ class GitHubTracker implements IssueTracker
     {
         $request = $this->request('GET', $this->getIssueUrl($issue, '/comments'));
         $response = $request->send()->json();
-        return array_map(array($this->converter, 'toComment'), $response);
+        return array_map(array($this->mapping, 'toComment'), $response);
     }
 
     /**
@@ -101,7 +102,7 @@ class GitHubTracker implements IssueTracker
     public function persist(NewIssue $issue)
     {
         $request = $this->request('POST', sprintf('/repos/%s/issues', $this->config['repository']));
-        $request->setBody(json_encode($this->converter->issueToArray($issue)), 'application/json');
+        $request->setBody(json_encode($this->mapping->issueToArray($issue)), 'application/json');
         $response = $request->send()->json();
         return new Number($response['number']);
     }
@@ -112,7 +113,7 @@ class GitHubTracker implements IssueTracker
     public function update(NewIssue $issue, Number $number)
     {
         $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->config['repository'], $issue['id']));
-        $request->setBody(json_encode($this->converter->issueToArray($issue)), 'application/json');
+        $request->setBody(json_encode($this->mapping->issueToArray($issue)), 'application/json');
         $request->send();
     }
 
@@ -174,21 +175,5 @@ class GitHubTracker implements IssueTracker
     protected function getIssueUrl(Number $number, $append = '')
     {
         return sprintf('/repos/%s/issues/%d%s', $this->config['repository'], $number->getNumber(), $append);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getIssueConverter()
-    {
-        return new GithubConverter();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getCommentConverter()
-    {
-        return new GithubConverter();
     }
 }

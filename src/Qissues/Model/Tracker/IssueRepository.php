@@ -10,7 +10,7 @@ use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Querying\SearchCriteria;
 
-interface TrackerRepository
+interface IssueRepository
 {
     /**
      * Get the issues URL
@@ -85,16 +85,4 @@ interface TrackerRepository
      * @param NewComment $comment
      */
     function comment(Number $issue, NewComment $comment);
-
-    /**
-     * Gets the issue converter
-     * @return IssueConverter
-     */
-    function getIssueConverter();
-
-    /**
-     * Gets the comment converter
-     * @return CommentConverter
-     */
-    function getCommentConverter();
 }

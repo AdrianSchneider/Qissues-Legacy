@@ -11,7 +11,11 @@ class ReadOnlyArrayAccess implements \ArrayAccess
 
     public function offsetGet($offset)
     {
-        return call_user_func(array($this, 'get' . ucfirst($offset)));
+        if (!method_exists($this, $method = 'get' . ucfirst($offset))) {
+            throw new \BadMethodCallException("Cannot get invalid offset '$offset'");
+        }
+
+        return call_user_func(array($this, $method));
     }
 
     public function offsetSet($offset, $value)

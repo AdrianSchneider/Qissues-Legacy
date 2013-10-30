@@ -2,37 +2,18 @@
 
 namespace Qissues\Trackers\GitHub;
 
-use Qissues\Model\IssueTrackerSupport as Support;
+use Qissues\Model\Tracker\Support\FeatureSet;
+use Qissues\Model\Tracker\Support\FeatureSetBuilder;
 
-class GitHubSupport implements Support
+class GitHubSupport implements FeatureSetBuilder
 {
-    public function getMilestoneSupport()
+    public function build()
     {
-        return Support::SINGLE | Support::DYNAMIC;
-    }
-
-    function getPrioritySupport()
-    {
-        return Support::NONE;
-    }
-
-    function getTypeSupport()
-    {
-        return Support::MULTIPLE | Support::DYNAMIC;
-    }
-
-    function getComponentSupport()
-    {
-        return Support::NONE;
-    }
-
-    function getCustomFieldSupport()
-    {
-        return Support::NONE;
-    }
-
-    function getStatusSupport()
-    {
-        return Suport::SINGLE;
+        $features = new FeatureSet();
+        $features->add(new Feature('milestones'), $this->level()->setSingle()->setDynamic());
+        $features->add(new Feature('types'),      $this->level()->setSingle()->setDynamic());
+        $features->add(new Feature('milestones'), $this->level()->setMultiple()->setDynamic());
+        $features->add(new Feature('statuses'),   $this->level()->setSingle());
+        return $features;
     }
 }

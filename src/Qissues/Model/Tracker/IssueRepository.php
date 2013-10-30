@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Model;
+namespace Qissues\Model\Tracker;
 
 use Qissues\Model\Number;
 use Qissues\Model\Issue;
@@ -10,7 +10,7 @@ use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Querying\SearchCriteria;
 
-interface IssueTracker
+interface TrackerRepository
 {
     /**
      * Get the issues URL

@@ -13,7 +13,11 @@ class GitHubMappingTest extends \PHPUnit_Framework_TestCase
         $issue = $converter->toIssue(array(
             'number' => 1,
             'title' => 'Hello World',
-            'body' => 'Oh snap'
+            'body' => 'Oh snap',
+            'created_at' => 'now',
+            'updated_at' => 'now',
+            'state' => 'open',
+            'assignee' => ''
         ));
 
         $this->assertInstanceOf('Qissues\Model\Issue', $issue);

@@ -10,15 +10,19 @@ use Qissues\System\DataType\ReadOnlyArrayAccess;
 
 class Issue extends ReadOnlyArrayAccess
 {
-    private $id;
-    private $title;
-    private $description;
-
-    public function __construct($id, $title, $description)
+    public function __construct($id, $title, $description, Status $status, \DateTime $dateCreated, \DateTime $dateUpdated, User $assignee = null, Priority $priority = null, $types = null)
     {
         $this->id = $id;
         $this->title = $title;
         $this->description = $description;
+
+        $this->status = $status;
+        $this->dateCreated = $dateCreated;
+        $this->dateUpdated = $dateUpdated;
+
+        $this->assignee = $assignee;
+        $this->priority = $priority;
+        $this->types = $types;
     }
 
     public function getId()
@@ -38,32 +42,37 @@ class Issue extends ReadOnlyArrayAccess
 
     public function getStatus()
     {
-        return new Status('open', 1, 'Open!');
+        return $this->status;
     }
 
     public function getPriority()
     {
-        return new Priority(5, 'busted');
+        return $this->priority;
     }
 
     public function getType()
     {
-        return new Type('wat');
+        return $this->types ? reset($this->types) : null;
+    }
+
+    public function getTypes()
+    {
+        return $this->types;
     }
 
     public function getAssignee()
     {
-        return new User('adrian', 1, 'Adrian!');
+        return $this->assignee;
     }
 
     public function getDateCreated()
     {
-        return new \DateTime();
+        return $this->dateCreated;
     }
 
     public function getDateUpdated()
     {
-        return new \DateTime();
+        return $this->dateUpdated;
     }
 
     public function getCommentCount()

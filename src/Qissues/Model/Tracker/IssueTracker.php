@@ -2,7 +2,7 @@
 
 namespace Qissues\Model\Tracker;
 
-abstract class IssueTracker
+class IssueTracker
 {
     public function __construct(IssueRepository $repository, FieldMapping $mapping, FeatureSet $features)
     {

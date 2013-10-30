@@ -2,7 +2,9 @@
 
 namespace Qissues\Model;
 
-class NewIssue
+use Qissues\System\DataType\ReadOnlyArrayAccess;
+
+class NewIssue extends ReadOnlyArrayAccess
 {
     private $title;
     private $description;

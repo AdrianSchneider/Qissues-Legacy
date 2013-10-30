@@ -16,10 +16,10 @@ services:
     console.input.external_issue_factory:
         class: Qissues\Console\Input\ExternalIssueFactory
         arguments:
-            - @console.input.external_file_editor
-            - @converter
+            - @console.input.external_editor
             - @console.input.templated
-
+    
+    console.input.templated:
         class: Qissues\Console\Input\TemplatedInput
         arguments:
             - @yaml_parser

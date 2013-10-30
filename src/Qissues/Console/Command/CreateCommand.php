@@ -24,7 +24,7 @@ class CreateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tracker = $this->getApplication()->getTracker();
-        $issueFactory = $this->getContainer()->get('console.input.external_issue_factory');
+        $issueFactory = $this->get('console.input.external_issue_factory');
 
         $number = $tracker->persist($issueFactory->createForTracker($tracker));
         $output->writeln("Issue <info>#$number</info> has been created");

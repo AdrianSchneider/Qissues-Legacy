@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Input;
+namespace Qissues\Console\Input;
 
 use Symfony\Component\Yaml\Parser;
 

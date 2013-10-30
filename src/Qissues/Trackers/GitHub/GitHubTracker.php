@@ -93,9 +93,9 @@ class GitHubTracker implements IssueTracker
     public function persist(NewIssue $issue)
     {
         $request = $this->request('POST', sprintf('/repos/%s/issues', $this->config['repository']));
-        $request->setBody(json_encode($this->converter->toArray($issue)), 'application/json');
+        $request->setBody(json_encode($this->converter->issueToArray($issue)), 'application/json');
         $response = $request->send()->json();
-        return new Number($body['number']);
+        return new Number($response['number']);
     }
 
     /**
@@ -104,7 +104,7 @@ class GitHubTracker implements IssueTracker
     public function update(NewIssue $issue, Number $number)
     {
         $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->config['repository'], $issue['id']));
-        $request->setBody(json_encode($this->converter->toArray($issue)), 'application/json');
+        $request->setBody(json_encode($this->converter->issueToArray($issue)), 'application/json');
         $response = $request->send();
     }
 
@@ -166,5 +166,15 @@ class GitHubTracker implements IssueTracker
     protected function getIssueUrl(Number $number, $append = '')
     {
         return sprintf('/repos/%s/issues/%d%s', $this->config['repository'], $number->getNumber(), $append);
+    }
+
+    public function getIssueConverter()
+    {
+        return new GithubConverter();
+    }
+
+    public function getCommentConverter()
+    {
+        return new GithubConverter();
     }
 }

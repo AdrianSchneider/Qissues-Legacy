@@ -12,6 +12,14 @@ use Qissues\Format\CommentConverter;
 
 class GitHubConverter implements IssueConverter, CommentConverter
 {
+    public function getFields()
+    {
+        return array(
+            'title' => '',
+            'assignee' => 'me'
+        );
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -42,7 +50,7 @@ class GitHubConverter implements IssueConverter, CommentConverter
     {
         return new NewIssue(
             $input['title'],
-            $input['body']
+            $input['description']
         );
     }
 

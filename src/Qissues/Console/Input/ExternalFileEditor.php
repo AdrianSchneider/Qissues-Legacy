@@ -24,12 +24,12 @@ class ExternalFileEditor
         $filename = $this->createTempFile($template);
 
         exec(sprintf(
-            '%s "%s" > `tty`', 
-            $this->getEditor(),
+            '%s %s > `tty`', 
+            $this->editor,
             escapeshellarg($filename)
         ));
 
-        return $this->getTempFileContents($filename);
+        return $this->flushTempFile($filename);
     }
 
     /**

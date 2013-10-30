@@ -78,4 +78,7 @@ interface IssueTracker
      * @param NewComment $comment
      */
     function comment(Number $issue, NewComment $comment);
+
+    function getIssueConverter();
+    function getCommentConverter();
 }

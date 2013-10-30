@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Input;
+namespace Qissues\Console\Input;
 
 use Qissues\Model\SearchCriteria;
 use Qissues\Model\Number;

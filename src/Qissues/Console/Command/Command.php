@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Command;
+namespace Qissues\Console\Command;
 
 use Symfony\Component\Console\Command\Command as BaseCommand;
 use Symfony\Component\Console\Input\InputInterface;

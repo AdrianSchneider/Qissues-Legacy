@@ -1,0 +1,28 @@
+parameters:
+    console.editor: "vim"
+    console.tmp_file.prefix: "qissues"
+
+services:
+    console.input.criteria_builder: 
+        class: Qissues\Console\Input\CriteriaBuilder
+
+    console.input.external_editor:
+        class: Qissues\Console\Input\ExternalFileEditor
+        arguments:
+            - %console.editor%
+            - %console.tmp_file.prefix%
+    
+    console.input.external_issue_factory:
+        class: Qissues\Console\Input\ExternalIssueFactory
+        arguments:
+            - @console.input.external_file_editor
+            - @converter
+            - @console.input.templated
+
+        class: Qissues\Console\Input\TemplatedInput
+        arguments:
+            - @yaml_parser
+
+
+    yaml_parser:
+        class: Symfony\Component\Yaml\Parser

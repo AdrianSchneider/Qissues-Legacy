@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Command;
+namespace Qissues\Console\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -8,14 +8,15 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
-class OpenCommand extends Command
+class CommentCommand extends Command
 {
     protected function configure()
     {
         $this
-            ->setName('open')
-            ->setDescription('Open or re-open an issue')
+            ->setName('comment')
+            ->setDescription('Comment on an issue')
             ->addArgument('issue', InputArgument::OPTIONAL, 'The issue ID')
+            ->addOption('message', 'm', InputOption::VALUE_OPTIONAL, 'Specify message', null)
         ;
     }
 
@@ -26,17 +27,17 @@ class OpenCommand extends Command
             return $output->writeln('<error>Issue not found.</error>');
         }
 
-        $message = $this->getComment();
-        $connector->changeStatus($issue, 'open');
+        $message = $input->getOption('message') ?: $this->getMessage();
+        $connector->comment($issue, $message);
 
         if ($message) {
-            $connector->comment($issue, $message);
+            $output->writeln("Left a comment on #$issue[id]");
+        } else {
+            $output->writeln("<error>No message left</error>");
         }
-
-        $output->writeln("Issue <info>#$issue[id]</info> has been (re-)opened.");
     }
 
-    protected function getComment()
+    protected function getMessage()
     {
         $filename = tempnam('.', 'qissues');
         $editor = getenv('EDITOR') ?: 'vim';
@@ -44,6 +45,6 @@ class OpenCommand extends Command
         $data = file_get_contents($filename);
         unlink($filename);
 
-        return $data;
+        return trim($data);
     }
 }

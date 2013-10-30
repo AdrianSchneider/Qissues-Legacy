@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Command;
+namespace Qissues\Console\Command;
 
 use Qissues\Input\CriteriaBuilder;
 use Symfony\Component\Console\Input\InputInterface;

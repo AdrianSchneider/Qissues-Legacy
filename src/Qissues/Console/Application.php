@@ -2,7 +2,8 @@
 
 namespace Qissues\Console;
 
-use Qissues\Command;
+use Qissues\Console\Command;
+use Qissues\System\ContainerFactory;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -14,6 +15,7 @@ use Symfony\Component\Yaml\Parser;
 class Application extends BaseApplication
 {
     protected $config = array();
+    protected $container;
 
     /**
      * Retrieve an instance of the IssueTracker
@@ -58,6 +60,7 @@ class Application extends BaseApplication
 
         $this->registerCommands();
         $this->registerStyles($output);
+        $this->registerContainer();
 
         $name = $this->getCommandName($input);
 
@@ -140,10 +143,10 @@ class Application extends BaseApplication
             ->files()
             ->name('*Command.php')
             ->notName('Command.php')
-            ->in(__DIR__.'/../Command');
+            ->in(__DIR__.'/Command');
         
         foreach ($finder as $file) {
-            $class = "Qissues\\Command\\" . basename($file, ".php");
+            $class = "Qissues\\Console\\Command\\" . basename($file, ".php");
             $this->add(new $class());
         }
     }
@@ -168,5 +171,11 @@ class Application extends BaseApplication
         }
 
         return $a;
+    }
+
+    protected function registerContainer()
+    {
+        $containerFactory = new ContainerFactory();
+        $this->container = $containerFactory->create();
     }
 }

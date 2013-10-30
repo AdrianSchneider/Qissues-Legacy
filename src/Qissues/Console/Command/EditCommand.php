@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Command;
+namespace Qissues\Console\Command;
 
 use Qissues\Connector\Connector;
 use Qissues\Input\TemplatedInput;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Format;
+namespace Qissues\System\DataType;
 
 class ReadOnlyArrayAccess implements \ArrayAccess
 {

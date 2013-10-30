@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Input;
+namespace Qissues\Console\Input;
 
 class ExternalFileEditor
 {

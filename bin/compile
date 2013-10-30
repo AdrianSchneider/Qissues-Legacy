@@ -3,7 +3,7 @@
 
 require __DIR__.'/../src/bootstrap.php';
 
-use Qissues\App\Compiler;
+use Qissues\System\Compiler;
 
 error_reporting(-1);
 ini_set('display_errors', 1);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Command;
+namespace Qissues\Console\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -8,13 +8,13 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
-class CloseCommand extends Command
+class OpenCommand extends Command
 {
     protected function configure()
     {
         $this
-            ->setName('close')
-            ->setDescription('Close or re-open an issue')
+            ->setName('open')
+            ->setDescription('Open or re-open an issue')
             ->addArgument('issue', InputArgument::OPTIONAL, 'The issue ID')
         ;
     }
@@ -27,14 +27,13 @@ class CloseCommand extends Command
         }
 
         $message = $this->getComment();
-        // TODO Jira
-        $connector->changeStatus($issue, 'resolved');
+        $connector->changeStatus($issue, 'open');
 
         if ($message) {
             $connector->comment($issue, $message);
         }
 
-        $output->writeln("Issue <info>#$issue[id]</info> has been closed.");
+        $output->writeln("Issue <info>#$issue[id]</info> has been (re-)opened.");
     }
 
     protected function getComment()

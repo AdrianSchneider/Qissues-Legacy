@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Command;
+namespace Qissues\Console\Command;
 
 use Qissues\Model\Number;
 use Qissues\Model\IssueTracker;

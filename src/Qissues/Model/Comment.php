@@ -2,7 +2,7 @@
 
 namespace Qissues\Model;
 
-use Qissues\Format\ReadOnlyArrayAccess;
+use Qissues\System\DataType\ReadOnlyArrayAccess;
 
 class Comment extends ReadOnlyArrayAccess
 {

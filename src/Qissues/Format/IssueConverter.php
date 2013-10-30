@@ -2,6 +2,8 @@
 
 namespace Qissues\Format;
 
+use Qissues\Model\NewIssue;
+
 interface IssueConverter
 {
     function toIssue(array $issue);

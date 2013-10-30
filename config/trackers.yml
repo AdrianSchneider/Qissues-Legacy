@@ -1,0 +1,29 @@
+parameters:
+    github.repository: 
+    github.username: 
+    github.password:
+
+services:
+    tracker.github:
+        class: Qissues\Model\Tracker\IssueTracker
+        arguments:
+            - @tracker.github.repository
+            - @tracker.github.mapping
+            - @tracker.github.features
+
+    tracker.github.repository:
+        class: Qissues\Trackers\GitHub\GitHubRepository
+        arguments:
+            - 
+                repository: %github.repository%
+                username: %github.username%
+                password: %github.password%
+            - @tracker.github.mapping
+
+    tracker.github.mapping:
+        class: Qissues\Trackers\GitHub\GitHubMapping
+
+    tracker.github.features:
+        class: Qissues\Model\Tracker\Support\FeatureSet
+        factory-class: Qissues\Trackers\GitHub\GitHubSupport
+        factory-method: build

@@ -25,7 +25,7 @@ class ViewCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $tracker = $this->getApplication()->getTracker();
+        $tracker = $this->getApplication()->getTracker()->getRepository();
         $number = new Number($this->get('console.input.git_id')->getId($input));
         if (!$issue = $tracker->lookup($number)) {
             $output->writeln('<error>Issue not found.</error>');

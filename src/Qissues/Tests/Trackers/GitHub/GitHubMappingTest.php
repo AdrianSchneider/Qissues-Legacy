@@ -3,13 +3,13 @@
 namespace Qissues\Tests\Trackers\GitHub;
 
 use Qissues\Model\Posting\NewIssue;
-use Qissues\Trackers\GitHub\GitHubConverter;
+use Qissues\Trackers\GitHub\GitHubMapping;
 
-class GitHubConverterTest extends \PHPUnit_Framework_TestCase
+class GitHubMappingTest extends \PHPUnit_Framework_TestCase
 {
     public function testToIssueCreatesAnIssue()
     {
-        $converter = new GitHubConverter();
+        $converter = new GitHubMapping();
         $issue = $converter->toIssue(array(
             'number' => 1,
             'title' => 'Hello World',
@@ -24,7 +24,7 @@ class GitHubConverterTest extends \PHPUnit_Framework_TestCase
 
     public function testToNewIssueCreatesANewIssue()
     {
-        $converter = new GitHubConverter();
+        $converter = new GitHubMapping();
         $issue = $converter->toNewIssue(array(
             'title' => 'Hello World',
             'description' => 'Oh snap'
@@ -37,7 +37,7 @@ class GitHubConverterTest extends \PHPUnit_Framework_TestCase
 
     public function testIssueToArrayConverts()
     {
-        $converter = new GitHubConverter();
+        $converter = new GitHubMapping();
         $issue = new NewIssue('Hello', 'World');
         $rawIssue = $converter->issueToArray($issue);
 

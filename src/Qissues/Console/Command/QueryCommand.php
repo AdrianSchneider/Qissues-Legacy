@@ -42,7 +42,7 @@ class QueryCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $tracker = $this->getApplication()->getTracker();
+        $tracker = $this->getApplication()->getTracker()->getRepository();
 
         if ($input->getOption('web')) {
             $this->get('console.output.browser')->open($tracker->getUrl());

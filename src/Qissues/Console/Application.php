@@ -34,12 +34,8 @@ class Application extends BaseApplication
             }
         }
 
-        $class = "Qissues\\Trackers\\$name\\{$name}Tracker";
-        if (!class_exists($class)) {
-            throw new \Exception("$name tracker not found ('$class')");
-        }
-
-        return new $class($this->config[strtolower($name)]);
+        $name = strtolower($name);
+        return $this->container->get('tracker.' . $name);
     }
 
     /**
@@ -176,7 +172,7 @@ class Application extends BaseApplication
     protected function registerContainer()
     {
         $containerFactory = new ContainerFactory();
-        $this->container = $containerFactory->create();
+        $this->container = $containerFactory->create($this->config);
     }
 
     public function getContainer()

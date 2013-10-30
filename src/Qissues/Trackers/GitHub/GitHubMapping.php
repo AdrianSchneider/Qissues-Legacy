@@ -8,10 +8,8 @@ use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Meta\User;
 use Qissues\Model\Tracker\FieldMapping;
-use Qissues\Format\IssueConverter;
-use Qissues\Format\CommentConverter;
 
-class GitHubConverter implements FieldMapping
+class GitHubMapping implements FieldMapping
 {
     public function map($dtoField)
     {

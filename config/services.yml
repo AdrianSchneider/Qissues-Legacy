@@ -1,7 +1,7 @@
 parameters:
     console.editor: "vim"
     console.tmp_file.prefix: "qissues"
-    console.browser.command: "xdgb-open"
+    console.browser.command: "xdg-open"
 
 services:
     console.input.criteria_builder:
@@ -27,10 +27,14 @@ services:
     console.output.table_renderer:
         class: Qissues\Console\Output\TableRenderer
 
+    console.output.views.single:
+        class: Qissues\Console\Output\SingleView
+
     console.output.issues_views.detailed:
         class: Qissues\Console\Output\IssuesList\DetailedView
         arguments:
             - @console.output.table_renderer
+
     console.output.issues_views.basic:
         class: Qissues\Console\Output\IssuesList\BasicView
         arguments:
@@ -38,6 +42,11 @@ services:
 
     console.output.issues_views.tiny:
         class: Qissues\Console\Output\IssuesList\TinyView
+
+    console.output.browser:
+        class: Qissues\Console\Output\WebBrowser
+        arguments:
+             - %console.browser.command%
 
     yaml_parser:
         class: Symfony\Component\Yaml\Parser

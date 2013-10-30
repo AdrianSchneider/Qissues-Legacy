@@ -48,8 +48,16 @@ interface IssueTracker
     /**
      * Find an Issue by Number
      * @param Number $issue
+     * @return Issue
      */
     function lookup(Number $issue);
+
+    /**
+     * Find an issue online by Number
+     * @param Number $issue
+     * @return string url
+     */
+    function lookupUrl(Number $issue);
 
     /**
      * Find issues matching Criteria

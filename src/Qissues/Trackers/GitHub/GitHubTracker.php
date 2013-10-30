@@ -38,6 +38,14 @@ class GitHubTracker implements IssueTracker
     /**
      * {@inheritDoc}
      */
+    public function lookupUrl(Number $issue)
+    {
+        return sprintf('https://github.com/%s/issues/%d', $this->config['repository'], (string)$issue);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function query(SearchCriteria $criteria)
     {
         $request = $this->request('GET', sprintf('/repos/%s/issues', $this->config['repository']));

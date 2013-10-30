@@ -39,7 +39,7 @@ class CriteriaBuilder
     {
         if ($priorities = $input->getOption('priority')) {
             foreach ($priorities as $priority) {
-                $criteria->addPriority(new Priority($priority));
+                $criteria->addPriority(new Priority($priority, ''));
             }
         }
     }

@@ -15,7 +15,7 @@ class GitHubConverter
      * @param NewIssue $issue
      * @return array issue
      */
-    static public function toArray(NewIssue $issue)
+    public function toArray(NewIssue $issue)
     {
         $new = array(
             'title' => $issue->getTitle(),
@@ -40,7 +40,7 @@ class GitHubConverter
      * @param array $issue
      * @return Issue
      */
-    static public function toIssue(array $issue)
+    public function toIssue(array $issue)
     {
         return new Issue(
             $issue['number'],
@@ -61,7 +61,7 @@ class GitHubConverter
     }
 
 
-    static public function commentToArray(NewComment $comment)
+    public function commentToArray(NewComment $comment)
     {
         return array(
             'body' => $comment->getMessage(),
@@ -78,7 +78,7 @@ class GitHubConverter
      * @param array $comment from github
      * @return Comment
      */
-    static public function toComment(array $comment)
+    public function toComment(array $comment)
     {
         return new Comment(
             $comment['body'],

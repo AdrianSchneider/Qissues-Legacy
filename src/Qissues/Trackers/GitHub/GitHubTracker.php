@@ -16,10 +16,11 @@ class GitHubTracker implements IssueTracker
     /**
      * @param array $config connector config
      */
-    public function __construct(array $config)
+    public function __construct(array $config, Client $client = null, GitHubConverter $converter = null)
     {
-        $this->config = $config;
-        $this->client = new Client('https://api.github.com/', array(
+        $this->config    = $config;
+        $this->converter = $converter ?: new GitHubConverter();
+        $this->client    = $client ?: new Client('https://api.github.com/', array(
             'ssl.certificate_authority' => 'system'
         ));
     }
@@ -31,7 +32,7 @@ class GitHubTracker implements IssueTracker
     {
         $request = $this->request('GET', $this->getIssueUrl($issue));
         $data = $request->send()->json();
-        return GitHubConverter::toIssue($data);
+        return $this->converter->toIssue($data);
     }
 
     /**
@@ -40,8 +41,32 @@ class GitHubTracker implements IssueTracker
     public function query(SearchCriteria $criteria)
     {
         $request = $this->request('GET', sprintf('/repos/%s/issues', $this->config['repository']));
+        foreach ($this->convertCriteriaToQuery($criteria) as $key => $value) {
+            $request->getQuery()->set($key, $value);
+        }
+
         $response = $request->send()->json();
-        return array_map(__NAMESPACE__ . '\\GitHubConverter::toIssue', $response);
+        return array_map(array($this->converter, 'toIssue'), $response);
+    }
+
+    /**
+     * Converts a SearchCriteria object into querystring pairs
+     * @param SearchCriteria $criteria
+     * @return array query
+     */
+    protected function convertCriteriaToQuery(SearchCriteria $criteria)
+    {
+        $query = array();
+
+        if ($statuses = $criteria->getStatuses()) {
+            if (count($statuses) > 1) {
+                throw new \DomainException('GitHub cannot support multiple statuses');
+            }
+
+            $query['state'] = $statuses[0]->getStatus();
+        }
+
+        return $query;
     }
 
     /**
@@ -51,7 +76,7 @@ class GitHubTracker implements IssueTracker
     {
         $request = $this->request('GET', $this->getIssueUrl($issue, '/comments'));
         $response = $request->send()->json();
-        return array_map(__NAMESPACE__ . '\\GitHubConverter::toComment', $response);
+        return array_map(array($this->converter, 'toComment'), $response);
     }
 
     /**
@@ -60,7 +85,7 @@ class GitHubTracker implements IssueTracker
     public function persist(NewIssue $issue)
     {
         $request = $this->request('POST', sprintf('/repos/%s/issues', $this->config['repository']));
-        $request->setBody(json_encode(GitHubConverter::toArray($issue)), 'application/json');
+        $request->setBody(json_encode($this->converter->toArray($issue)), 'application/json');
         $response = $request->send()->json();
         return new Number($body['number']);
     }
@@ -71,7 +96,7 @@ class GitHubTracker implements IssueTracker
     public function update(NewIssue $issue, Number $number)
     {
         $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->config['repository'], $issue['id']));
-        $request->setBody(json_encode(GitHubConverter::toArray($issue)), 'application/json');
+        $request->setBody(json_encode($this->converter->toArray($issue)), 'application/json');
         $response = $request->send();
     }
 

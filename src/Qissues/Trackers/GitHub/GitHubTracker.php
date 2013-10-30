@@ -113,7 +113,7 @@ class GitHubTracker implements IssueTracker
     {
         $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->config['repository'], $issue['id']));
         $request->setBody(json_encode($this->converter->issueToArray($issue)), 'application/json');
-        $response = $request->send();
+        $request->send();
     }
 
     /**

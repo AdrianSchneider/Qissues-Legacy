@@ -8,6 +8,10 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class ContainerFactory
 {
+    /**
+     * Creates a new ContainerInterface from services.yml
+     * @return ContainerInterface
+     */
     public function create()
     {
         $container = new ContainerBuilder();

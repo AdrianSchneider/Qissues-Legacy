@@ -10,7 +10,7 @@ class Issue extends ReadOnlyArrayAccess
     private $title;
     private $description;
 
-    public function __construct($id = null, $title, $description)
+    public function __construct($id, $title, $description)
     {
         $this->id = $id;
         $this->title = $title;

@@ -2,8 +2,10 @@
 
 namespace Qissues\Console\Output\IssuesList;
 
+use Qissues\Model\Tracker\Support\Feature;
+use Qissues\Model\Tracker\Support\FeatureSet;
+use Qissues\Model\Tracker\Support\SupportLevel;
 use Qissues\Console\Output\TableRenderer;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class DetailedView
 {
@@ -12,26 +14,40 @@ class DetailedView
         $this->tableRenderer = $tableRenderer;
     }
 
-    public function render(array $issues, OutputInterface $output, $width, $height)
+    public function render(array $issues, FeatureSet $features, $width, $height)
     {
         $renderIssues = array();
         foreach ($issues as $issue) {
             $title = $issue->getTitle();
-            $renderIssues[] = array(
+            $row = array(
                 '#'            => $issue->getId(),
                 'Title'        => strlen($title) > $width * 0.4
                     ? (substr($title, 0, $width * 0.4) . '...')
                     : $title,
                 'Status'       => $issue['status'],
-                'Type'         => $issue['type'],
+                'Type'         => $issue['types'],
                 'Priority'     => $issue['priority'],
                 'Assignee'     => $issue['assignee'],
                 'Date Created' => $issue->getDateCreated()->format('Y-m-d g:ia'),
                 'Date updated' => $issue->getDateUpdated()->format('Y-m-d g:ia'),
                 'Comments'     => $issue->getCommentCount()
             );
+
+            if (!$features->doesSupport($types = new Feature('types'))) {
+                unset($row['Type']);
+            } elseif ($row['Type'] and $features->supports($types, SupportLevel::MULTIPLE)) {
+                $row['Type'] = implode(', ', array_map('strval', $row['Type']));
+            } else {
+                $row['Type'] = '';
+            }
+
+            if (!$features->doesSupport(new Feature('priorities'))) {
+                unset($row['Priority']);
+            }
+
+            $renderIssues[] = $row;
         }
 
-        $output->writeln($this->tableRenderer->render($renderIssues, $width));
+        return $this->tableRenderer->render($renderIssues, $width);
     }
 }

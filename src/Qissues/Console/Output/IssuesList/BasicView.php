@@ -3,7 +3,7 @@
 namespace Qissues\Console\Output\IssuesList;
 
 use Qissues\Console\Output\TableRenderer;
-use Symfony\Component\Console\Output\OutputInterface;
+use Qissues\Model\Tracker\Support\FeatureSet;
 
 class BasicView
 {
@@ -12,7 +12,7 @@ class BasicView
         $this->tableRenderer = $tableRenderer;
     }
 
-    public function render(array $issues, OutputInterface $output, $width, $height)
+    public function render(array $issues, FeatureSet $features, $width, $height)
     {
         $renderIssues = array();
         foreach ($issues as $issue) {
@@ -24,10 +24,10 @@ class BasicView
                 'Status'       => $issue['status'],
                 'Type'         => $issue['type'],
                 'P'            => $issue['priority'],
-                'Date updated' => $issue['updated']->format('Y-m-d g:ia')
+                'Date updated' => $issue['dateUpdated']->format('Y-m-d g:ia')
             );
         }
 
-        $output->writeln($this->tableRenderer->render($renderIssues, $width));
+        return $this->tableRenderer->render($renderIssues, $width);
     }
 }

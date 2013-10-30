@@ -25,5 +25,8 @@ services:
 
     tracker.github.features:
         class: Qissues\Model\Tracker\Support\FeatureSet
-        factory-class: Qissues\Trackers\GitHub\GitHubSupport
-        factory-method: build
+        factory_service: tracker.github.features_builder
+        factory_method: build
+
+    tracker.github.features_builder:
+        class: Qissues\Trackers\GitHub\GitHubSupport

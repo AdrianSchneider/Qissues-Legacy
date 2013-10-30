@@ -42,15 +42,16 @@ class QueryCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $tracker = $this->getApplication()->getTracker()->getRepository();
+        $tracker = $this->getApplication()->getTracker();
+        $repository = $tracker->getRepository();
 
         if ($input->getOption('web')) {
-            $this->get('console.output.browser')->open($tracker->getUrl());
+            $this->get('console.output.browser')->open($repository->getUrl());
             return 0;
         }
 
         $criteria = $this->get('console.input.criteria_builder')->build($input);
-        if (!$issues = $tracker->query($criteria)) {
+        if (!$issues = $repository->query($criteria)) {
             $output->writeln("<info>No issues found!</info>");
             return 0;
         }
@@ -67,6 +68,7 @@ class QueryCommand extends Command
             }
         }
 
-        return $this->get('console.output.issues_views.' . $size)->render($issues, $output, $width, $height);
+        $view = $this->get('console.output.issues_views.' . $size);
+        return $output->writeln($view->render($issues, $tracker->getFeatures(), $width, $height));
     }
 }

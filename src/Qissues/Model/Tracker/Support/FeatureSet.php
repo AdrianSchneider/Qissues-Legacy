@@ -30,4 +30,13 @@ class FeatureSet
 
         return $this->features[$feature->getName()]->supports($level);
     }
+
+    public function doesSupport(Feature $feature)
+    {
+        if (!isset($this->features[$feature->getName()])) {
+            return false;
+        }
+
+        return $this->features[$feature->getName()]->isSupported();
+    }
 }

@@ -8,6 +8,7 @@ use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Meta\User;
 use Qissues\Model\Meta\Status;
+use Qissues\Model\Meta\Type;
 use Qissues\Model\Tracker\FieldMapping;
 
 class GitHubMapping implements FieldMapping
@@ -44,7 +45,11 @@ class GitHubMapping implements FieldMapping
             new Status($issue['state']),
             new \DateTime($issue['created_at']),
             new \DateTime($issue['updated_at']),
-            $issue['assignee'] ? new User($issue['assignee']['login']) : null
+            $issue['assignee'] ? new User($issue['assignee']['login']) : null,
+            null,
+            $issue['labels'] ? array_map(function($label) {
+                return new Type($label['name']);
+            }, $issue['labels']) : array()
         );
 
         array(

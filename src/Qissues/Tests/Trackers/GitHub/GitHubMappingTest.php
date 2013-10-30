@@ -17,7 +17,8 @@ class GitHubMappingTest extends \PHPUnit_Framework_TestCase
             'created_at' => 'now',
             'updated_at' => 'now',
             'state' => 'open',
-            'assignee' => ''
+            'assignee' => '',
+            'labels' => ''
         ));
 
         $this->assertInstanceOf('Qissues\Model\Issue', $issue);

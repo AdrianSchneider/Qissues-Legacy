@@ -23,6 +23,11 @@ class IssueTracker
         return $this->mapping;
     }
 
+    public function getFeatures()
+    {
+        return $this->features;
+    }
+
     public function getSupport(Feature $feature)
     {
         return $this->features->getSupport($feature);

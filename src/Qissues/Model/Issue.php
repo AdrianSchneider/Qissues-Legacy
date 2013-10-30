@@ -2,6 +2,10 @@
 
 namespace Qissues\Model;
 
+use Qissues\Model\Meta\Status;
+use Qissues\Model\Meta\Priority;
+use Qissues\Model\Meta\Type;
+use Qissues\Model\Meta\User;
 use Qissues\System\DataType\ReadOnlyArrayAccess;
 
 class Issue extends ReadOnlyArrayAccess

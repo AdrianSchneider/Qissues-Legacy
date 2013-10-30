@@ -3,8 +3,8 @@
 namespace Qissues\Tests\Trackers\GitHub;
 
 use Qissues\Model\Number;
-use Qissues\Model\Status;
-use Qissues\Model\SearchCriteria;
+use Qissues\Model\Meta\Status;
+use Qissues\Model\Querying\SearchCriteria;
 use Qissues\Trackers\GitHub\GitHubTracker;
 use Guzzle\Http\Client;
 use Guzzle\Http\Message\Response;

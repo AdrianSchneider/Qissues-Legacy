@@ -2,7 +2,7 @@
 
 namespace Qissues\Format;
 
-use Qissues\Model\NewComment;
+use Qissues\Model\Posting\NewComment;
 
 interface CommentConverter
 {

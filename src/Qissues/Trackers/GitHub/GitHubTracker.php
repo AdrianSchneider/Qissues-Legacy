@@ -2,13 +2,13 @@
 
 namespace Qissues\Trackers\GitHub;
 
-use Qissues\Model\NewIssue;
 use Qissues\Model\Number;
-use Qissues\Model\Status;
-use Qissues\Model\User;
-use Qissues\Model\NewComment;
-use Qissues\Model\SearchCriteria;
 use Qissues\Model\IssueTracker;
+use Qissues\Model\Posting\NewIssue;
+use Qissues\Model\Posting\NewComment;
+use Qissues\Model\Querying\SearchCriteria;
+use Qissues\Model\Meta\Status;
+use Qissues\Model\Meta\User;
 use Guzzle\Http\Client;
 
 class GitHubTracker implements IssueTracker

@@ -2,6 +2,7 @@
 
 namespace Qissues\Model;
 
+use Qissues\Model\Meta\User;
 use Qissues\System\DataType\ReadOnlyArrayAccess;
 
 class Comment extends ReadOnlyArrayAccess

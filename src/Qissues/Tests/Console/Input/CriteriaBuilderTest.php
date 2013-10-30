@@ -60,7 +60,7 @@ class CriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $assignees = $criteria->getAssignees();
 
         $this->assertCount(1, $assignees);
-        $this->assertInstanceOf('Qissues\Model\CurrentUser', $assignees[0]);
+        $this->assertInstanceOf('Qissues\Model\Meta\CurrentUser', $assignees[0]);
     }
 
     public function testHandleStatuses()
@@ -81,7 +81,7 @@ class CriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $criteria = $this->builder->build($input);
         $priorities = $criteria->getPriorities();
 
-        $this->assertInstanceOf('Qissues\Model\Priority', $priorities[0]);
+        $this->assertInstanceOf('Qissues\Model\Meta\Priority', $priorities[0]);
     }
 
     public function testHandleAssignees()
@@ -92,7 +92,7 @@ class CriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $assignees = $criteria->getAssignees();
 
         $this->assertCount(1, $assignees);
-        $this->assertInstanceOf('Qissues\Model\User', $assignees[0]);
+        $this->assertInstanceOf('Qissues\Model\Meta\User', $assignees[0]);
         $this->assertEquals('adrian', (string)$assignees[0]);
     }
 
@@ -104,7 +104,7 @@ class CriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $types = $criteria->getTypes();
 
         $this->assertCount(1, $types);
-        $this->assertInstanceOf('Qissues\Model\Type', $types[0]);
+        $this->assertInstanceOf('Qissues\Model\Meta\Type', $types[0]);
         $this->assertEquals('bug', (string)$types[0]);
     }
 }

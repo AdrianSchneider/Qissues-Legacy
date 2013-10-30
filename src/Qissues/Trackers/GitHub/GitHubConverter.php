@@ -4,9 +4,9 @@ namespace Qissues\Trackers\GitHub;
 
 use Qissues\Model\Issue;
 use Qissues\Model\Comment;
-use Qissues\Model\NewIssue;
-use Qissues\Model\NewComment;
-use Qissues\Model\User;
+use Qissues\Model\Posting\NewIssue;
+use Qissues\Model\Posting\NewComment;
+use Qissues\Model\Meta\User;
 use Qissues\Format\IssueConverter;
 use Qissues\Format\CommentConverter;
 
@@ -16,7 +16,9 @@ class GitHubConverter implements IssueConverter, CommentConverter
     {
         return array(
             'title' => '',
-            'assignee' => 'me'
+            'assignee' => 'me',
+            'types' => '',
+            'milestone' => ''
         );
     }
 

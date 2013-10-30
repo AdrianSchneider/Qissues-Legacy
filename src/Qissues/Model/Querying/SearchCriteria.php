@@ -1,6 +1,11 @@
 <?php
 
-namespace Qissues\Model;
+namespace Qissues\Model\Querying;
+
+use Qissues\Model\Meta\Type;
+use Qissues\Model\Meta\User;
+use Qissues\Model\Meta\Status;
+use Qissues\Model\Meta\Priority;
 
 /**
  * Value object for standardizing search criteria for trackers

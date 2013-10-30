@@ -2,13 +2,13 @@
 
 namespace Qissues\Console\Input;
 
-use Qissues\Model\SearchCriteria;
 use Qissues\Model\Number;
-use Qissues\Model\User;
-use Qissues\Model\CurrentUser;
-use Qissues\Model\Status;
-use Qissues\Model\Priority;
-use Qissues\Model\Type;
+use Qissues\Model\Querying\SearchCriteria;
+use Qissues\Model\Meta\User;
+use Qissues\Model\Meta\CurrentUser;
+use Qissues\Model\Meta\Status;
+use Qissues\Model\Meta\Priority;
+use Qissues\Model\Meta\Type;
 use Symfony\Component\Console\Input\InputInterface;
 
 class CriteriaBuilder

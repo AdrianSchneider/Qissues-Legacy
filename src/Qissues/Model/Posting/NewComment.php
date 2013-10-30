@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Model;
+namespace Qissues\Model\Posting;
 
 class NewComment
 {

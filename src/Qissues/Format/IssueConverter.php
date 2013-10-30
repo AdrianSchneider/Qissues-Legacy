@@ -2,7 +2,7 @@
 
 namespace Qissues\Format;
 
-use Qissues\Model\NewIssue;
+use Qissues\Model\Posting\NewIssue;
 
 interface IssueConverter
 {

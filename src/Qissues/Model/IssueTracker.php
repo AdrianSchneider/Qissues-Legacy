@@ -2,12 +2,13 @@
 
 namespace Qissues\Model;
 
-use Qissues\Model\Issue;
-use Qissues\Model\NewIssue;
-use Qissues\Model\Status;
 use Qissues\Model\Number;
-use Qissues\Model\User;
-use Qissues\Model\SearchCriteria;
+use Qissues\Model\Issue;
+use Qissues\Model\Meta\Status;
+use Qissues\Model\Meta\User;
+use Qissues\Model\Posting\NewIssue;
+use Qissues\Model\Posting\NewComment;
+use Qissues\Model\Querying\SearchCriteria;
 
 interface IssueTracker
 {

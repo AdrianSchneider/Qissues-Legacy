@@ -12,6 +12,12 @@ use Qissues\Model\SearchCriteria;
 interface IssueTracker
 {
     /**
+     * Get the issues URL
+     * @return string url
+     */
+    function getUrl();
+
+    /**
      * Create a new Issue
      * @param NewIssue $issue
      * @return Number
@@ -79,6 +85,15 @@ interface IssueTracker
      */
     function comment(Number $issue, NewComment $comment);
 
+    /**
+     * Gets the issue converter
+     * @return IssueConverter
+     */
     function getIssueConverter();
+
+    /**
+     * Gets the comment converter
+     * @return CommentConverter
+     */
     function getCommentConverter();
 }

@@ -45,17 +45,15 @@ class QueryCommand extends Command
         $tracker = $this->getApplication()->getTracker();
 
         if ($input->getOption('web')) {
-            return exec(sprintf(
-                '%s %s',
-                $this->getParameter('console.browser.command'),
-                escapeshellarg($tracker->getBrowseUrl())
-            ));
+            $this->get('console.output.browser')->open($tracker->getUrl());
+            return 0;
         }
 
         $criteria = $this->get('console.input.criteria_builder')->build($input);
         $issues = $tracker->query($criteria);
         if (!$issues) {
-            return $output->writeln("<info>No issues found!</info>");
+            $output->writeln("<info>No issues found!</info>");
+            return 0;
         }
 
 

@@ -28,6 +28,14 @@ class GitHubTracker implements IssueTracker
     /**
      * {@inheritDoc}
      */
+    public function getUrl()
+    {
+        return sprintf('https://github.com/%s/issues', $this->config['repository']);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function lookup(Number $issue)
     {
         $request = $this->request('GET', $this->getIssueUrl($issue));
@@ -168,11 +176,17 @@ class GitHubTracker implements IssueTracker
         return sprintf('/repos/%s/issues/%d%s', $this->config['repository'], $number->getNumber(), $append);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getIssueConverter()
     {
         return new GithubConverter();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getCommentConverter()
     {
         return new GithubConverter();

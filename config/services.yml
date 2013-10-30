@@ -1,9 +1,10 @@
 parameters:
     console.editor: "vim"
     console.tmp_file.prefix: "qissues"
+    console.browser.command: "xdgb-open"
 
 services:
-    console.input.criteria_builder: 
+    console.input.criteria_builder:
         class: Qissues\Console\Input\CriteriaBuilder
 
     console.input.external_editor:
@@ -11,7 +12,7 @@ services:
         arguments:
             - %console.editor%
             - %console.tmp_file.prefix%
-    
+
     console.input.external_issue_factory:
         class: Qissues\Console\Input\ExternalIssueFactory
         arguments:
@@ -23,6 +24,20 @@ services:
         arguments:
             - @yaml_parser
 
+    console.output.table_renderer:
+        class: Qissues\Console\Output\TableRenderer
+
+    console.output.issues_views.detailed:
+        class: Qissues\Console\Output\IssuesList\DetailedView
+        arguments:
+            - @console.output.table_renderer
+    console.output.issues_views.basic:
+        class: Qissues\Console\Output\IssuesList\BasicView
+        arguments:
+            - @console.output.table_renderer
+
+    console.output.issues_views.tiny:
+        class: Qissues\Console\Output\IssuesList\TinyView
 
     yaml_parser:
         class: Symfony\Component\Yaml\Parser

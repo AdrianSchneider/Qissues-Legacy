@@ -178,4 +178,9 @@ class Application extends BaseApplication
         $containerFactory = new ContainerFactory();
         $this->container = $containerFactory->create();
     }
+
+    public function getContainer()
+    {
+        return $this->container;
+    }
 }

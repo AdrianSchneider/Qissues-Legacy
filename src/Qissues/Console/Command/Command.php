@@ -11,6 +11,16 @@ use Symfony\Component\Process\Process;
 
 class Command extends BaseCommand
 {
+    public function get($service)
+    {
+        return $this->getApplication()->getContainer()->get($service);
+    }
+
+    public function getParameter($parameter)
+    {
+        return $this->getApplication()->getContainer()->getParameter($service);
+    }
+
     /**
      * Get the requested ID
      *

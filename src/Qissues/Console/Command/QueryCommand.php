@@ -2,7 +2,6 @@
 
 namespace Qissues\Console\Command;
 
-use Qissues\Input\CriteriaBuilder;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -47,12 +46,14 @@ class QueryCommand extends Command
 
         if ($input->getOption('web')) {
             return exec(sprintf(
-                'xdg-open %s', // TODO
+                '%s %s',
+                $this->getParameter('console.browser.command'),
                 escapeshellarg($tracker->getBrowseUrl())
             ));
         }
 
-        $issues = $tracker->query($this->createCriteria($input));
+        $criteria = $this->get('console.input.criteria_builder')->build($input);
+        $issues = $tracker->query($criteria);
         if (!$issues) {
             return $output->writeln("<info>No issues found!</info>");
         }
@@ -69,151 +70,6 @@ class QueryCommand extends Command
             }
         }
 
-        if ($size == 'detailed') {
-            return $this->renderDetailedView($issues, $output);
-        }
-
-        if ($size == 'basic') {
-            return $this->renderBasicView($issues, $output);
-        }
-
-        return $this->renderTinyView($issues, $output);
-    }
-
-    /**
-     * Renders a detailed table view of the issues
-     *
-     * @param array issues from connector
-     * @param OutputInterface
-     */
-    protected function renderDetailedView(array $issues, OutputInterface $output)
-    {
-        list($width, $height) = $this->getApplication()->getTerminalDimensions();
-
-        $renderIssues = array();
-        foreach ($issues as $issue) {
-            $title = $issue->getTitle();
-            $renderIssues[] = array(
-                '#'            => $issue->getId(),
-                'Title'        => strlen($title) > $width * 0.4
-                    ? (substr($title, 0, $width * 0.4) . '...')
-                    : $title,
-                'Status'       => $issue['status'],
-                'Type'         => $issue['type'],
-                'Priority'     => $issue['priority'],
-                'Assignee'     => $issue['assignee'],
-                'Date Created' => $issue->getDateCreated()->format('Y-m-d g:ia'),
-                'Date updated' => $issue->getDateUpdated()->format('Y-m-d g:ia'),
-                'Comments'     => $issue->getCommentCount()
-            );
-        }
-
-        $renderer = new \Qissues\Renderer\TableRenderer();
-        $output->writeln($renderer->render($renderIssues, $width));
-    }
-
-    /**
-     * Renders a basic view of the issues
-     *
-     * @param array issues from connector
-     * @param OutputInterface
-     */
-    protected function renderBasicView(array $issues, OutputInterface $output)
-    {
-        list($width, $height) = $this->getApplication()->getTerminalDimensions();
-
-        $renderIssues = array();
-        foreach ($issues as $issue) {
-            $renderIssues[] = array(
-                'Id'           => $issue['id'],
-                'Title'        => strlen($issue['title']) > $width * 0.4
-                    ? (substr($issue['title'], 0, $width * 0.4) . '...')
-                    : $issue['title'],
-                'Status'       => $issue['status'],
-                'Type'         => $issue['type'],
-                'P'            => $issue['priority'],
-                'Date updated' => $issue['updated']->format('Y-m-d g:ia')
-            );
-        }
-
-        $renderer = new \Qissues\Renderer\TableRenderer();
-        $output->writeln($renderer->render($renderIssues, $width));
-    }
-
-    /**
-     * Renders a tiny view for sidebars (ex in tmux)
-     *
-     * @param array issues from connector
-     * @param OutputInterface
-     */
-    protected function renderTinyView(array $issues, OutputInterface $output)
-    {
-        list($width, $height) = $this->getApplication()->getTerminalDimensions();
-
-        $priorities = array(
-            5 => '▲',
-            4 => '▴',
-            3 => '-',
-            2 => '▾',
-            1 => '▼'
-        );
-        $types = array(
-            'bug' => '<p5>B</p5>'
-        );
-
-        $maxLength = 0;
-        foreach ($issues as $issue) {
-            if (strlen($issue['id']) > $maxLength) {
-                $maxLength = strlen($issue['id']);
-            }
-        }
-
-        $allowedSize = $width
-            - 4          // icons
-            - $maxLength // number area
-            - 1          // space
-        ;
-
-        foreach ($issues as $issue) {
-            $output->writeln(sprintf(
-                '%s %s <comment>%s%d</comment> <message>%s</message>',
-                $priorities[$issue['priority']],
-                $issue['type'] == 'bug' ? $types['bug'] : ' ',
-                str_repeat(' ', $maxLength - strlen($issue['id'])),
-                $issue['id'],
-                strlen($issue['title']) > $allowedSize
-                    ? (substr($issue['title'], 0, $allowedSize - 3) . '...')
-                    : $issue['title']
-            ));
-        }
-    }
-
-    /**
-     * Converts the Input into something our connector can understand
-     * TODO convert to Filter objecft
-     *
-     * @param InputInterface
-     * @return array of options
-     */
-    protected function createCriteria(InputInterface $input)
-    {
-        $criteriaBuilder = new CriteriaBuilder();
-        return $criteriaBuilder->build($input);
-
-        // TODO reports
-
-        /*
-        $config = $this->getApplication()->getConfig();
-        if ($report = $input->getOption('report') and empty($config['reports'][$report])) {
-            throw new \LogicException('Invalid report.');
-        }
-        if (count($_SERVER['argv']) == 1 and !empty($config['reports']['default'])) {
-            return $config['reports']['default'];
-        }
-        if ($report) {
-            return $config['reports'][$report];
-        }
-        */
-
+        return $this->get('console.output.issues_views.' . $size)->render($issues, $output, $width, $height);
     }
 }

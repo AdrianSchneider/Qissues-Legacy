@@ -24,54 +24,15 @@ class EditCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $connector = $this->getApplication()->getConnector();
-        if (!$issue = $connector->find($this->getIssueId($input))) {
+        $tracker = $this->getApplication()->getTracker();
+        $number = new Number($this->getIssueId($input));
+        if (!$issue = $tracker->lookup($number)) {
             return $output->writeln('<error>Issue not found.</error>');
         }
 
-        $changes = $this->getIssueDetailsFromExternal($connector, $issue);
-        $connector->update($changes, $issue);
+        $issueFactory = new ExternalIssueFactory(/* ... */);
+        $tracker->update($issueFactory->updateForTracker($tracker, $issue));
 
         $output->writeln("Issue <info>#$issue[id]</info> has been updated");
-    }
-
-    /**
-     * Fetch input from user input
-     * @param Connector $connector
-     * @return array issue details
-     */
-    protected function getIssueDetailsFromExternal(Connector $connector, array $issue)
-    {
-        $template = '';
-        foreach ($connector->getEditorFields() as $key => $value) {
-            if (isset($issue[$key])) {
-                $value = $issue[$key];
-            }
-            $template .= "$key: $value\n";
-        }
-        $template .= "---\n$issue[description]";
-
-        $input = new TemplatedInput(new Parser());
-        return $input->parse($this->getFromEditor($template));
-    }
-
-    /**
-     * Load template into temp file, open in editor, 
-     * and return content once closed.
-     *
-     * @param string $template initial file contents
-     * @return string user input
-     */
-    protected function getFromEditor($template)
-    {
-        $filename = tempnam('.', 'qissues');
-        file_put_contents($filename, $template);
-        
-        $editor = getenv('EDITOR') ?: 'vim';
-        exec("$editor $filename > `tty`");
-        $content = file_get_contents($filename);
-
-        unlink($filename);
-        return $content;
     }
 }

@@ -7,38 +7,13 @@ use Qissues\Model\Comment;
 use Qissues\Model\NewIssue;
 use Qissues\Model\NewComment;
 use Qissues\Model\User;
+use Qissues\Format\IssueConverter;
+use Qissues\Format\CommentConverter;
 
-class GitHubConverter
+class GitHubConverter implements IssueConverter, CommentConverter
 {
     /**
-     * Convert a NewIssue to a GitHub-ready array
-     * @param NewIssue $issue
-     * @return array issue
-     */
-    public function toArray(NewIssue $issue)
-    {
-        $new = array(
-            'title' => $issue->getTitle(),
-            'body'  => $issue->getDescription()
-        );
-
-        if (!empty($issue['labels'])) {
-            $new['labels'] = $issue['labels'];
-        }
-        if (!empty($issue['milestone'])) {
-            $new['milestone'] = $issue['milestone'];
-        }
-        if (!empty($issue['assignee'])) {
-            $new['assignee'] = $issue['assignee'];
-        }
-
-        return $new;
-    }
-
-    /**
-     * Convert a github issue to a real Issue
-     * @param array $issue
-     * @return Issue
+     * {@inheritDoc}
      */
     public function toIssue(array $issue)
     {
@@ -60,7 +35,43 @@ class GitHubConverter
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function toNewIssue(array $input)
+    {
+        return new NewIssue(
+            $input['title'],
+            $input['body']
+        );
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function issueToArray(NewIssue $issue)
+    {
+        $new = array(
+            'title' => $issue->getTitle(),
+            'body'  => $issue->getDescription()
+        );
+
+        if (!empty($issue['labels'])) {
+            $new['labels'] = $issue['labels'];
+        }
+        if (!empty($issue['milestone'])) {
+            $new['milestone'] = $issue['milestone'];
+        }
+        if (!empty($issue['assignee'])) {
+            $new['assignee'] = $issue['assignee'];
+        }
+
+        return $new;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function commentToArray(NewComment $comment)
     {
         return array(
@@ -74,9 +85,7 @@ class GitHubConverter
     }
 
     /**
-     * Converts a github comment to a Comment
-     * @param array $comment from github
-     * @return Comment
+     * {@inheritDoc}
      */
     public function toComment(array $comment)
     {
@@ -88,5 +97,13 @@ class GitHubConverter
             ),
             new \DateTime($comment['created_at'])
         );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function toNewComment(array $comment)
+    {
+        return new NewComment();
     }
 }

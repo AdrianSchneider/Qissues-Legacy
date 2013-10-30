@@ -1,8 +1,8 @@
 <?php
 
-namespace Qissues\Tests\Input;
+namespace Qissues\Tests\Console\Input;
 
-use Qissues\Input\TemplatedInput;
+use Qissues\Console\Input\TemplatedInput;
 
 class TemplatedInputTest extends \PHPUnit_Framework_TestCase
 {

@@ -80,21 +80,6 @@ class GitHubConverter implements IssueConverter, CommentConverter
     /**
      * {@inheritDoc}
      */
-    public function commentToArray(NewComment $comment)
-    {
-        return array(
-            'body' => $comment->getMessage(),
-            'user' => array(
-                'login' => $comment->getAuthor()->getAccount(),
-                'id' => $comment->getAuthor()->getId()
-            ),
-            'created_at' => $comment->getDate()
-        );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function toComment(array $comment)
     {
         return new Comment(
@@ -113,5 +98,19 @@ class GitHubConverter implements IssueConverter, CommentConverter
     public function toNewComment(array $comment)
     {
         return new NewComment();
+    }
+    /**
+     * {@inheritDoc}
+     */
+    public function commentToArray(NewComment $comment)
+    {
+        return array(
+            'body' => $comment->getMessage(),
+            'user' => array(
+                'login' => $comment->getAuthor()->getAccount(),
+                'id' => $comment->getAuthor()->getId()
+            ),
+            'created_at' => $comment->getDate()
+        );
     }
 }

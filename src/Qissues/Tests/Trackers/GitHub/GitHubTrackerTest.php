@@ -41,7 +41,7 @@ class GitHubTrackerTest extends \PHPUnit_Framework_TestCase
         $tracker = new GitHubTracker($this->config, $this->client, $converter);
         $issue = $tracker->lookup(new Number(5));
 
-        $this->assertEquals('issue', $issue);
+        $this->assertEquals($out, $issue);
     }
 
     public function testQuery()

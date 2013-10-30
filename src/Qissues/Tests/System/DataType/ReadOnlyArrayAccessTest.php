@@ -1,8 +1,8 @@
 <?php
 
-namespace Qissues\Tests\Format;
+namespace Qissues\Tests\System\Format;
 
-use Qissues\Format\ReadOnlyArrayAccess;
+use Qissues\System\DataType\ReadOnlyArrayAccess;
 
 class ReadOnlyArrayAccessTest extends \PHPUnit_Framework_TestCase
 {

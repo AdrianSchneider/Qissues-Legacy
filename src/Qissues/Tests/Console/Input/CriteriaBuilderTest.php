@@ -3,8 +3,8 @@
 namespace Qissues\Tests\Input;
 
 use Qissues\Model\Number;
-use Qissues\Command\QueryCommand;
-use Qissues\Input\CriteriaBuilder;
+use Qissues\Console\Command\QueryCommand;
+use Qissues\Console\Input\CriteriaBuilder;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;

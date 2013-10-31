@@ -148,7 +148,9 @@ class GitHubRepository implements IssueRepository
      */
     public function assign(Number $issue, User $user)
     {
-        throw new \Exception('not yet implemented');
+        $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->config['repository'], $issue->getNumber()));
+        $request->setBody(json_encode(array('assignee' => $user->getAccount())), 'application/json');
+        $request->send();
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace Qissues\Console\Command;
 
+use Qissues\Model\Number;
+use Qissues\Model\Meta\User;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -23,41 +25,25 @@ class AssignCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        throw new \Exception('work in progress');
-        $connector = $this->getApplication()->getConnector();
-        if (!$issue = $connector->find($this->getIssueId($input))) {
-            return $output->writeln('<error>Issue not found.</error>');
+        $tracker = $this->getApplication()->getTracker();
+        $repository = $tracker->getRepository();
+
+        $number = new Number($this->get('console.input.git_id')->getId($input));
+        if (!$issue = $repository->lookup($number)) {
+            $output->writeln('<error>Issue not found.</error>');
+            return 1;
         }
 
         if (!$assignee = $input->getArgument('assignee')) {
-            return $output->writeln("<error>No assignee</error>");
+            $output->writeln("<error>No assignee</error>");
+            return 1;
         }
 
-        $message = trim($input->getOption('message') ?: $this->getComment());
-        $connector->assign($issue, $assignee = $input->getArgument('assignee'));
-
-        if ($message) {
-            $connector->comment($issue, $message);
+        if ($message = $input->getOption('message')) {
+            throw new \Exception('work in progress');
         }
 
+        $repository->assign($number, new User($assignee));
         $output->writeln("Issue <info>#$issue[id]</info> has been assigned to <info>$assignee</info>");
-    }
-
-    protected function getComment()
-    {
-        $default = 'Leave a comment?';
-        $filename = tempnam('.', 'qissues');
-        file_put_contents($filename, $default);
-        $editor = getenv('EDITOR') ?: 'vim';
-        exec("$editor $filename > `tty`");
-        $data = trim(file_get_contents($filename));
-        unlink($filename);
-
-        if ($data == $default) {
-            $data = '';
-        }
-
-
-        return $data;
     }
 }

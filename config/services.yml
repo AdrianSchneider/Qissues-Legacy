@@ -2,8 +2,19 @@ parameters:
     console.editor: "vim"
     console.tmp_file.prefix: "qissues"
     console.browser.command:
+    console.input.default_strategy: "edit"
 
 services:
+    console.input.issue_strategy.edit:
+        class: Qissues\Console\Input\Strategy\EditIssueStrategy
+        arguments:
+            - @console.input.external_editor
+            - @console.input.format.frontmatter
+
+    console.input.issue_strategy.interactive:
+        class: Qissues\Console\Input\Strategy\InteractiveIssueStrategy
+
+
     console.input.git_id:
         class: Qissues\Console\Input\GitId
 
@@ -15,12 +26,6 @@ services:
         arguments:
             - %console.editor%
             - %console.tmp_file.prefix%
-
-    console.input.external_issue_factory:
-        class: Qissues\Console\Input\ExternalIssueFactory
-        arguments:
-            - @console.input.external_editor
-            - @console.input.format.frontmatter
 
     console.input.format.frontmatter:
         class: Qissues\Console\Input\FileFormats\FrontMatterFormat

@@ -18,17 +18,37 @@ class CreateCommand extends Command
         $this
             ->setName('create')
             ->setDescription('Create a new issue')
+            ->setDefinition(array(
+                new InputOption('strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy')
+            ))
         ;
     }
-    
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tracker = $this->getApplication()->getTracker();
         $repository = $tracker->getRepository();
 
-        $issueFactory = $this->get('console.input.external_issue_factory');
-        $number = $repository->persist($issueFactory->createForTracker($tracker));
+        if (!$strategy = $this->getStrategy($input)) {
+            $output->writeln("<error>Invalid issue creation strategy specified</error>");
+            return 1;
+        }
+
+        $strategy->init($input, $output, $this->getApplication());
+        $number = $repository->persist($strategy->createNew($tracker));
 
         $output->writeln("Issue <info>#$number</info> has been created");
+    }
+
+    protected function getStrategy(InputInterFace $input)
+    {
+        $selected = $input->getOption('strategy') ?: $this->getParameter('console.input.default_strategy');
+        $strategy = sprintf('console.input.issue_strategy.%s', $selected);
+
+        if (!$this->getApplication()->getContainer()->has($strategy)) {
+            return;
+        }
+
+        return $this->get($strategy);
     }
 }

@@ -37,7 +37,8 @@ class GitHubMapping implements FieldMapping
             'title' => '',
             'assignee' => 'me',
             'types' => '',
-            'milestone' => ''
+            'milestone' => '',
+            'description' => ''
         );
     }
 

@@ -18,6 +18,6 @@ class Command extends BaseCommand
 
     public function getParameter($parameter)
     {
-        return $this->getApplication()->getContainer()->getParameter($service);
+        return $this->getApplication()->getContainer()->getParameter($parameter);
     }
 }

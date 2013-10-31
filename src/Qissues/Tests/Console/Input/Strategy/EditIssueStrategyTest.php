@@ -1,22 +1,22 @@
 <?php
 
-namespace Qissues\Tests\Console\Input;
+namespace Qissues\Tests\Console\Input\Strategy;
 
 use Qissues\Model\Issue;
 use Qissues\Model\Meta\Status;
 use Qissues\Model\Tracker\IssueTracker;
-use Qissues\Console\Input\ExternalIssueFactory;
+use Qissues\Console\Input\Strategy\EditIssueStrategy;
 
-class ExternalIssueFactoryTest extends \PHPUnit_Framework_TestCase
+class EditIssueStrategyTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCreateForTracker()
+    public function testCreateNew()
     {
         $template = 'enter input here';
         $content = 'user input';
         $parsed = array('user input');
         $fields = array('title' => 'hello');
 
-        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormat')->disableOriginalConstructor()->getMock();
+        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
         $fileFormat
             ->expects($this->once())
             ->method('seed')
@@ -58,13 +58,13 @@ class ExternalIssueFactoryTest extends \PHPUnit_Framework_TestCase
             )
         ;
 
-        $issueFactory = new ExternalIssueFactory($editor, $fileFormat);
-        $issue = $issueFactory->createForTracker($tracker);
+        $issueFactory = new EditIssueStrategy($editor, $fileFormat);
+        $issue = $issueFactory->createNew($tracker);
 
         $this->assertInstanceOf('Qissues\Model\Posting\NewIssue', $issue);
     }
 
-    public function testUpdateForTracker()
+    public function testUpdateExisting()
     {
         $template = 'enter input here';
         $content = 'user input';
@@ -73,7 +73,7 @@ class ExternalIssueFactoryTest extends \PHPUnit_Framework_TestCase
 
         $issue = new Issue(1, 'title', 'desc', new Status('open'), new \DateTime, new \DateTime);
 
-        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormat')->disableOriginalConstructor()->getMock();
+        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
         $fileFormat
             ->expects($this->once())
             ->method('seed')
@@ -115,8 +115,8 @@ class ExternalIssueFactoryTest extends \PHPUnit_Framework_TestCase
             )
         ;
 
-        $issueFactory = new ExternalIssueFactory($editor, $fileFormat);
-        $issue = $issueFactory->updateForTracker($tracker, $issue);
+        $issueFactory = new EditIssueStrategy($editor, $fileFormat);
+        $issue = $issueFactory->updateExisting($tracker, $issue);
 
         $this->assertInstanceOf('Qissues\Model\Posting\NewIssue', $issue);
     }

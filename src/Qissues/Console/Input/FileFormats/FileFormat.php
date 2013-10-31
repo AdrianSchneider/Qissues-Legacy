@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Console\Input;
+namespace Qissues\Console\Input\FileFormats;
 
 interface FileFormat
 {

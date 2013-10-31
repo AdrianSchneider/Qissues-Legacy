@@ -16,7 +16,10 @@ class EditCommand extends Command
         $this
             ->setName('edit')
             ->setDescription('Edit an existing issue')
-            ->addArgument('issue', InputArgument::OPTIONAL, 'The issue ID')
+            ->setDefinition(array(
+                new InputArgument('issue', InputArgument::OPTIONAL, 'The Issue ID'),
+                new InputOption('strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy')
+            ))
         ;
     }
 
@@ -31,9 +34,26 @@ class EditCommand extends Command
             return 1;
         }
 
-        $issueFactory = $this->get('console.input.external_issue_factory');
-        $repository->update($issueFactory->updateForTracker($tracker, $issue), $number);
+        if (!$strategy = $this->getStrategy($input)) {
+            $output->writeln("<error>Invalid issue modification strategy specified</error>");
+            return 1;
+        }
+
+        $strategy->init($input, $output, $this->getApplication());
+        $number = $repository->update($strategy->updateExisting($tracker, $issue), $number);
 
         $output->writeln("Issue <info>#$number</info> has been updated");
+    }
+
+    protected function getStrategy(InputInterFace $input)
+    {
+        $selected = $input->getOption('strategy') ?: $this->getParameter('console.input.default_strategy');
+        $strategy = sprintf('console.input.issue_strategy.%s', $selected);
+
+        if (!$this->getApplication()->getContainer()->has($strategy)) {
+            return;
+        }
+
+        return $this->get($strategy);
     }
 }

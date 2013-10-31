@@ -23,7 +23,7 @@ class GitHubMapping implements FieldMapping
 
     }
 
-    public function getFields()
+    public function getEditFields()
     {
         return array(
             'title' => '',
@@ -71,7 +71,8 @@ class GitHubMapping implements FieldMapping
     {
         return new NewIssue(
             $input['title'],
-            $input['description']
+            $input['description'],
+            !empty($input['assignee']) ? new User($input['assignee']) : null
         );
     }
 
@@ -85,6 +86,11 @@ class GitHubMapping implements FieldMapping
             'body'  => $issue->getDescription()
         );
 
+        if ($issue->getAssignee()) {
+            $new['assignee'] = $issue->getAssignee()->getAccount();
+        }
+
+        /*
         if (!empty($issue['labels'])) {
             $new['labels'] = $issue['labels'];
         }
@@ -94,6 +100,7 @@ class GitHubMapping implements FieldMapping
         if (!empty($issue['assignee'])) {
             $new['assignee'] = $issue['assignee'];
         }
+         */
 
         return $new;
     }

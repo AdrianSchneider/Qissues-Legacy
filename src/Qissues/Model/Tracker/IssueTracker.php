@@ -18,7 +18,7 @@ class IssueTracker
         return $this->repository;
     }
 
-    public function getMappping()
+    public function getMapping()
     {
         return $this->mapping;
     }

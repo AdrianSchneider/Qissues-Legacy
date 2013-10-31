@@ -29,8 +29,8 @@ class GitHubMappingTest extends \PHPUnit_Framework_TestCase
 
     public function testToNewIssueCreatesANewIssue()
     {
-        $converter = new GitHubMapping();
-        $issue = $converter->toNewIssue(array(
+        $mapping = new GitHubMapping();
+        $issue = $mapping->toNewIssue(array(
             'title' => 'Hello World',
             'description' => 'Oh snap'
         ));

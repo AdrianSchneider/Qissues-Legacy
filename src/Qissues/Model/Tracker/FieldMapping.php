@@ -10,6 +10,8 @@ interface FieldMapping
     function map($dtoField);
     function reverseMap($issueField);
 
+    function getEditFields();
+
     /**
      * Creates an Issue from raw data
      * @param array $issue

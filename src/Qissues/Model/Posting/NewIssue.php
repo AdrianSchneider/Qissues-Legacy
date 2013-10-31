@@ -2,6 +2,8 @@
 
 namespace Qissues\Model\Posting;
 
+use Qissues\Model\Meta\User;
+use Qissues\Model\Meta\Priority;
 use Qissues\System\DataType\ReadOnlyArrayAccess;
 
 class NewIssue extends ReadOnlyArrayAccess

@@ -14,10 +14,9 @@ services:
     tracker.github.repository:
         class: Qissues\Trackers\GitHub\GitHubRepository
         arguments:
-            -
-                repository: %github.repository%
-                username: %github.username%
-                password: %github.password%
+            - %github.repository%
+            - %github.username%
+            - %github.password%
             - @tracker.github.mapping
 
     tracker.github.mapping:

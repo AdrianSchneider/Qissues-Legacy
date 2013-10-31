@@ -15,13 +15,17 @@ use Guzzle\Http\Client;
 class GitHubRepository implements IssueRepository
 {
     /**
-     * @param array $config connector config
+     * @param string $repository
+     * @param string username
+     * @param string password
      * @param IssueTracker $tracker
      * @param Client|null $client to override
      */
-    public function __construct(array $config, FieldMapping $mapping, Client $client = null)
+    public function __construct($repository, $username, $password, FieldMapping $mapping, Client $client = null)
     {
-        $this->config  = $config;
+        $this->repository = $repository;
+        $this->username = $username;
+        $this->password = $password;
         $this->mapping = $mapping;
         $this->client  = $client ?: new Client('https://api.github.com/', array('ssl.certificate_authority' => 'system'));
     }
@@ -31,7 +35,7 @@ class GitHubRepository implements IssueRepository
      */
     public function getUrl()
     {
-        return sprintf('https://github.com/%s/issues', $this->config['repository']);
+        return sprintf('https://github.com/%s/issues', $this->repository);
     }
 
     /**
@@ -49,7 +53,7 @@ class GitHubRepository implements IssueRepository
      */
     public function lookupUrl(Number $issue)
     {
-        return sprintf('https://github.com/%s/issues/%d', $this->config['repository'], (string)$issue);
+        return sprintf('https://github.com/%s/issues/%d', $this->repository, (string)$issue);
     }
 
     /**
@@ -57,7 +61,7 @@ class GitHubRepository implements IssueRepository
      */
     public function query(SearchCriteria $criteria)
     {
-        $request = $this->request('GET', sprintf('/repos/%s/issues', $this->config['repository']));
+        $request = $this->request('GET', sprintf('/repos/%s/issues', $this->repository));
         foreach ($this->convertCriteriaToQuery($criteria) as $key => $value) {
             $request->getQuery()->set($key, $value);
         }
@@ -101,7 +105,7 @@ class GitHubRepository implements IssueRepository
      */
     public function persist(NewIssue $issue)
     {
-        $request = $this->request('POST', sprintf('/repos/%s/issues', $this->config['repository']));
+        $request = $this->request('POST', sprintf('/repos/%s/issues', $this->repository));
         $request->setBody(json_encode($this->mapping->issueToArray($issue)), 'application/json');
         $response = $request->send()->json();
         return new Number($response['number']);
@@ -112,7 +116,7 @@ class GitHubRepository implements IssueRepository
      */
     public function update(NewIssue $issue, Number $number)
     {
-        $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->config['repository'], $number->getNumber()));
+        $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->repository, $number->getNumber()));
         $request->setBody(json_encode($this->mapping->issueToArray($issue)), 'application/json');
         $request->send();
     }
@@ -148,7 +152,7 @@ class GitHubRepository implements IssueRepository
      */
     public function assign(Number $issue, User $user)
     {
-        $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->config['repository'], $issue->getNumber()));
+        $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->repository, $issue->getNumber()));
         $request->setBody(json_encode(array('assignee' => $user->getAccount())), 'application/json');
         $request->send();
     }
@@ -163,7 +167,7 @@ class GitHubRepository implements IssueRepository
     protected function request($method, $url)
     {
         $request = call_user_func(array($this->client, $method), $url);
-        $request->setAuth($this->config['username'], $this->config['password']);
+        $request->setAuth($this->username, $this->password);
         return $request;
     }
 
@@ -176,6 +180,6 @@ class GitHubRepository implements IssueRepository
      */
     protected function getIssueUrl(Number $number, $append = '')
     {
-        return sprintf('/repos/%s/issues/%d%s', $this->config['repository'], $number->getNumber(), $append);
+        return sprintf('/repos/%s/issues/%d%s', $this->repository, $number->getNumber(), $append);
     }
 }

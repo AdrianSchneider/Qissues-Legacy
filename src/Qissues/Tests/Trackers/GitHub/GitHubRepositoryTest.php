@@ -24,6 +24,17 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    protected function getRepository($mapping)
+    {
+        return new GitHubRepository(
+            $this->config['username'],
+            $this->config['password'],
+            $this->config['repository'],
+            $mapping,
+            $this->client
+        );
+    }
+
     public function testLookup()
     {
         $payload = array('issue_datas' => 'yup');
@@ -38,7 +49,7 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $this->mock->addResponse(new Response(200, null, json_encode($payload)));
 
-        $tracker = new GitHubRepository($this->config, $mapping, $this->client);
+        $tracker = $this->getRepository($mapping);
         $issue = $tracker->lookup(new Number(5));
 
         $this->assertEquals($out, $issue);
@@ -58,7 +69,7 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $this->mock->addResponse(new Response(200, null, json_encode($payload)));
 
-        $tracker = new GitHubRepository($this->config, $mapping, $this->client);
+        $tracker = $this->getRepository($mapping);
         $issues = $tracker->query(new SearchCriteria());
 
         $this->assertCount(1, $issues);
@@ -72,7 +83,7 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
         $criteria->addStatus(new Status('b'));
 
         $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
-        $tracker = new GitHubRepository($this->config, $mapping, $this->client);
+        $tracker = $this->getRepository($mapping);
 
         $this->setExpectedException('DomainException');
         $tracker->query($criteria);
@@ -92,7 +103,7 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $this->mock->addResponse(new Response(200, null, json_encode($payload)));
 
-        $tracker = new GitHubRepository($this->config, $mapping, $this->client);
+        $tracker = $this->getRepository($mapping);
         $comments = $tracker->findComments(new Number(1));
 
         $this->assertCount(1, $comments);

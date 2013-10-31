@@ -12,17 +12,17 @@ class FeatureSetTest extends \PHPUnit_Framework_TestCase
     {
         $feature = new Feature('something');
         $level = new SupportLevel();
-        $level->setSingle();
+        $level->set('single');
 
         $features = new FeatureSet();
         $features->add($feature, $level);
 
-        $this->assertTrue($features->supports($feature, SupportLevel::SINGLE));
+        $this->assertTrue($features->supports('something', SupportLevel::SINGLE));
     }
 
     public function testReturnsFalseIfNotAdded()
     {
         $features = new FeatureSet();
-        $this->assertFalse($features->supports(new Feature('made up'), SupportLevel::SINGLE));
+        $this->assertFalse($features->supports('made up', SupportLevel::SINGLE));
     }
 }

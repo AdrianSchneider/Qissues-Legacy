@@ -33,15 +33,15 @@ class DetailedView
                 'Comments'     => $issue->getCommentCount()
             );
 
-            if (!$features->doesSupport($types = new Feature('types'))) {
+            if (!$features->doesSupport('types')) {
                 unset($row['Type']);
-            } elseif ($row['Type'] and $features->supports($types, SupportLevel::MULTIPLE)) {
+            } elseif ($row['Type'] and $features->supports('types', 'multiple')) {
                 $row['Type'] = implode(', ', array_map('strval', $row['Type']));
             } else {
                 $row['Type'] = '';
             }
 
-            if (!$features->doesSupport(new Feature('priorities'))) {
+            if (!$features->doesSupport('priorities')) {
                 unset($row['Priority']);
             }
 

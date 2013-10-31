@@ -1,6 +1,6 @@
 parameters:
-    github.repository: 
-    github.username: 
+    github.repository:
+    github.username:
     github.password:
 
 services:
@@ -14,7 +14,7 @@ services:
     tracker.github.repository:
         class: Qissues\Trackers\GitHub\GitHubRepository
         arguments:
-            - 
+            -
                 repository: %github.repository%
                 username: %github.username%
                 password: %github.password%
@@ -26,7 +26,9 @@ services:
     tracker.github.features:
         class: Qissues\Model\Tracker\Support\FeatureSet
         factory_service: tracker.github.features_builder
-        factory_method: build
+        factory_method: buildFor
+        arguments:
+             - @support.catalog
 
     tracker.github.features_builder:
         class: Qissues\Trackers\GitHub\GitHubSupport

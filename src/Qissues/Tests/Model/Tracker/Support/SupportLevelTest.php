@@ -14,10 +14,18 @@ class SupportLevelTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($support->supports(SupportLevel::DYNAMIC));
     }
 
+    public function testSetThrowsExceptionIfInvalidLevel()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+
+        $support = new SupportLevel();
+        $support->set('unknown');
+    }
+
     public function testCanAddAndCheck()
     {
         $support = new SupportLevel();
-        $support->setSingle();
+        $support->set('single');
 
         $this->assertTrue($support->supports(SupportLevel::NONE));
         $this->assertTrue($support->supports(SupportLevel::SINGLE));
@@ -25,26 +33,26 @@ class SupportLevelTest extends \PHPUnit_Framework_TestCase
 
     public function testCannotSetSingleAfterMultiple()
     {
-        $support = new SupportLevel();
-        $support->setMultiple();
-
         $this->setExpectedException('DomainException');
-        $support->setSingle();
+
+        $support = new SupportLevel();
+        $support->set('multiple');
+        $support->set('single');
     }
 
     public function testCannotSetMultipleAfterSingle()
     {
-        $support = new SupportLevel();
-        $support->setSingle();
-
         $this->setExpectedException('DomainException');
-        $support->setMultiple();
+
+        $support = new SupportLevel();
+        $support->set('single');
+        $support->set('multiple');
     }
 
     public function testSupportedWhenAtLeastOneLevel()
     {
         $support = new SupportLevel();
-        $support->setSingle();
+        $support->set('single');
         $this->assertTrue($support->isSupported());
     }
 

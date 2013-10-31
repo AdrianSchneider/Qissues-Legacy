@@ -5,21 +5,32 @@ namespace Qissues\Trackers\GitHub;
 use Qissues\Model\Tracker\Support\Feature;
 use Qissues\Model\Tracker\Support\FeatureSet;
 use Qissues\Model\Tracker\Support\FeatureSetBuilder;
+use Qissues\Model\Tracker\Support\FeatureCatalog;
 use Qissues\Model\Tracker\Support\SupportLevel;
 
 class GitHubSupport implements FeatureSetBuilder
 {
-    public function build()
+    /**
+     * {@inheritDoc}
+     */
+    public function buildFor(FeatureCatalog $catalog)
     {
-        $features = new FeatureSet();
-        $features->add(new Feature('milestones'), $this->level()->setSingle()->setDynamic());
-        $features->add(new Feature('types'),      $this->level()->setMultiple()->setDynamic());
-        $features->add(new Feature('statuses'),   $this->level()->setSingle());
+        $features = new FeatureSet($catalog);
+        $features->add($catalog->get('milestones'), $this->level('single', 'dynamic'));
+        $features->add($catalog->get('types'),      $this->level('multiple', 'dynamic'));
+        $features->add($catalog->get('statuses'),   $this->level('single'));
         return $features;
     }
 
-    protected function level()
+    /**
+     * Define a level with multiple steps at once
+     * @param string, [string, [string, ...]]
+     * @return SupportLevel
+     */
+    protected function level($args)
     {
-        return new SupportLevel();
+        $level = new SupportLevel();
+        foreach (func_get_args() as $amount) { $level->set($amount); }
+        return $level;
     }
 }

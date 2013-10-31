@@ -4,7 +4,7 @@ namespace Qissues\Model\Tracker\Support;
 
 class FeatureSet
 {
-    protected $features;
+    protected $features = array();
 
     /**
      * Adds support for Feature
@@ -18,25 +18,30 @@ class FeatureSet
 
     /**
      * Check to see if the feature set supports Feature at Level
-     * @param Feature $feature
-     * @param integer $level
+     * @param string $featureName
+     * @param string $levelName
      * @return boolean true if supported
      */
-    public function supports(Feature $feature, $level)
+    public function supports($featureName, $levelName)
     {
-        if (!isset($this->features[$feature->getName()])) {
+        if (!isset($this->features[$featureName])) {
             return false;
         }
 
-        return $this->features[$feature->getName()]->supports($level);
+        return $this->features[$featureName]->supports($levelName);
     }
 
-    public function doesSupport(Feature $feature)
+    /**
+     * Check to see if $featureName is supported at all
+     * @param string $featureName
+     * @return boolean true if supported
+     */
+    public function doesSupport($featureName)
     {
-        if (!isset($this->features[$feature->getName()])) {
+        if (!isset($this->features[$featureName])) {
             return false;
         }
 
-        return $this->features[$feature->getName()]->isSupported();
+        return $this->features[$featureName]->isSupported();
     }
 }

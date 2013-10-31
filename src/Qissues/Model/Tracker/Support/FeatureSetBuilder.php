@@ -4,5 +4,5 @@ namespace Qissues\Model\Tracker\Support;
 
 interface FeatureSetBuilder
 {
-    function build();
+    function buildFor(FeatureCatalog $catalog);
 }

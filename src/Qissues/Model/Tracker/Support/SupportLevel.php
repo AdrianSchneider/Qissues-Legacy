@@ -11,9 +11,9 @@ class SupportLevel
 
     protected $level;
     protected $levels = array(
-        self::NONE     => 1, 
-        self::SINGLE   => 2, 
-        self::MULTIPLE => 4, 
+        self::NONE     => 1,
+        self::SINGLE   => 2,
+        self::MULTIPLE => 4,
         self::DYNAMIC  => 8
     );
 
@@ -23,45 +23,29 @@ class SupportLevel
     }
 
     /**
-     * Adds single item support
+     * Sets support for a given level
+     *
+     * @param string level
+     * @return SupportLevel $this
+     * @throws InvalidArgumentException with invalid level
+     * @throws DomainException when rules conflict
      */
-    public function setSingle()
+    public function set($level)
     {
-        if ($this->supports(self::MULTIPLE)) {
+        if (!isset($this->levels[$level])) {
+            throw new \InvalidArgumentException('Invalid level');
+        }
+        if ($level == self::SINGLE and $this->supports(self::MULTIPLE)) {
             throw new \DomainException('Cannot remark a multiple-value feature as single');
         }
-        
-        $this->level ^= $this->levels[self::NONE];
-        $this->level |= $this->levels[self::SINGLE];
-
-        return $this;
-    }
-
-    /**
-     * Adds multiple item support
-     */
-    public function setMultiple()
-    {
-        if ($this->supports(self::SINGLE)) {
+        if ($level == self::MULTIPLE and $this->supports(self::SINGLE)) {
             throw new \DomainException('Cannot remark a single-value feature as multiple');
         }
 
         $this->level ^= $this->levels[self::NONE];
-        $this->level |= $this->levels[self::MULTIPLE];
+        $this->level |= $this->levels[$level];
 
         return $this;
-    }
-
-    /**
-     * Adds dynamic item support
-     */
-    public function setDynamic()
-    {
-        $this->level ^= $this->levels[self::NONE];
-        $this->level |= $this->levels[self::DYNAMIC];
-
-        return $this;
-
     }
 
     /**

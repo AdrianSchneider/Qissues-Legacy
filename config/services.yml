@@ -21,7 +21,7 @@ services:
         arguments:
             - @console.input.external_editor
             - @console.input.templated
-    
+
     console.input.templated:
         class: Qissues\Console\Input\TemplatedInput
         arguments:
@@ -50,6 +50,14 @@ services:
         class: Qissues\Console\Output\WebBrowser
         arguments:
              - %console.browser.command%
+
+    support.catalog_builder:
+        class: Qissues\Model\Tracker\Support\FeatureCatalogBuilder
+
+    support.catalog:
+        class: Qissues\Model\Tracker\Support\FeatureCatalog
+        factory_service: support.catalog_builder
+        factory_method: "build"
 
     yaml_parser:
         class: Symfony\Component\Yaml\Parser

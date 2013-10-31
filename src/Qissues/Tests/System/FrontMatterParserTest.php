@@ -1,8 +1,8 @@
 <?php
 
-namespace Qissues\Tests\Console\Input;
+namespace Qissues\Tests\System;
 
-use Qissues\Console\Input\FrontMatterParser;
+use Qissues\System\FrontMatterParser;
 
 class FrontMatterParserTest extends \PHPUnit_Framework_TestCase
 {

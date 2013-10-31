@@ -12,9 +12,16 @@ class ExternalIssueFactoryTest extends \PHPUnit_Framework_TestCase
         $template = 'enter input here';
         $content = 'user input';
         $parsed = array('user input');
+        $fields = array('title' => 'hello');
 
-        $parser = $this->getMockBuilder('Qissues\Console\Input\FrontMatterParser')->disableOriginalConstructor()->getMock();
-        $parser
+        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormat')->disableOriginalConstructor()->getMock();
+        $fileFormat
+            ->expects($this->once())
+            ->method('seed')
+            ->with($fields)
+            ->will($this->returnValue($template))
+        ;
+        $fileFormat
             ->expects($this->once())
             ->method('parse')
             ->with($content)
@@ -25,7 +32,7 @@ class ExternalIssueFactoryTest extends \PHPUnit_Framework_TestCase
         $editor
             ->expects($this->once())
             ->method('getEdited')
-            ->with($this->stringContains('title: '))
+            ->with($template)
             ->will($this->returnValue($content))
         ;
 
@@ -38,19 +45,18 @@ class ExternalIssueFactoryTest extends \PHPUnit_Framework_TestCase
         $mapping
             ->expects($this->once())
             ->method('getEditFields')
-            ->will($this->returnValue($fields = array(
-                'title' => 'title',
-                'description' => ''
-            )));
+            ->will($this->returnValue($fields))
+        ;
         $mapping
             ->expects($this->once())
             ->method('toNewIssue')
             ->with($parsed)
             ->will($this->returnValue(
                 $this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock())
-            );
+            )
+        ;
 
-        $issueFactory = new ExternalIssueFactory($editor, $parser);
+        $issueFactory = new ExternalIssueFactory($editor, $fileFormat);
         $issue = $issueFactory->createForTracker($tracker);
 
         $this->assertInstanceOf('Qissues\Model\Posting\NewIssue', $issue);

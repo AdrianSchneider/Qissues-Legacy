@@ -20,12 +20,12 @@ services:
         class: Qissues\Console\Input\ExternalIssueFactory
         arguments:
             - @console.input.external_editor
-            - @console.input.frontmatter
+            - @console.input.format.frontmatter
 
-    console.input.frontmatter:
-        class: Qissues\Console\Input\FrontMatterParser
+    console.input.format.frontmatter:
+        class: Qissues\Console\Input\FileFormats\FrontMatterFormat
         arguments:
-            - @yaml_parser
+            - @frontmatter_parser
 
     console.output.table_renderer:
         class: Qissues\Console\Output\TableRenderer
@@ -61,3 +61,8 @@ services:
 
     yaml_parser:
         class: Symfony\Component\Yaml\Parser
+
+    frontmatter_parser:
+        class: Qissues\System\FrontMatterParser
+        arguments:
+             - @yaml_parser

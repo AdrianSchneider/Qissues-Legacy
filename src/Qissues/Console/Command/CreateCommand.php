@@ -25,9 +25,10 @@ class CreateCommand extends Command
     {
         $tracker = $this->getApplication()->getTracker();
         $repository = $tracker->getRepository();
-        $issueFactory = $this->get('console.input.external_issue_factory');
 
+        $issueFactory = $this->get('console.input.external_issue_factory');
         $number = $repository->persist($issueFactory->createForTracker($tracker));
+
         $output->writeln("Issue <info>#$number</info> has been created");
     }
 }

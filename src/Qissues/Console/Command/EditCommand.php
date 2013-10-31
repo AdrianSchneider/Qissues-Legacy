@@ -2,9 +2,7 @@
 
 namespace Qissues\Console\Command;
 
-use Qissues\Connector\Connector;
-use Qissues\Input\TemplatedInput;
-use Symfony\Component\Yaml\Parser;
+use Qissues\Model\Number;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -25,14 +23,17 @@ class EditCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tracker = $this->getApplication()->getTracker();
+        $repository = $tracker->getRepository();
+
         $number = new Number($this->get('console.input.git_id')->getId($input));
-        if (!$issue = $tracker->lookup($number)) {
-            return $output->writeln('<error>Issue not found.</error>');
+        if (!$issue = $repository->lookup($number)) {
+            $output->writeln('<error>Issue not found.</error>');
+            return 1;
         }
 
-        $issueFactory = new ExternalIssueFactory(/* ... */);
-        $tracker->update($issueFactory->updateForTracker($tracker, $issue));
+        $issueFactory = $this->get('console.input.external_issue_factory');
+        $repository->update($issueFactory->updateForTracker($tracker, $issue), $number);
 
-        $output->writeln("Issue <info>#$issue[id]</info> has been updated");
+        $output->writeln("Issue <info>#$number</info> has been updated");
     }
 }

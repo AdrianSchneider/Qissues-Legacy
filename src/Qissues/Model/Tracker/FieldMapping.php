@@ -2,6 +2,7 @@
 
 namespace Qissues\Model\Tracker;
 
+use Qissues\Model\Issue;
 use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
 
@@ -9,8 +10,7 @@ interface FieldMapping
 {
     function map($dtoField);
     function reverseMap($issueField);
-
-    function getEditFields();
+    function getEditFields(Issue $issue = null);
 
     /**
      * Creates an Issue from raw data

@@ -23,8 +23,16 @@ class GitHubMapping implements FieldMapping
 
     }
 
-    public function getEditFields()
+    public function getEditFields(Issue $issue = null)
     {
+        if ($issue) {
+            return array(
+                'title' => $issue->getTitle(),
+                'assignee' => $issue->getAssignee() ? $issue->getAssignee()->getAccount() : '',
+                'description' => $issue->getDescription()
+            );
+        }
+
         return array(
             'title' => '',
             'assignee' => 'me',

@@ -112,7 +112,7 @@ class GitHubRepository implements IssueRepository
      */
     public function update(NewIssue $issue, Number $number)
     {
-        $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->config['repository'], $issue['id']));
+        $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->config['repository'], $number->getNumber()));
         $request->setBody(json_encode($this->mapping->issueToArray($issue)), 'application/json');
         $request->send();
     }

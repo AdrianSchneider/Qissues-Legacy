@@ -16,25 +16,24 @@ Qissues is a command-line interface for interacting with various bug tracking sy
 
 ## Installation
 
-Clone or download the repository, and run `bin/install`. This will compile the software, and place it in your user's bin directory. 
+Clone or download the repository, and run `make install`. This will install it in the current directory to play with. To make it globally available, run `make install`.
 
 If you don't already have `~/bin` in your path, you can add it via:
 
     export PATH="$PATH":~/bin
 
-After that, running `qissues` should show the information.
+After that, running `qissues` from the root of a project.
 
 ## Project Setup
 
-To use qissues with a project, create a `.qissues` file in the root of it. It's also a good idea to add it to your global .gitignore. This is a YML format, and requires at the very least a tracker:
+To use qissues with a project, create a `.qissues` file in the root of it. It's also a good idea to add it to your `~/.gitignore`. The config file is YML format, and you can see a configuration reference by looking at the `config/*.yml files`.
 
 Example Configuration:
 
-    tracker: JIRA
-    jira:
-        project: projectname
-        prefix: PREFIX
-        username: youraccountname
-        password: "your password"
+    tracker: github
+    github:
+        repository: "AdrianSchneider/Qissues"
+        username: "YourAccount"
+        password: "YourPassword"
 
-You can also move any common configuration up to a `~/.qissues` file to avoid having to copy your credentials each time. You can also check out the two config files in ./config for a full configuration reference.
+It's advised to also create a `~/.qissues` file for credentials and non project-specific configuration.

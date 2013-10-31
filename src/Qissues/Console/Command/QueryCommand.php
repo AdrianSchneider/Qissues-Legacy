@@ -50,12 +50,21 @@ class QueryCommand extends Command
             return 0;
         }
 
-        $criteria = $this->get('console.input.criteria_builder')->build($input);
+        if ($report = $input->getOption('report')) {
+            if (!$reportConfig = $this->getParameter("reports.$report")) {
+                $output->writeln("<error>Invalid report</error>");
+                return 1;
+            }
+            $criteria = $this->get('console.input.report_criteria_builder')->build($reportConfig);
+        } else {
+            $criteria = $this->get('console.input.criteria_builder')->build($input);
+        }
+
+
         if (!$issues = $repository->query($criteria)) {
             $output->writeln("<info>No issues found!</info>");
             return 0;
         }
-
 
         list($width, $height) = $this->getApplication()->getTerminalDimensions();
         if (!$size = $input->getOption('size')) {

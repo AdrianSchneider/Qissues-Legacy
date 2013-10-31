@@ -21,6 +21,9 @@ services:
     console.input.criteria_builder:
         class: Qissues\Console\Input\CriteriaBuilder
 
+    console.input.report_criteria_builder:
+        class: Qissues\Console\Input\ReportCriteriaBuilder
+
     console.input.external_editor:
         class: Qissues\Console\Input\ExternalFileEditor
         arguments:

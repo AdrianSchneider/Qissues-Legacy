@@ -39,12 +39,15 @@ class ContainerFactory
     {
         $result = array();
         foreach ($array as $key => $value) {
-            if (is_array($value)) {
+            if ($prefix == 'reports.') {
+                $result[$prefix . $key] = $value;
+            } else if (is_array($value)) {
                 $result = $result + $this->flatten($value, $prefix . $key . '.');
             } else {
                 $result[$prefix . $key] = $value;
             }
         }
+
         return $result;
     }
 }

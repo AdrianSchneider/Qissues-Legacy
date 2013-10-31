@@ -22,6 +22,7 @@ class DeleteCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        throw new \Exception('work in progress');
         $connector = $this->getApplication()->getConnector('BitBucket');
         if (!$issue = $connector->find($this->getIssueId($input))) {
             return $output->writeln('<error>Issue not found.</error>');

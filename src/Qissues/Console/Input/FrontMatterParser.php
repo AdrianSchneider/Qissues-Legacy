@@ -4,7 +4,7 @@ namespace Qissues\Console\Input;
 
 use Symfony\Component\Yaml\Parser;
 
-class TemplatedInput
+class FrontMatterParser
 {
     /**
      * @var Parser
@@ -45,11 +45,11 @@ class TemplatedInput
      */
     protected function split($content)
     {
-        $parts = array_map('trim', explode('---', $content, 2));
-        if (count($parts) < 2) {
-            throw new \InvalidArgumentException('$content requires YML, ---, then body');
+        $parts = array_map('trim', explode('---', $content, 3));
+        if (count($parts) < 3) {
+            throw new \InvalidArgumentException('$content requires ---YML--- body');
         }
 
-        return $parts;
+        return array($parts[1], $parts[2]);
     }
 }

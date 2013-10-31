@@ -2,9 +2,9 @@
 
 namespace Qissues\Tests\Console\Input;
 
-use Qissues\Console\Input\TemplatedInput;
+use Qissues\Console\Input\FrontMatterParser;
 
-class TemplatedInputTest extends \PHPUnit_Framework_TestCase
+class FrontMatterParserTest extends \PHPUnit_Framework_TestCase
 {
     public function testThrowsExceptionIfMalformed()
     {
@@ -14,13 +14,13 @@ class TemplatedInputTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException('InvalidArgumentException');
 
-        $templatedInput = new TemplatedInput($yml);
+        $templatedInput = new FrontMatterParser($yml);
         $templatedInput->parse($input);
     }
 
     public function testThrowsExceptionIfParsingFails()
     {
-        $input = 'abc --- def';
+        $input = '--- abc --- def';
 
         $yml = $this->getMockBuilder('Symfony\Component\Yaml\Parser')->disableOriginalConstructor()->getMock();
         $yml
@@ -32,13 +32,13 @@ class TemplatedInputTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException('InvalidArgumentException');
 
-        $templateInput = new TemplatedInput($yml);
+        $templateInput = new FrontMatterParser($yml);
         $templateInput->parse($input);
     }
 
     public function testReturnsParsedContent()
     {
-        $input = "a: b\n---\npizza";
+        $input = "---\na: b\n---\npizza";
 
         $yml = $this->getMockBuilder('Symfony\Component\Yaml\Parser')->disableOriginalConstructor()->getMock();
         $yml
@@ -48,7 +48,7 @@ class TemplatedInputTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(array('a' => 'b')))
         ;
 
-        $templateInput = new TemplatedInput($yml);
+        $templateInput = new FrontMatterParser($yml);
         $out = $templateInput->parse($input);
 
         $this->assertEquals(array(
@@ -59,7 +59,7 @@ class TemplatedInputTest extends \PHPUnit_Framework_TestCase
 
     public function testPutBodyAsCustomKey()
     {
-        $input = "a: b\n---\npizza";
+        $input = "---\na: b\n---\npizza";
 
         $yml = $this->getMockBuilder('Symfony\Component\Yaml\Parser')->disableOriginalConstructor()->getMock();
         $yml
@@ -69,7 +69,7 @@ class TemplatedInputTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(array('a' => 'b')))
         ;
 
-        $templateInput = new TemplatedInput($yml);
+        $templateInput = new FrontMatterParser($yml);
         $out = $templateInput->parse($input, 'food');
 
         $this->assertEquals(array(

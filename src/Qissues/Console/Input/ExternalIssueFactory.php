@@ -2,15 +2,14 @@
 
 namespace Qissues\Console\Input;
 
-use Qissues\Model\IssueTracker;
-use Qissues\Format\IssueConverter;
+use Qissues\Model\Tracker\IssueTracker;
 
 class ExternalIssueFactory
 {
-    public function __construct(ExternalFileEditor $editor, TemplatedInput $templated)
+    public function __construct(ExternalFileEditor $editor, FrontMatterParser $parser)
     {
         $this->editor = $editor;
-        $this->templatedInput = $templated;
+        $this->parser = $parser;
     }
 
     /**

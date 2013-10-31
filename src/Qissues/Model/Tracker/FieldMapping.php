@@ -8,8 +8,11 @@ use Qissues\Model\Posting\NewComment;
 
 interface FieldMapping
 {
-    function map($dtoField);
-    function reverseMap($issueField);
+    /**
+     * Prepare fields for editing
+     * @param Issue|null $issue, if existing
+     * @return array fields => values
+     */
     function getEditFields(Issue $issue = null);
 
     /**

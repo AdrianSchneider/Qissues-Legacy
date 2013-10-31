@@ -13,16 +13,9 @@ use Qissues\Model\Tracker\FieldMapping;
 
 class GitHubMapping implements FieldMapping
 {
-    public function map($dtoField)
-    {
-
-    }
-
-    public function reverseMap($issueField)
-    {
-
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     public function getEditFields(Issue $issue = null)
     {
         if ($issue) {

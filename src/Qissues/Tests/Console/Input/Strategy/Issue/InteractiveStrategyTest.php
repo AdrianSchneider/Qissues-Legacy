@@ -1,12 +1,12 @@
 <?php
 
-namespace Qissues\Tests\Console\Input\Strategy;
+namespace Qissues\Tests\Console\Input\Strategy\Issue;
 
 use Qissues\Model\Tracker\IssueTracker;
-use Qissues\Console\Input\Strategy\InteractiveIssueStrategy;
+use Qissues\Console\Input\Strategy\Issue\InteractiveStrategy;
 use Symfony\Component\Console\Input\ArrayInput;
 
-class InteractiveIssueStrategyTest extends \PHPUnit_Framework_TestCase
+class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
 {
     public function testThrowsExceptionIfNotInteractive()
     {
@@ -17,7 +17,7 @@ class InteractiveIssueStrategyTest extends \PHPUnit_Framework_TestCase
         $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
         $application = $this->getApplication();
 
-        $strategy = new InteractiveIssueStrategy();
+        $strategy = new InteractiveStrategy();
         $strategy->init($input, $output, $application);
     }
 
@@ -30,7 +30,7 @@ class InteractiveIssueStrategyTest extends \PHPUnit_Framework_TestCase
         $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
         $application = $this->getApplication();
 
-        $strategy = new InteractiveIssueStrategy();
+        $strategy = new InteractiveStrategy();
         $strategy->init($input, $output, $application);
         $strategy->init($input, $output, $application);
     }
@@ -53,7 +53,7 @@ class InteractiveIssueStrategyTest extends \PHPUnit_Framework_TestCase
 
         $application = $this->getApplication($dialog);
 
-        $strategy = new InteractiveIssueStrategy();
+        $strategy = new InteractiveStrategy();
         $strategy->init($input, $output, $application);
 
         $tracker = new IssueTracker(
@@ -97,7 +97,7 @@ class InteractiveIssueStrategyTest extends \PHPUnit_Framework_TestCase
 
         $application = $this->getApplication($dialog);
 
-        $strategy = new InteractiveIssueStrategy();
+        $strategy = new InteractiveStrategy();
         $strategy->init($input, $output, $application);
 
         $tracker = new IssueTracker(

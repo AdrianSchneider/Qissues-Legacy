@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Console\Input\Strategy;
+namespace Qissues\Console\Input\Strategy\Issue;
 
 use Qissues\Model\Issue;
 use Qissues\Model\Tracker\IssueTracker;
@@ -10,7 +10,7 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class EditIssueStrategy implements InputStrategy
+class EditStrategy implements IssueStrategy
 {
 
     public function __construct(ExternalFileEditor $editor, FileFormat $fileFormat)

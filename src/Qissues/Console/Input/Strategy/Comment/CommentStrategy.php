@@ -1,17 +1,17 @@
 <?php
 
-namespace Qissues\Console\Input\Strategy;
+namespace Qissues\Console\Input\Strategy\Comment;
 
-use Qissues\Model\Issue;
 use Qissues\Model\Tracker\IssueTracker;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-interface InputStrategy
+interface CommentStrategy
 {
     /**
      * Optionally require some more environment information
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
      * @param Application $console application
@@ -19,17 +19,10 @@ interface InputStrategy
     function init(InputInterface $input, OutputInterface $output, Application $application);
 
     /**
-     * Creates a new NewIssue instance
+     * Creates a NewComment instance
+     *
      * @param IssueTracker $tracker
-     * @return NewIssue|NewComment
+     * @return NewComment|null
      */
     function createNew(IssueTracker $tracker);
-
-    /**
-     * Creates a new NewIssue instance for changes
-     * @param IssueTracker Tracker
-     * @param Issue $issue
-     * @return NewIssue|NewComment
-     */
-    function updateExisting(IssueTracker $tracker, Issue $existing);
 }

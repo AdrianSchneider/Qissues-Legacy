@@ -144,7 +144,7 @@ class GitHubRepository implements IssueRepository
     public function comment(Number $issue, NewComment $comment)
     {
         $request = $this->request('POST', $this->getIssueUrl($issue, '/comments'));
-        $request->setBody(json_encode(array('body' => $message)), 'application/json');
+        $request->setBody(json_encode(array('body' => $comment->getMessage())), 'application/json');
         $request->send();
     }
 

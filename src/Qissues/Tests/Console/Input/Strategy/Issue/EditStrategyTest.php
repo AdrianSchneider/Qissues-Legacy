@@ -1,13 +1,13 @@
 <?php
 
-namespace Qissues\Tests\Console\Input\Strategy;
+namespace Qissues\Tests\Console\Input\Strategy\Issue;
 
 use Qissues\Model\Issue;
 use Qissues\Model\Meta\Status;
 use Qissues\Model\Tracker\IssueTracker;
-use Qissues\Console\Input\Strategy\EditIssueStrategy;
+use Qissues\Console\Input\Strategy\Issue\EditStrategy;
 
-class EditIssueStrategyTest extends \PHPUnit_Framework_TestCase
+class EditStrategyTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreateNew()
     {
@@ -58,7 +58,7 @@ class EditIssueStrategyTest extends \PHPUnit_Framework_TestCase
             )
         ;
 
-        $issueFactory = new EditIssueStrategy($editor, $fileFormat);
+        $issueFactory = new EditStrategy($editor, $fileFormat);
         $issue = $issueFactory->createNew($tracker);
 
         $this->assertInstanceOf('Qissues\Model\Posting\NewIssue', $issue);
@@ -115,7 +115,7 @@ class EditIssueStrategyTest extends \PHPUnit_Framework_TestCase
             )
         ;
 
-        $issueFactory = new EditIssueStrategy($editor, $fileFormat);
+        $issueFactory = new EditStrategy($editor, $fileFormat);
         $issue = $issueFactory->updateExisting($tracker, $issue);
 
         $this->assertInstanceOf('Qissues\Model\Posting\NewIssue', $issue);

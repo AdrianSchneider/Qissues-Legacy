@@ -1,0 +1,48 @@
+<?php
+
+namespace Qissues\Console\Input\Strategy\Comment;
+
+use Qissues\Model\Posting\NewComment;
+use Qissues\Model\Tracker\IssueTracker;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class InteractiveStrategy implements CommentStrategy
+{
+    protected $input;
+    protected $output;
+    protected $dialog;
+
+    /**
+     * Optionally require some more environment information
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @param Application $console application
+     */
+    function init(InputInterface $input, OutputInterface $output, Application $application)
+    {
+        if ($this->input) {
+            throw new \BadMethodCallException('Can only init once');
+        }
+        if (!$input->isInteractive()) {
+            throw new \RunTimeException('Input is not interactive');
+        }
+
+        $this->input = $input;
+        $this->output = $output;
+        $this->dialog = $application->getHelperSet()->get('dialog');
+    }
+
+    /**
+     * Creates a new NewIssue instance
+     * @param IssueTracker $tracker
+     * @return NewComment|null if empty
+     */
+    function createNew(IssueTracker $tracker)
+    {
+        if ($message = $this->dialog->ask($this->output, 'Comment: ', '')) {
+            return new NewComment($message);
+        }
+    }
+}

@@ -2,6 +2,7 @@
 
 namespace Qissues\Console\Command;
 
+use Qissues\Model\Number;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,38 +16,49 @@ class CommentCommand extends Command
         $this
             ->setName('comment')
             ->setDescription('Comment on an issue')
-            ->addArgument('issue', InputArgument::OPTIONAL, 'The issue ID')
-            ->addOption('message', 'm', InputOption::VALUE_OPTIONAL, 'Specify message', null)
+            ->setDefinition(array(
+                new InputArgument('issue', InputArgument::OPTIONAL, 'The Issue ID'),
+                new InputOption('message', 'm', InputOption::VALUE_OPTIONAL, 'Specify message', null),
+                new InputOption('strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy')
+            ))
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        throw new \Exception('work in progress');
+        $tracker = $this->getApplication()->getTracker();
+        $repository = $tracker->getRepository();
 
-        $connector = $this->getApplication()->getConnector();
-        if (!$issue = $connector->find($this->getIssueId($input))) {
-            return $output->writeln('<error>Issue not found.</error>');
+        $number = new Number($this->get('console.input.git_id')->getId($input));
+        if (!$issue = $repository->lookup($number)) {
+            $output->writeln('<error>Issue not found.</error>');
+            return 1;
         }
 
-        $message = $input->getOption('message') ?: $this->getMessage();
-        $connector->comment($issue, $message);
-
-        if ($message) {
-            $output->writeln("Left a comment on #$issue[id]");
-        } else {
-            $output->writeln("<error>No message left</error>");
+        if (!$strategy = $this->getStrategy($input)) {
+            $output->writeln("<error>Invalid commenting strategy specified</error>");
+            return 1;
         }
+
+        $strategy->init($input, $output, $this->getApplication());
+        if (!$comment = $strategy->createNew($tracker)) {
+            $output->writeln("<error>No comment left</error>");
+            return 1;
+        }
+
+        $repository->comment($number, $comment);
+        $output->writeln("Left a comment on #$number");
     }
 
-    protected function getMessage()
+    protected function getStrategy(InputInterFace $input)
     {
-        $filename = tempnam('.', 'qissues');
-        $editor = getenv('EDITOR') ?: 'vim';
-        exec("$editor $filename > `tty`");
-        $data = file_get_contents($filename);
-        unlink($filename);
+        $selected = $input->getOption('message') ? 'option' : ($input->getOption('strategy') ?: $this->getParameter('console.input.default_strategy'));
+        $strategy = sprintf('console.input.comment_strategy.%s', $selected);
 
-        return trim($data);
+        if (!$this->getApplication()->getContainer()->has($strategy)) {
+            return;
+        }
+
+        return $this->get($strategy);
     }
 }

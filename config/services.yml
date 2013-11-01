@@ -6,14 +6,27 @@ parameters:
 
 services:
     console.input.issue_strategy.edit:
-        class: Qissues\Console\Input\Strategy\EditIssueStrategy
+        class: Qissues\Console\Input\Strategy\Issue\EditStrategy
         arguments:
             - @console.input.external_editor
             - @console.input.format.frontmatter
 
     console.input.issue_strategy.interactive:
-        class: Qissues\Console\Input\Strategy\InteractiveIssueStrategy
+        class: Qissues\Console\Input\Strategy\Issue\InteractiveStrategy
 
+    console.input.comment_strategy.option:
+        class: Qissues\Console\Input\Strategy\Comment\OptionStrategy
+
+    console.input.comment_strategy.edit:
+        class: Qissues\Console\Input\Strategy\Comment\EditStrategy
+        arguments:
+            - @console.input.external_editor
+
+    console.input.comment_strategy.stdin:
+        class: Qissues\Console\Input\Strategy\Comment\StdinStrategy
+
+    console.input.comment_strategy.interactive:
+        class: Qissues\Console\Input\Strategy\Comment\InteractiveStrategy
 
     console.input.git_id:
         class: Qissues\Console\Input\GitId

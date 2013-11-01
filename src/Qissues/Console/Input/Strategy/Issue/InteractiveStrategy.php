@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Console\Input\Strategy;
+namespace Qissues\Console\Input\Strategy\Issue;
 
 use Qissues\Model\Issue;
 use Qissues\Model\Tracker\IssueTracker;
@@ -9,7 +9,7 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class InteractiveIssueStrategy implements InputStrategy
+class InteractiveStrategy implements IssueStrategy
 {
     protected $input;
     protected $output;

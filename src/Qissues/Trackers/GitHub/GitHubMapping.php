@@ -23,7 +23,10 @@ class GitHubMapping implements FieldMapping
             return array(
                 'title' => $issue->getTitle(),
                 'assignee' => $issue->getAssignee() ? $issue->getAssignee()->getAccount() : '',
-                'description' => $issue->getDescription()
+                'description' => $issue->getDescription(),
+                'labels' => $issue->getLabels()
+                    ? implode(', ', array_map('strval', $issue->getLabels()))
+                    : ''
             );
         }
 

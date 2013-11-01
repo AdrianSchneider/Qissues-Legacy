@@ -10,6 +10,7 @@ class FeatureCatalogBuilder
         $catalog->add(new Feature('milestones'));
         $catalog->add(new Feature('types'));
         $catalog->add(new Feature('statuses'));
+        $catalog->add(new Feature('labels'));
         return $catalog;
     }
 }

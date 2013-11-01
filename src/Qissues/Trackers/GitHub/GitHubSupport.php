@@ -17,8 +17,8 @@ class GitHubSupport implements FeatureSetBuilder
     {
         $features = new FeatureSet($catalog);
         $features->add($catalog->get('milestones'), $this->level('single', 'dynamic'));
-        $features->add($catalog->get('types'),      $this->level('multiple', 'dynamic'));
         $features->add($catalog->get('statuses'),   $this->level('single'));
+        $features->add($catalog->get('labels'),     $this->level('multiple', 'dynamic'));
         return $features;
     }
 

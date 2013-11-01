@@ -167,7 +167,9 @@ class GitHubRepository implements IssueRepository
      */
     public function changeStatus(Number $issue, Status $status)
     {
-        throw new \Exception('not yet implemented');
+        $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->repository, $issue->getNumber()));
+        $request->setBody(json_encode(array('state' => $status->getStatus())), 'application/json');
+        $request->send();
     }
 
     /**

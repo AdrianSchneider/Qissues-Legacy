@@ -2,6 +2,8 @@
 
 namespace Qissues\Console\Command;
 
+use Qissues\Model\Number;
+use Qissues\Model\Meta\Status;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,36 +17,30 @@ class OpenCommand extends Command
         $this
             ->setName('open')
             ->setDescription('Open or re-open an issue')
-            ->addArgument('issue', InputArgument::OPTIONAL, 'The issue ID')
+            ->setDefinition(array(
+                new InputArgument('issue', InputArgument::OPTIONAL, 'The Issue ID'),
+                new InputOption('message', 'm', InputOption::VALUE_OPTIONAL, 'Specify message', null),
+                new InputOption('strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy')
+            ))
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        throw new \Exception('work in progress');
-        $connector = $this->getApplication()->getConnector();
-        if (!$issue = $connector->find($this->getIssueId($input))) {
-            return $output->writeln('<error>Issue not found.</error>');
+        $tracker = $this->getApplication()->getTracker();
+        $repository = $tracker->getRepository();
+
+        $number = new Number($this->get('console.input.git_id')->getId($input));
+        if (!$issue = $repository->lookup($number)) {
+            $output->writeln('<error>Issue not found.</error>');
+            return 1;
         }
 
-        $message = $this->getComment();
-        $connector->changeStatus($issue, 'open');
-
-        if ($message) {
-            $connector->comment($issue, $message);
+        if ($comment = $this->getComment($input, $output)) {
+            $repository->comment($number, $comment);
         }
 
-        $output->writeln("Issue <info>#$issue[id]</info> has been (re-)opened.");
-    }
-
-    protected function getComment()
-    {
-        $filename = tempnam('.', 'qissues');
-        $editor = getenv('EDITOR') ?: 'vim';
-        exec("$editor $filename > `tty`");
-        $data = file_get_contents($filename);
-        unlink($filename);
-
-        return $data;
+        $repository->changeStatus($number, new Status('open'));
+        $output->writeln("Issue <info>#$number</info> has been opened");
     }
 }

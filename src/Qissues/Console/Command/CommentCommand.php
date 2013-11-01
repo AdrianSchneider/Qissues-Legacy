@@ -35,12 +35,11 @@ class CommentCommand extends Command
             return 1;
         }
 
-        if (!$strategy = $this->getStrategy($input)) {
+        if (!$strategy = $this->getCommentStrategy($input, $output)) {
             $output->writeln("<error>Invalid commenting strategy specified</error>");
             return 1;
         }
 
-        $strategy->init($input, $output, $this->getApplication());
         if (!$comment = $strategy->createNew($tracker)) {
             $output->writeln("<error>No comment left</error>");
             return 1;
@@ -48,17 +47,5 @@ class CommentCommand extends Command
 
         $repository->comment($number, $comment);
         $output->writeln("Left a comment on #$number");
-    }
-
-    protected function getStrategy(InputInterFace $input)
-    {
-        $selected = $input->getOption('message') ? 'option' : ($input->getOption('strategy') ?: $this->getParameter('console.input.default_strategy'));
-        $strategy = sprintf('console.input.comment_strategy.%s', $selected);
-
-        if (!$this->getApplication()->getContainer()->has($strategy)) {
-            return;
-        }
-
-        return $this->get($strategy);
     }
 }

@@ -17,9 +17,12 @@ class AssignCommand extends Command
         $this
             ->setName('assign')
             ->setDescription('(Re-)assign an issue')
-            ->addArgument('issue', InputArgument::OPTIONAL, 'The issue ID')
-            ->addArgument('assignee', InputArgument::OPTIONAL, 'New assignee', null)
-            ->addOption('message', 'm', InputOption::VALUE_OPTIONAL, 'Specify message', null)
+            ->setDefinition(array(
+                new InputArgument('issue', InputArgument::OPTIONAL, 'The Issue ID'),
+                new InputArgument('assignee', InputArgument::OPTIONAL, 'The assignee', null),
+                new InputOption('message', 'm', InputOption::VALUE_OPTIONAL, 'Specify message', null),
+                new InputOption('strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy')
+            ))
         ;
     }
 
@@ -39,8 +42,12 @@ class AssignCommand extends Command
             return 1;
         }
 
-        if ($message = $input->getOption('message')) {
-            throw new \Exception('work in progress');
+        if (!$strategy = $this->getCommentStrategy($input, $output)) {
+            $output->writeln("<error>Invalid commenting strategy specified</error>");
+            return 1;
+        }
+        if ($comment = $strategy->createNew($tracker)) {
+            $repository->comment($number, $comment);
         }
 
         $repository->assign($number, new User($assignee));

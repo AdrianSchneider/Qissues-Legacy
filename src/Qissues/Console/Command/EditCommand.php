@@ -34,26 +34,12 @@ class EditCommand extends Command
             return 1;
         }
 
-        if (!$strategy = $this->getStrategy($input)) {
+        if (!$strategy = $this->getIssueStrategy($input, $output)) {
             $output->writeln("<error>Invalid issue modification strategy specified</error>");
             return 1;
         }
 
-        $strategy->init($input, $output, $this->getApplication());
         $number = $repository->update($strategy->updateExisting($tracker, $issue), $number);
-
         $output->writeln("Issue <info>#$number</info> has been updated");
-    }
-
-    protected function getStrategy(InputInterFace $input)
-    {
-        $selected = $input->getOption('strategy') ?: $this->getParameter('console.input.default_strategy');
-        $strategy = sprintf('console.input.issue_strategy.%s', $selected);
-
-        if (!$this->getApplication()->getContainer()->has($strategy)) {
-            return;
-        }
-
-        return $this->get($strategy);
     }
 }

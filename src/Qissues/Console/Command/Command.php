@@ -11,13 +11,80 @@ use Symfony\Component\Process\Process;
 
 class Command extends BaseCommand
 {
+    /**
+     * Gets a service from the container
+     * @param string $service
+     * @return mixed
+     */
     public function get($service)
     {
         return $this->getApplication()->getContainer()->get($service);
     }
 
+    /**
+     * Gets a parameter from the container
+     * @param string $paramter
+     * @return mixed
+     */
     public function getParameter($parameter)
     {
         return $this->getApplication()->getContainer()->getParameter($parameter);
+    }
+
+    /**
+     * Retrieves a CommentStrategy ready for use
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return CommentStrategy
+     */
+    protected function getCommentStrategy(InputInterface $input, OutputInterface $output)
+    {
+        $selected = $input->getOption('message') ? 'option' : ($input->getOption('strategy') ?: $this->getParameter('console.input.default_strategy'));
+        $strategy = sprintf('console.input.comment_strategy.%s', $selected);
+
+        if (!$this->getApplication()->getContainer()->has($strategy)) {
+            throw new \BadMethodCallException("Could not find strategy $strategy");
+        }
+
+        $strategy = $this->get($strategy);
+        $strategy->init($input, $output, $this->getApplication());
+
+        return $strategy;
+    }
+
+    /**
+     * Retrieves a IssueStrategy ready for use
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return IssueStrategy
+     */
+    protected function getIssueStrategy(InputInterface $input, OutputInterface $output)
+    {
+        $selected = $input->getOption('strategy') ?: $this->getParameter('console.input.default_strategy');
+        $strategy = sprintf('console.input.issue_strategy.%s', $selected);
+
+        if (!$this->getApplication()->getContainer()->has($strategy)) {
+            return;
+        }
+
+        $strategy = $this->get($strategy);
+        $strategy->init($input, $output, $this->getApplication());
+
+        return $strategy;
+    }
+
+    /**
+     * Gets a populated NewComment from the selected strategy
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return NewComment|null
+     */
+    protected function getComment(InputInterface $input, OutputInterface $output)
+    {
+        $strategy = $this->getCommentStrategy($input, $output);
+        return $strategy->createNew($this->getApplication()->getTracker());
     }
 }

@@ -18,6 +18,7 @@ class QueryCommand extends Command
         $this
             ->setName('query')
             ->setDescription('List all issues, optionally filtering them.')
+
             // display
             ->addOption('size', 'z', InputOption::VALUE_OPTIONAL, 'View mode (tiny, basic or detailed) defaults based on width)', null)
             ->addOption('web', 'w', InputOption::VALUE_NONE, 'Open in web browser.', null)
@@ -34,7 +35,8 @@ class QueryCommand extends Command
 
             // sorting or limiting
             ->addOption('sort', 'o', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Sort results by [priority]', array('updated'))
-            ->addOption('limit', 'x', InputOption::VALUE_OPTIONAL, 'Limit the results', 50)
+            ->addOption('limit', null, InputOption::VALUE_OPTIONAL, 'Limit the results', 50)
+            ->addOption('offset', null, InputOption::VALUE_OPTIONAL, 'Offset results for paging', 0)
         ;
     }
 

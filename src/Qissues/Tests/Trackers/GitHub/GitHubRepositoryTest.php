@@ -144,6 +144,56 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
         $tracker->query($criteria);
     }
 
+    public function testQuerySortingByField()
+    {
+        $payload = array(array('issue'));
+
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping
+            ->expects($this->once())
+            ->method('toIssue')
+            ->with(array('issue'))
+            ->will($this->returnValue($out = 'real issue'))
+        ;
+
+        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
+
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('comments');
+
+        $tracker = $this->getRepository($mapping);
+        $issues = $tracker->query($criteria);
+
+        $this->assertQueryEquals('sort', 'comments');
+        $this->assertCount(1, $issues);
+        $this->assertEquals('real issue', $issues[0]);
+    }
+
+    public function testQueryMultiSortThrowsException()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('created');
+        $criteria->addSortField('updated');
+
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $tracker = $this->getRepository($mapping);
+
+        $this->setExpectedException('DomainException', 'multi-sort');
+        $tracker->query($criteria);
+    }
+
+    public function testQuerySuportingByUnSupportedFieldThrowsException()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('priority');
+
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $tracker = $this->getRepository($mapping);
+
+        $this->setExpectedException('DomainException', 'unsupported');
+        $tracker->query($criteria);
+    }
+
     public function testFindComments()
     {
         $payload = array(array('comment'));

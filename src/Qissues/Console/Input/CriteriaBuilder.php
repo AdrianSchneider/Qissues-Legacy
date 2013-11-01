@@ -25,6 +25,9 @@ class CriteriaBuilder
         $this->handleIds($input, $criteria);
         $this->handleLabels($input, $criteria);
 
+        $this->handleSorting($input, $criteria);
+        $this->handlePaging($input, $criteria);
+
         return $criteria;
     }
 
@@ -90,5 +93,22 @@ class CriteriaBuilder
                 $criteria->addLabel(new Label($label));
             }
         }
+    }
+
+    protected function handleSorting($input,  $criteria)
+    {
+        if ($sort = $input->getOption('sort')) {
+            foreach ($sort as $field) {
+                $criteria->addSortField($field);
+            }
+        }
+    }
+
+    protected function handlePaging($input, $criteria)
+    {
+        $criteria->setPaging(
+            $input->getOption('offset', 0),
+            $input->getOption('limit', 50)
+        );
     }
 }

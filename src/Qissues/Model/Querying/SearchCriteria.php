@@ -21,6 +21,8 @@ class SearchCriteria
         $this->types = array();
         $this->priorities = array();
         $this->labels = array();
+        $this->sortFields = array();
+        $this->paging = array(0, 50);
     }
 
     public function addStatus(Status $status)
@@ -83,4 +85,23 @@ class SearchCriteria
         return $this->labels;
     }
 
+    public function addSortField($field)
+    {
+        $this->sortFields[] = $field;
+    }
+
+    public function getSortFields()
+    {
+        return $this->sortFields;
+    }
+
+    public function setPaging($offset, $limit)
+    {
+        $this->paging = array($offset, $limit);
+    }
+
+    public function getPaging()
+    {
+        return $this->paging;
+    }
 }

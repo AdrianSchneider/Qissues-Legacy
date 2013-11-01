@@ -119,4 +119,25 @@ class CriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Qissues\Model\Meta\Label', $labels[0]);
         $this->assertEquals('lame', (string)$labels[0]);
     }
+
+    public function testHandleSorting()
+    {
+        $input = new ArrayInput(array('-o' => array('priority')), $this->definition);
+
+        $criteria = $this->builder->build($input);
+        $fields = $criteria->getSortFields();
+
+        $this->assertEquals(array('priority'), $fields);
+    }
+
+    public function testHandlePaging()
+    {
+        $input = new ArrayInput(array('--limit' => 100, '--offset' => 23), $this->definition);
+        $criteria = $this->builder->build($input);
+
+        $this->assertEquals(
+            array(23, 100),
+            $criteria->getPaging()
+        );
+    }
 }

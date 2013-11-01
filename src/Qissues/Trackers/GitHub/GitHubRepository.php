@@ -79,6 +79,19 @@ class GitHubRepository implements IssueRepository
     {
         $query = array();
 
+        if ($sortFields = $criteria->getSortFields()) {
+            $validFields = array('created', 'updated', 'comments');
+
+            if (count($sortFields) > 1) {
+                throw new \DomainException('GitHub cannot multi-sort');
+            }
+            if (!in_array($sortFields[0], $validFields)) {
+                throw new \DomainException("Sorting by '$sortFields[0]' is unsupported on GitHub");
+            }
+
+            $query['sort'] = $sortFields[0];
+        }
+
         if ($statuses = $criteria->getStatuses()) {
             if (count($statuses) > 1) {
                 throw new \DomainException('GitHub cannot support multiple statuses');
@@ -90,7 +103,6 @@ class GitHubRepository implements IssueRepository
         if ($labels = $criteria->getLabels()) {
             $query['labels'] = implode(',', array_map('strval', $labels));
         }
-
 
         return $query;
     }

@@ -6,6 +6,7 @@ use Qissues\Model\Meta\Type;
 use Qissues\Model\Meta\User;
 use Qissues\Model\Meta\Status;
 use Qissues\Model\Meta\Priority;
+use Qissues\Model\Meta\Label;
 
 /**
  * Value object for standardizing search criteria for trackers
@@ -19,6 +20,7 @@ class SearchCriteria
         $this->statuses = array();
         $this->types = array();
         $this->priorities = array();
+        $this->labels = array();
     }
 
     public function addStatus(Status $status)
@@ -69,6 +71,16 @@ class SearchCriteria
     public function getAssignees()
     {
         return $this->assigned;
+    }
+
+    public function addLabel(Label $label)
+    {
+        $this->labels[] = $label;
+    }
+
+    public function getLabels()
+    {
+        return $this->labels;
     }
 
 }

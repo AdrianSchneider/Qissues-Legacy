@@ -9,6 +9,7 @@ use Qissues\Model\Meta\CurrentUser;
 use Qissues\Model\Meta\Status;
 use Qissues\Model\Meta\Priority;
 use Qissues\Model\Meta\Type;
+use Qissues\Model\Meta\Label;
 use Symfony\Component\Console\Input\InputInterface;
 
 class CriteriaBuilder
@@ -22,6 +23,7 @@ class CriteriaBuilder
         $this->handleTypes($input, $criteria);
         $this->handleAssignees($input, $criteria);
         $this->handleIds($input, $criteria);
+        $this->handleLabels($input, $criteria);
 
         return $criteria;
     }
@@ -78,6 +80,15 @@ class CriteriaBuilder
             }
 
             $criteria->setNumbers($numbers);
+        }
+    }
+
+    protected function handleLabels($input, $criteria)
+    {
+        if ($labels = $input->getOption('labels')) {
+            foreach ($labels as $label) {
+                $criteria->addLabel(new Label($label));
+            }
         }
     }
 }

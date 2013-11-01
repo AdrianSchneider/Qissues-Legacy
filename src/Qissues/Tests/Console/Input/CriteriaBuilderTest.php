@@ -107,4 +107,16 @@ class CriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Qissues\Model\Meta\Type', $types[0]);
         $this->assertEquals('bug', (string)$types[0]);
     }
+
+    public function testHandleLabels()
+    {
+        $input = new ArrayInput(array('-l' => array('lame')), $this->definition);
+
+        $criteria = $this->builder->build($input);
+        $labels = $criteria->getLabels();
+
+        $this->assertCount(1, $labels);
+        $this->assertInstanceOf('Qissues\Model\Meta\Label', $labels[0]);
+        $this->assertEquals('lame', (string)$labels[0]);
+    }
 }

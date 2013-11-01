@@ -30,10 +30,11 @@ class QueryCommand extends Command
             ->addOption('type', 't', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by type', array())
             ->addOption('mine', null, InputOption::VALUE_NONE, 'Only show things assigned to me', null)
             ->addOption('ids', 'i', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by IDs', null)
+            ->addOption('labels', 'l', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by labels', null)
 
             // sorting or limiting
             ->addOption('sort', 'o', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Sort results by [priority]', array('updated'))
-            ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit the results', 50)
+            ->addOption('limit', 'x', InputOption::VALUE_OPTIONAL, 'Limit the results', 50)
         ;
     }
 

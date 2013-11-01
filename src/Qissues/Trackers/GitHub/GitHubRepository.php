@@ -87,6 +87,11 @@ class GitHubRepository implements IssueRepository
             $query['state'] = $statuses[0]->getStatus();
         }
 
+        if ($labels = $criteria->getLabels()) {
+            $query['labels'] = implode(',', array_map('strval', $labels));
+        }
+
+
         return $query;
     }
 

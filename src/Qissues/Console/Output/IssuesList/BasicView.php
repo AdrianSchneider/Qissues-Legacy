@@ -7,6 +7,8 @@ use Qissues\Model\Tracker\Support\FeatureSet;
 
 class BasicView
 {
+    protected $tableRenderer;
+
     public function __construct(TableRenderer $tableRenderer)
     {
         $this->tableRenderer = $tableRenderer;

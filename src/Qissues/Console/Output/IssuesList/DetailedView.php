@@ -9,6 +9,8 @@ use Qissues\Console\Output\TableRenderer;
 
 class DetailedView
 {
+    protected $tableRenderer;
+
     public function __construct(TableRenderer $tableRenderer)
     {
         $this->tableRenderer = $tableRenderer;

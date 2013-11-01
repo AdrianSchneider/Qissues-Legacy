@@ -6,6 +6,9 @@ use Qissues\System\FrontMatterParser;
 
 class FrontMatterFormat implements FileFormat
 {
+    protected $parser;
+    protected $contentField;
+
     public function __construct(FrontMatterParser $parser, $contentField = 'description')
     {
         $this->parser = $parser;

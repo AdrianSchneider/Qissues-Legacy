@@ -9,6 +9,13 @@ use Qissues\System\DataType\ReadOnlyArrayAccess;
 
 class NewIssue extends ReadOnlyArrayAccess
 {
+    protected $title;
+    protected $description;
+    protected $assignee;
+    protected $priority;
+    protected $type;
+    protected $labels;
+
     public function __construct($title, $description, User $assignee = null, Priority $priority = null, Type $type = null, $labels = null)
     {
         $this->title = $title;

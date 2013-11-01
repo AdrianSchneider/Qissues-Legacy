@@ -13,6 +13,15 @@ use Qissues\Model\Meta\Label;
  */
 class SearchCriteria
 {
+    protected $numbers;
+    protected $assigned;
+    protected $statuses;
+    protected $types;
+    protected $priorities;
+    protected $labels;
+    protected $sortFields;
+    protected $paging;
+
     public function __construct()
     {
         $this->numbers = array();

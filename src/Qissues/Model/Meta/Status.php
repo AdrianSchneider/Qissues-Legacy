@@ -4,6 +4,10 @@ namespace Qissues\Model\Meta;
 
 class Status
 {
+    protected $status;
+    protected $id;
+    protected $name;
+
     public function __construct($status, $id = null, $name = null)
     {
         $this->status = $status;

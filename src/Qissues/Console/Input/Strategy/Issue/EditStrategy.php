@@ -12,6 +12,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EditStrategy implements IssueStrategy
 {
+    protected $editor;
+    protected $fileFormat;
 
     public function __construct(ExternalFileEditor $editor, FileFormat $fileFormat)
     {

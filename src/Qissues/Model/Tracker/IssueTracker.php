@@ -6,6 +6,10 @@ use Qissues\Model\Tracker\Support\FeatureSet;
 
 class IssueTracker
 {
+    protected $repository;
+    protected $mapping;
+    protected $features;
+
     public function __construct(IssueRepository $repository, FieldMapping $mapping, FeatureSet $features)
     {
         $this->repository = $repository;

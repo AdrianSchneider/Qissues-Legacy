@@ -11,6 +11,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EditStrategy implements CommentStrategy
 {
+    protected $editor;
+
     public function __construct(ExternalFileEditor $editor)
     {
         $this->editor = $editor;

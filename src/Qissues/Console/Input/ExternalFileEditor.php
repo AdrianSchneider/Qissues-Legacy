@@ -4,6 +4,9 @@ namespace Qissues\Console\Input;
 
 class ExternalFileEditor
 {
+    protected $editor;
+    protected $prefix;
+
     public function __construct($editor = null, $prefix = 'qissues')
     {
         $this->prefix = $prefix;
@@ -24,7 +27,7 @@ class ExternalFileEditor
         $filename = $this->createTempFile($template);
 
         exec(sprintf(
-            '%s %s > `tty`', 
+            '%s %s > `tty`',
             $this->editor,
             escapeshellarg($filename)
         ));

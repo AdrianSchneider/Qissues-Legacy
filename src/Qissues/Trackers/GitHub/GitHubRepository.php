@@ -14,6 +14,12 @@ use Guzzle\Http\Client;
 
 class GitHubRepository implements IssueRepository
 {
+    protected $repository;
+    protected $username;
+    protected $password;
+    protected $mapping;
+    protected $client;
+
     /**
      * @param string $repository
      * @param string username

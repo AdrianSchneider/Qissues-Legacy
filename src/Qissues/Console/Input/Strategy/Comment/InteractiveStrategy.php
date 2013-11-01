@@ -18,7 +18,7 @@ class InteractiveStrategy implements CommentStrategy
      * Optionally require some more environment information
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @param Application $console application
+     * @param Application $application 
      */
     function init(InputInterface $input, OutputInterface $output, Application $application)
     {

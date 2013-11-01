@@ -4,11 +4,22 @@ namespace Qissues\Console\Output;
 
 class WebBrowser
 {
+    protected $browser;
+
+    /**
+     * The default browser to use
+     * @param string|null $browser
+     */
     public function __construct($browser)
     {
         $this->browser = $browser;
     }
 
+    /**
+     * Ensure there is a browser we can call
+     * @return string browser binary
+     * @throws RunTimeException when none could be auto-detected
+     */
     protected function prepareBrowser()
     {
         if ($this->browser) {
@@ -26,6 +37,10 @@ class WebBrowser
         throw new \RunTimeException('Your operating system is not supported; set console.browser.command in ~/.qissues');
     }
 
+    /**
+     * Open a URL with the system browser
+     * @param string @url
+     */
     public function open($url)
     {
         exec(sprintf('%s %s', $this->prepareBrowser(), escapeshellarg($url)));

@@ -4,6 +4,10 @@ namespace Qissues\Model\Meta;
 
 class Label
 {
+    protected $name;
+    protected $id;
+    protected $fullName;
+
     public function __construct($name, $id = null, $fullName = null)
     {
         $this->name = $name;

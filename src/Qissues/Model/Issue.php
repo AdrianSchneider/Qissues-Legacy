@@ -11,6 +11,17 @@ use Qissues\System\DataType\ReadOnlyArrayAccess;
 
 class Issue extends ReadOnlyArrayAccess
 {
+    protected $id;
+    protected $title;
+    protected $description;
+    protected $status;
+    protected $dateCreated;
+    protected $dateupdated;
+    protected $assignee;
+    protected $priority;
+    protected $type;
+    protected $labels;
+
     public function __construct($id, $title, $description, Status $status, \DateTime $dateCreated, \DateTime $dateUpdated, User $assignee = null, Priority $priority = null, Type $type = null, $labels = null)
     {
         $this->id = $id;

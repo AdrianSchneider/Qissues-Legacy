@@ -4,6 +4,8 @@ namespace Qissues\Model\Tracker\Support;
 
 class Feature
 {
+    protected $name;
+
     public function __construct($name)
     {
         $this->name = $name;

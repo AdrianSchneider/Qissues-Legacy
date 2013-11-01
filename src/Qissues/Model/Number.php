@@ -4,6 +4,8 @@ namespace Qissues\Model;
 
 class Number
 {
+    protected $number;
+
     public function __construct($number)
     {
         $this->number = $number;

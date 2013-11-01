@@ -4,6 +4,9 @@ namespace Qissues\Model\Meta;
 
 class Priority
 {
+    protected $priority;
+    protected $name;
+
     public function __construct($priority, $name)
     {
         $this->priority = $priority;

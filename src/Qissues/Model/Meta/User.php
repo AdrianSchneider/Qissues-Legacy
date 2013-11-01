@@ -6,6 +6,10 @@ use Qissues\System\DataType\ReadOnlyArrayAccess;
 
 class User extends ReadOnlyArrayAccess
 {
+    protected $account;
+    protected $id;
+    protected $name;
+
     public function __construct($account, $id = null, $name = null)
     {
         $this->account = $account;

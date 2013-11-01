@@ -6,11 +6,12 @@ use Qissues\Model\Meta\Status;
 use Qissues\Model\Meta\Priority;
 use Qissues\Model\Meta\Type;
 use Qissues\Model\Meta\User;
+use Qissues\Model\Meta\Label;
 use Qissues\System\DataType\ReadOnlyArrayAccess;
 
 class Issue extends ReadOnlyArrayAccess
 {
-    public function __construct($id, $title, $description, Status $status, \DateTime $dateCreated, \DateTime $dateUpdated, User $assignee = null, Priority $priority = null, $types = null)
+    public function __construct($id, $title, $description, Status $status, \DateTime $dateCreated, \DateTime $dateUpdated, User $assignee = null, Priority $priority = null, Type $type = null, $labels = null)
     {
         $this->id = $id;
         $this->title = $title;
@@ -22,7 +23,14 @@ class Issue extends ReadOnlyArrayAccess
 
         $this->assignee = $assignee;
         $this->priority = $priority;
-        $this->types = $types;
+        $this->type = $type;
+
+        if ($labels) {
+            $this->labels = array();
+            array_walk($labels, array($this, 'addLabel'));
+        } else {
+            $this->labels = array();
+        }
     }
 
     public function getId()
@@ -52,7 +60,7 @@ class Issue extends ReadOnlyArrayAccess
 
     public function getType()
     {
-        return $this->types ? reset($this->types) : null;
+        return $this->type;
     }
 
     public function getTypes()
@@ -78,5 +86,15 @@ class Issue extends ReadOnlyArrayAccess
     public function getCommentCount()
     {
         return 0;
+    }
+
+    protected function addLabel(Label $label)
+    {
+        $this->labels[] = $label;
+    }
+
+    public function getLabels()
+    {
+        return $this->labels;
     }
 }

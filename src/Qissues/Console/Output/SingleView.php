@@ -14,12 +14,7 @@ class SingleView
         $title = wordwrap($issue['title'], min($width - 4, 100), "\n", true);
 
         $output->writeln("<comment>$issue[id] - $title</comment>");
-        $output->writeln(sprintf(
-            "  Priority: <info>%s</info> - Kind: <info>%s</info> - Assignee: <info>%s</info>\n",
-            $issue->getPriority(),
-            $issue['type'],
-            $issue['assignee'] ?: 'unassigned'
-        ));
+        $output->writeln("  " . $this->prepareMeta($issue) . "\n");
 
         $description = wordwrap($issue['description'], min($width - 4, 100), "\n", true);
         foreach (explode("\n", $description) as $row) {
@@ -36,5 +31,30 @@ class SingleView
         }
 
         $output->writeln(str_repeat('-', $width));
+    }
+
+    protected function prepareMeta(Issue $issue)
+    {
+        $fields = array();
+        foreach (array('dateCreated', 'type', 'priority', 'labels', 'assignee') as $field) {
+            $method = 'get' . ucfirst($field);
+            $value = $issue->$method();
+
+            if ($field == 'assignee' and !$value) {
+                $value = 'unassigned';
+            }
+            if ($value instanceof \DateTime) {
+                $value = $value->format('Y-m-d');
+            }
+
+            if ($value) {
+                if (is_array($value)) {
+                    $value = implode(',', array_map('strval', $value));
+                }
+                $fields[] = ucfirst($field) . ': <info>' . $value . '</info>';
+            }
+        }
+
+        return implode(' - ', $fields);
     }
 }

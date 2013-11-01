@@ -25,7 +25,8 @@ class DetailedView
                     ? (substr($title, 0, $width * 0.4) . '...')
                     : $title,
                 'Status'       => $issue['status'],
-                'Type'         => $issue['types'],
+                'Type'         => $issue['type'],
+                'Labels'       => $issue['labels'],
                 'Priority'     => $issue['priority'],
                 'Assignee'     => $issue['assignee'],
                 'Date Created' => $issue->getDateCreated()->format('Y-m-d g:ia'),
@@ -33,12 +34,12 @@ class DetailedView
                 'Comments'     => $issue->getCommentCount()
             );
 
-            if (!$features->doesSupport('types')) {
-                unset($row['Type']);
-            } elseif ($row['Type'] and $features->supports('types', 'multiple')) {
-                $row['Type'] = implode(', ', array_map('strval', $row['Type']));
+            if (!$features->doesSupport('labels')) {
+                unset($row['Label']);
+            } elseif ($row['Labels'] and $features->supports('labels', 'multiple')) {
+                $row['Labels'] = implode(', ', array_map('strval', $row['Labels']));
             } else {
-                $row['Type'] = '';
+                $row['Labels'] = '';
             }
 
             if (!$features->doesSupport('priorities')) {

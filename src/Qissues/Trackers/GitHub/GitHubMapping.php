@@ -9,6 +9,7 @@ use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Meta\User;
 use Qissues\Model\Meta\Status;
 use Qissues\Model\Meta\Type;
+use Qissues\Model\Meta\Label;
 use Qissues\Model\Tracker\FieldMapping;
 
 class GitHubMapping implements FieldMapping
@@ -29,7 +30,7 @@ class GitHubMapping implements FieldMapping
         return array(
             'title' => '',
             'assignee' => 'me',
-            'types' => '',
+            'labels' => '',
             'milestone' => '',
             'description' => ''
         );
@@ -49,20 +50,10 @@ class GitHubMapping implements FieldMapping
             new \DateTime($issue['updated_at']),
             $issue['assignee'] ? new User($issue['assignee']['login']) : null,
             null,
+            null,
             $issue['labels'] ? array_map(function($label) {
-                return new Type($label['name']);
+                return new Label($label['name']);
             }, $issue['labels']) : array()
-        );
-
-        array(
-            'assignee'      => $issue['assignee'] ? $issue['assignee']['login'] : '',
-            'created'       => new \DateTime($issue['created_at']),
-            'updated'       => new \DateTime($issue['updated_at']),
-            'status'        => $issue['state'],
-            'priority'      => 1,
-            'priority_text' => 'n/a',
-            'type'          => 'TODO',
-            'comments'      => $issue['comments']
         );
     }
 
@@ -74,7 +65,18 @@ class GitHubMapping implements FieldMapping
         return new NewIssue(
             $input['title'],
             $input['description'],
-            !empty($input['assignee']) ? new User($input['assignee']) : null
+            !empty($input['assignee']) ? new User($input['assignee']) : null,
+            null,
+            null,
+            !empty($input['labels']) ? $this->prepareLabels($input['labels']) : null
+        );
+    }
+
+    protected function prepareLabels($labels)
+    {
+        return array_map(
+            function($label) { return new Label($label); },
+            preg_split('/[\s,]+/', $labels, -1, PREG_SPLIT_NO_EMPTY)
         );
     }
 
@@ -90,6 +92,9 @@ class GitHubMapping implements FieldMapping
 
         if ($issue->getAssignee()) {
             $new['assignee'] = $issue->getAssignee()->getAccount();
+        }
+        if ($labels = $issue->getLabels()) {
+            $new['labels'] = array_map('strval', $labels);
         }
 
         /*

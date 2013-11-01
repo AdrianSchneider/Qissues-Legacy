@@ -34,6 +34,12 @@ class DetailedView
                 'Comments'     => $issue->getCommentCount()
             );
 
+            if (is_array($row['Labels'])) {
+                $row['Labels'] = implode(', ', array_map('strval', $row['Labels']));
+            } else {
+                $row['Labels'] = '';
+            }
+
             if (!$features->doesSupport('labels')) {
                 unset($row['Label']);
             } elseif ($row['Labels'] and $features->supports('labels', 'multiple')) {

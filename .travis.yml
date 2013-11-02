@@ -6,6 +6,6 @@ php:
   - 5.5
 
 before_script:
-  - COMPOSER_ROOT_VERSION=dev-master composer --dev install
+  - make
 
-script: phpunit src
+script: make test

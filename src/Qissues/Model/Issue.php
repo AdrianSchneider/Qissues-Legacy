@@ -21,8 +21,9 @@ class Issue extends ReadOnlyArrayAccess
     protected $priority;
     protected $type;
     protected $labels;
+    protected $comments;
 
-    public function __construct($id, $title, $description, Status $status, \DateTime $dateCreated, \DateTime $dateUpdated, User $assignee = null, Priority $priority = null, Type $type = null, $labels = null)
+    public function __construct($id, $title, $description, Status $status, \DateTime $dateCreated, \DateTime $dateUpdated, User $assignee = null, Priority $priority = null, Type $type = null, $labels = null, $comments = 0)
     {
         $this->id = $id;
         $this->title = $title;
@@ -42,6 +43,8 @@ class Issue extends ReadOnlyArrayAccess
         } else {
             $this->labels = array();
         }
+
+        $this->comments = $comments;
     }
 
     public function getId()
@@ -107,5 +110,10 @@ class Issue extends ReadOnlyArrayAccess
     public function getLabels()
     {
         return $this->labels;
+    }
+
+    public function getComments()
+    {
+        return $this->comments;
     }
 }

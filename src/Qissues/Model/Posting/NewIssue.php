@@ -4,6 +4,7 @@ namespace Qissues\Model\Posting;
 
 use Qissues\Model\Meta\User;
 use Qissues\Model\Meta\Label;
+use Qissues\Model\Meta\Type;
 use Qissues\Model\Meta\Priority;
 use Qissues\System\DataType\ReadOnlyArrayAccess;
 
@@ -52,9 +53,9 @@ class NewIssue extends ReadOnlyArrayAccess
         return $this->priority;
     }
 
-    public function getTypes()
+    public function getType()
     {
-        return $this->types;
+        return $this->type;
     }
 
     protected function addLabel(Label $label)

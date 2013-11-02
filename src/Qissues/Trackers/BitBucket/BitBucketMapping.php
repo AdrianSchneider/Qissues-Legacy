@@ -24,7 +24,8 @@ class BitBucketMapping implements FieldMapping
                 'title' => $issue->getTitle(),
                 'assignee' => $issue->getAssignee() ? $issue->getAssignee()->getAccount() : '',
                 'description' => $issue->getDescription(),
-                'labels' => $issue->getLabels()
+                'type' => $issue->getType() ? strval($issue->getType()) : '',
+                'label' => $issue->getLabels()
                     ? implode(', ', array_map('strval', $issue->getLabels()))
                     : ''
             );
@@ -33,8 +34,8 @@ class BitBucketMapping implements FieldMapping
         return array(
             'title' => '',
             'assignee' => 'me',
-            'labels' => '',
-            'milestone' => '',
+            'type' => '',
+            'label' => '',
             'description' => ''
         );
     }
@@ -45,18 +46,17 @@ class BitBucketMapping implements FieldMapping
     public function toIssue(array $issue)
     {
         return new Issue(
-            $issue['number'],
+            $issue['local_id'],
             $issue['title'],
-            $issue['body'],
-            new Status($issue['state']),
-            new \DateTime($issue['created_at']),
-            new \DateTime($issue['updated_at']),
-            $issue['assignee'] ? new User($issue['assignee']['login']) : null,
+            $issue['content'],
+            new Status($issue['status']),
+            new \DateTime($issue['utc_created_on']),
+            new \DateTime($issue['utc_last_updated']),
+            !empty($issue['responsible']) ? new User($issue['responsible']['username'], null, $issue['responsible']['display_name']) : null,
             null,
-            null,
-            $issue['labels'] ? array_map(function($label) {
-                return new Label($label['name']);
-            }, $issue['labels']) : array()
+            !empty($issue['metadata']['kind']) ? new Type($issue['metadata']['kind']) : null,
+            !empty($issue['metadata']['component']) ? new Label($issue['metadata']['component']) : array(),
+            !empty($issue['comment_count']) ? intval($issue['comment_count']) : 0
         );
     }
 
@@ -70,17 +70,23 @@ class BitBucketMapping implements FieldMapping
             $input['description'],
             !empty($input['assignee']) ? new User($input['assignee']) : null,
             null,
-            null,
-            !empty($input['labels']) ? $this->prepareLabels($input['labels']) : null
+            !empty($input['type']) ? new Type($input['type']) : null,
+            !empty($input['label']) ? array($this->prepareLabel($input['label'])) : null
         );
     }
 
-    protected function prepareLabels($labels)
+    protected function prepareLabel($label)
     {
-        return array_map(
-            function($label) { return new Label($label); },
-            preg_split('/[\s,]+/', $labels, -1, PREG_SPLIT_NO_EMPTY)
+        $label = array_map(
+            function($l) { return new Label($l); },
+            preg_split('/[\s,]+/', $label, -1, PREG_SPLIT_NO_EMPTY)
         );
+
+        if (count($label) > 1) {
+            throw new \DomainException('BitBucket only supports a single label/component.');
+        }
+
+        return $label[0];
     }
 
     /**
@@ -90,27 +96,18 @@ class BitBucketMapping implements FieldMapping
     {
         $new = array(
             'title' => $issue->getTitle(),
-            'body'  => $issue->getDescription()
+            'content'  => $issue->getDescription()
         );
 
         if ($issue->getAssignee()) {
-            $new['assignee'] = $issue->getAssignee()->getAccount();
+            $new['responsible'] = $issue->getAssignee()->getAccount();
         }
         if ($labels = $issue->getLabels()) {
-            $new['labels'] = array_map('strval', $labels);
+            $new['component'] = (string)$labels[0];
         }
-
-        /*
-        if (!empty($issue['labels'])) {
-            $new['labels'] = $issue['labels'];
+        if ($type = $issue->getType()) {
+            $new['kind'] = (string)$type;
         }
-        if (!empty($issue['milestone'])) {
-            $new['milestone'] = $issue['milestone'];
-        }
-        if (!empty($issue['assignee'])) {
-            $new['assignee'] = $issue['assignee'];
-        }
-         */
 
         return $new;
     }
@@ -121,22 +118,16 @@ class BitBucketMapping implements FieldMapping
     public function toComment(array $comment)
     {
         return new Comment(
-            $comment['body'],
+            $comment['content'] ?: '(made some changes)',
             new User(
-                $comment['user']['login'],
-                $comment['user']['id']
+                $comment['author_info']['username'],
+                null,
+                $comment['author_info']['display_name']
             ),
-            new \DateTime($comment['created_at'])
+            new \DateTime($comment['utc_created_on'])
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function toNewComment(array $comment)
-    {
-        return new NewComment();
-    }
     /**
      * {@inheritDoc}
      */

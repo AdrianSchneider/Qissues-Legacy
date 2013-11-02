@@ -29,7 +29,7 @@ class BitBucketRepository implements IssueRepository
      */
     public function __construct($repository, $username, $password, FieldMapping $mapping, Client $client = null)
     {
-        $this->repository = $repository;
+        $this->repository = strtolower($repository);
         $this->username = $username;
         $this->password = $password;
         $this->mapping = $mapping;
@@ -59,7 +59,7 @@ class BitBucketRepository implements IssueRepository
      */
     public function lookupUrl(Number $issue)
     {
-        return sprintf('https:/bitbucket.org/%s/issues/%d', $this->repository, (string)$issue);
+        return sprintf('https:/bitbucket.org/%s/issue/%d', $this->repository, (string)$issue);
     }
 
     /**
@@ -67,13 +67,13 @@ class BitBucketRepository implements IssueRepository
      */
     public function query(SearchCriteria $criteria)
     {
-        $request = $this->request('GET', sprintf('/repos/%s/issues', $this->repository));
+        $request = $this->request('GET', sprintf('/repositories/%s/issues', $this->repository));
         foreach ($this->convertCriteriaToQuery($criteria) as $key => $value) {
             $request->getQuery()->set($key, $value);
         }
 
         $response = $request->send()->json();
-        return array_map(array($this->mapping, 'toIssue'), $response);
+        return array_map(array($this->mapping, 'toIssue'), $response['issues']);
     }
 
     /**
@@ -83,6 +83,7 @@ class BitBucketRepository implements IssueRepository
      */
     protected function convertCriteriaToQuery(SearchCriteria $criteria)
     {
+        return array();
         $query = array();
 
         if ($sortFields = $criteria->getSortFields()) {
@@ -128,10 +129,10 @@ class BitBucketRepository implements IssueRepository
      */
     public function persist(NewIssue $issue)
     {
-        $request = $this->request('POST', sprintf('/repos/%s/issues', $this->repository));
-        $request->setBody(json_encode($this->mapping->issueToArray($issue)), 'application/json');
+        $request = $this->request('POST', sprintf('/repositories/%s/issues', $this->repository));
+        $request->setBody($this->mapping->issueToArray($issue));
         $response = $request->send()->json();
-        return new Number($response['number']);
+        return new Number($response['local_id']);
     }
 
     /**
@@ -139,8 +140,8 @@ class BitBucketRepository implements IssueRepository
      */
     public function update(NewIssue $issue, Number $number)
     {
-        $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->repository, $number->getNumber()));
-        $request->setBody(json_encode($this->mapping->issueToArray($issue)), 'application/json');
+        $request = $this->request('PUT', $this->getIssueUrl($number));
+        $request->setBody($this->mapping->issueToArray($issue));
         $request->send();
     }
 
@@ -150,7 +151,7 @@ class BitBucketRepository implements IssueRepository
     public function comment(Number $issue, NewComment $comment)
     {
         $request = $this->request('POST', $this->getIssueUrl($issue, '/comments'));
-        $request->setBody(json_encode(array('body' => $comment->getMessage())), 'application/json');
+        $request->setBody(array('content' => $comment->getMessage()));
         $request->send();
     }
 
@@ -206,6 +207,6 @@ class BitBucketRepository implements IssueRepository
      */
     protected function getIssueUrl(Number $number, $append = '')
     {
-        return sprintf('/repos/%s/issues/%d%s', $this->repository, $number->getNumber(), $append);
+        return sprintf('/repositories/%s/issues/%d%s', $this->repository, $number->getNumber(), $append);
     }
 }

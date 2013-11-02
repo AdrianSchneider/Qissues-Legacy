@@ -44,13 +44,6 @@ interface FieldMapping
     function toComment(array $comment);
 
     /**
-     * Creates a NewComment from raw data
-     * @param array $comment
-     * @return NewComment
-     */
-    function toNewComment(array $cooment);
-
-    /**
      * Converts a NewComment to raw data 
      * @param NewComment $comment
      * @return array

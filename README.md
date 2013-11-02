@@ -1,4 +1,4 @@
-# Qissues
+# Qissues [![Build Status](https://travis-ci.org/AdrianSchneider/Qissues.png?branch=master)](https://travis-ci.org/AdrianSchneider/Qissues)
 Qissues is a CLI tool for interacting with various bug tracking systems. It's meant to provide a single, sane interface that is quick to use and can keep your hands on the keyboard. It's also heavily customizable to accomodate whatever workflow you have.
 
 Qissues was inspired by Mylyn for Eclipse, but meant to assist people who prefer working with terminal applications rather than IDEs. Basically, quick read/write access to your issues without having to change programs.

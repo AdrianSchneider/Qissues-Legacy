@@ -14,6 +14,9 @@ install: ;@echo "Installing ${PROJECT}"; \
 test: ;@echo "Unit Testing ${PROJECT}"; \
 	bin/phpunit src;
 
+travis:
+	composer install;
+
 coverage: ;@echo "Generating unit test coverage for ${PROJECT}"; \
 	bin/phpunit --coverage-html=coverage src;
 

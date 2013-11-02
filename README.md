@@ -46,3 +46,6 @@ Example Configuration:
     github.password: "YourPassword"
 
 It's advised to also create a `~/.qissues` file for credentials and non project-specific configuration.
+
+## Documentation
+There is a lot more to learn in the [Docs](doc/).

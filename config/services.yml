@@ -74,6 +74,9 @@ services:
     console.output.issues_views.tiny:
         class: Qissues\Console\Output\IssuesList\TinyView
 
+    console.output.issues_views.json:
+        class: Qissues\Console\Output\IssuesList\JsonView
+
     console.output.browser:
         class: Qissues\Console\Output\WebBrowser
         arguments:

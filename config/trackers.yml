@@ -2,6 +2,9 @@ parameters:
     github.repository:
     github.username:
     github.password:
+    bitbucket.repository:
+    bitbucket.username:
+    bitbucket.password:
 
 services:
     tracker.github:
@@ -31,3 +34,32 @@ services:
 
     tracker.github.features_builder:
         class: Qissues\Trackers\GitHub\GitHubSupport
+
+
+    tracker.bitbucket:
+        class: Qissues\Model\Tracker\IssueTracker
+        arguments:
+            - @tracker.bitbucket.repository
+            - @tracker.bitbucket.mapping
+            - @tracker.bitbucket.features
+
+    tracker.bitbucket.repository:
+        class: Qissues\Trackers\BitBucket\BitBucketRepository
+        arguments:
+            - %bitbucket.repository%
+            - %bitbucket.username%
+            - %bitbucket.password%
+            - @tracker.bitbucket.mapping
+
+    tracker.bitbucket.mapping:
+        class: Qissues\Trackers\BitBucket\BitBucketMapping
+
+    tracker.bitbucket.features:
+        class: Qissues\Model\Tracker\Support\FeatureSet
+        factory_service: tracker.bitbucket.features_builder
+        factory_method: buildFor
+        arguments:
+             - @support.catalog
+
+    tracker.bitbucket.features_builder:
+        class: Qissues\Trackers\BitBucket\BitBucketSupport

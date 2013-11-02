@@ -120,4 +120,17 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Qissues\Model\Posting\NewIssue', $issue);
     }
+
+    public function testInit()
+    {
+        $editor = $this->getMockBuilder('Qissues\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
+        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
+
+        $strategy = new EditStrategy($editor, $fileFormat);
+        $strategy->init(
+            $this->getMock('Symfony\Component\Console\Input\InputInterface'),
+            $this->getMock('Symfony\Component\Console\Output\OutputInterface'),
+            $this->getMockBuilder('Symfony\Component\Console\Application')->disableOriginalConstructor()->getMock()
+        );
+    }
 }

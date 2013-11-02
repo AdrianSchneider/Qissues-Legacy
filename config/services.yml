@@ -5,6 +5,9 @@ parameters:
     console.input.default_strategy: "edit"
 
 services:
+    console.shell:
+        class: Qissues\Console\Shell\BasicShell
+
     console.input.issue_strategy.edit:
         class: Qissues\Console\Input\Strategy\Issue\EditStrategy
         arguments:
@@ -30,6 +33,8 @@ services:
 
     console.input.git_id:
         class: Qissues\Console\Input\GitId
+        arguments:
+            - @console.shell
 
     console.input.criteria_builder:
         class: Qissues\Console\Input\CriteriaBuilder

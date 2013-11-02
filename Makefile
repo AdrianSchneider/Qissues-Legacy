@@ -14,7 +14,11 @@ install: ;@echo "Installing ${PROJECT}"; \
 test: ;@echo "Unit Testing ${PROJECT}"; \
 	bin/phpunit src;
 
+travis:
+	wget -nc https://getcomposer.org/composer.phar; \
+	php composer.phar install;
+
 coverage: ;@echo "Generating unit test coverage for ${PROJECT}"; \
 	bin/phpunit --coverage-html=coverage src;
 
-.PHONY: all install test coverage
+.PHONY: all install test coverage travis

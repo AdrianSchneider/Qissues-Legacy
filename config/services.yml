@@ -17,6 +17,12 @@ services:
     console.input.issue_strategy.interactive:
         class: Qissues\Console\Input\Strategy\Issue\InteractiveStrategy
 
+    console.input.issue_strategy.stdin:
+        class: Qissues\Console\Input\Strategy\Issue\StdinStrategy
+        arguments:
+            - "php://stdin"
+            - @console.input.format.frontmatter
+
     console.input.comment_strategy.option:
         class: Qissues\Console\Input\Strategy\Comment\OptionStrategy
 

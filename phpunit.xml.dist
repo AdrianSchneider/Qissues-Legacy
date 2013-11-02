@@ -15,7 +15,7 @@
 
     <testsuites>
         <testsuite name="Project Test Suite">
-            <directory>../src/Qissues/Tests</directory>
+            <directory>src/Qissues/Tests</directory>
         </testsuite>
     </testsuites>
 

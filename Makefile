@@ -12,12 +12,12 @@ install: ;@echo "Installing ${PROJECT}"; \
 	mv qissues.phar ~/bin/qissues -f;
 
 test: ;@echo "Unit Testing ${PROJECT}"; \
-	bin/phpunit src;
+	bin/phpunit;
 
 travis:
 	composer install;
 
 coverage: ;@echo "Generating unit test coverage for ${PROJECT}"; \
-	bin/phpunit --coverage-html=coverage src;
+	bin/phpunit --coverage-html=coverage;
 
 .PHONY: all install test coverage travis

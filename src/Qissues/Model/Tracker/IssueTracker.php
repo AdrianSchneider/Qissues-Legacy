@@ -2,6 +2,7 @@
 
 namespace Qissues\Model\Tracker;
 
+use Qissues\Model\Tracker\Support\Feature;
 use Qissues\Model\Tracker\Support\FeatureSet;
 
 class IssueTracker

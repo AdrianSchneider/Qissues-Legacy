@@ -27,6 +27,8 @@ services:
 
     console.input.comment_strategy.stdin:
         class: Qissues\Console\Input\Strategy\Comment\StdinStrategy
+        arguments:
+            - "php://stdin"
 
     console.input.comment_strategy.interactive:
         class: Qissues\Console\Input\Strategy\Comment\InteractiveStrategy

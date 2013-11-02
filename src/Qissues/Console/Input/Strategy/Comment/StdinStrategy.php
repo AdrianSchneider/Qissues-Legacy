@@ -10,6 +10,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class StdinStrategy implements CommentStrategy
 {
+    protected $inputStream;
+
+    public function __construct($inputStream = 'php://stdin')
+    {
+        $this->inputStream = $inputStream;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -20,7 +27,7 @@ class StdinStrategy implements CommentStrategy
      */
     function createNew(IssueTracker $tracker)
     {
-        if ($input = file_get_contents('php://stdin')) {
+        if ($input = trim(file_get_contents($this->inputStream))) {
             return new NewComment($input);
         }
     }

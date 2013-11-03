@@ -32,7 +32,12 @@ class EditStrategy implements IssueStrategy
     public function createNew(IssueTracker $tracker)
     {
         $mapping = $tracker->getMapping();
-        $content = $this->editor->getEdited($this->fileFormat->seed($mapping->getEditFields()));
+        $content = trim($this->editor->getEdited($this->fileFormat->seed($mapping->getEditFields())));
+
+        if (!$content) {
+            return;
+        }
+
         return $mapping->toNewIssue($this->fileFormat->parse($content));
     }
 
@@ -47,6 +52,11 @@ class EditStrategy implements IssueStrategy
     {
         $mapping = $tracker->getMapping();
         $content = $this->editor->getEdited($this->fileFormat->seed($mapping->getEditFields($existing)));
+
+        if (!$content) {
+            return;
+        }
+
         return $mapping->toNewIssue($this->fileFormat->parse($content));
     }
 }

@@ -39,7 +39,12 @@ class EditCommand extends Command
             return 1;
         }
 
-        $number = $repository->update($strategy->updateExisting($tracker, $issue), $number);
+        if (!$changes = $strategy->updateExisting($tracker, $issue)) {
+            $output->writeln("<error>Aborted edit</error>");
+            return 1;
+        }
+
+        $number = $repository->update($changes, $number);
         $output->writeln("Issue <info>#$number</info> has been updated");
     }
 }

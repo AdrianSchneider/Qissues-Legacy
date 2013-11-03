@@ -34,7 +34,12 @@ class CreateCommand extends Command
             return 1;
         }
 
-        $number = $repository->persist($strategy->createNew($tracker));
+        if (!$issue = $strategy->createNew($tracker)) {
+            $output->writeln("<error>Issue aborted</error>");
+            return 1;
+        }
+
+        $number = $repository->persist($issue);
         $output->writeln("Issue <info>#$number</info> has been created");
     }
 }

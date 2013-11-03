@@ -9,8 +9,10 @@ use Qissues\Model\Querying\SearchCriteria;
 use Qissues\Model\Tracker\IssueRepository;
 use Qissues\Model\Tracker\FieldMapping;
 use Qissues\Model\Meta\Status;
+use Qissues\Model\Meta\ClosedStatus;
 use Qissues\Model\Meta\User;
 use Guzzle\Http\Client;
+use Guzzle\Http\QueryAggregator\DuplicateAggregator;
 
 class BitBucketRepository implements IssueRepository
 {
@@ -59,7 +61,7 @@ class BitBucketRepository implements IssueRepository
      */
     public function lookupUrl(Number $issue)
     {
-        return sprintf('https:/bitbucket.org/%s/issue/%d', $this->repository, (string)$issue);
+        return sprintf('https://bitbucket.org/%s/issue/%d', $this->repository, (string)$issue);
     }
 
     /**
@@ -67,10 +69,11 @@ class BitBucketRepository implements IssueRepository
      */
     public function query(SearchCriteria $criteria)
     {
+        $query = $this->convertCriteriaToQuery($criteria);
+
         $request = $this->request('GET', sprintf('/repositories/%s/issues', $this->repository));
-        foreach ($this->convertCriteriaToQuery($criteria) as $key => $value) {
-            $request->getQuery()->set($key, $value);
-        }
+        $request->getQuery()->setAggregator(new DuplicateAggregator());
+        $request->getQuery()->overwriteWith($query);
 
         $response = $request->send()->json();
         return array_map(array($this->mapping, 'toIssue'), $response['issues']);
@@ -83,32 +86,38 @@ class BitBucketRepository implements IssueRepository
      */
     protected function convertCriteriaToQuery(SearchCriteria $criteria)
     {
-        return array();
         $query = array();
 
-        if ($sortFields = $criteria->getSortFields()) {
-            $validFields = array('created', 'updated', 'comments');
-
-            if (count($sortFields) > 1) {
-                throw new \DomainException('BitBucket cannot multi-sort');
+        if ($types = $criteria->getTypes()) {
+            $validTypes = array('bug', 'enhancement', 'proposal', 'task');
+            foreach ($types as $type) {
+                if (!in_array($type->getName(), $validTypes)) {
+                    throw new \DomainException('That is an unknown type to BitBucket');
+                }
+                $query['kind'][] = $type->getName();
             }
-            if (!in_array($sortFields[0], $validFields)) {
-                throw new \DomainException("Sorting by '$sortFields[0]' is unsupported on BitBucket");
-            }
-
-            $query['sort'] = $sortFields[0];
         }
 
         if ($statuses = $criteria->getStatuses()) {
-            if (count($statuses) > 1) {
-                throw new \DomainException('BitBucket cannot support multiple statuses');
+            $validStatuses = array('new', 'open', 'resolved', 'on hold', 'invalid', 'duplicate', 'wontfix');
+            foreach ($statuses as $status) {
+                if (!in_array($status->getStatus(), $validStatuses)) {
+                    throw new \DomainException("'$status' is an unknown status to BitBucket");
+                }
+                $query['status'][] = $status->getStatus();
             }
+        }
 
-            $query['state'] = $statuses[0]->getStatus();
+        if ($assignees = $criteria->getAssignees()) {
+            foreach ($assignees as $assignee) {
+                $query['responsible'][] = $assignee->getAccount();
+            }
         }
 
         if ($labels = $criteria->getLabels()) {
-            $query['labels'] = implode(',', array_map('strval', $labels));
+            foreach ($labels as $label) {
+                $query['component'][] = $label->getName();
+            }
         }
 
         return $query;
@@ -160,7 +169,8 @@ class BitBucketRepository implements IssueRepository
      */
     public function delete(Number $issue)
     {
-        throw new \Exception('not yet implemented');
+        $request = $this->request('DELETE', $this->getIssueUrl($issue, '/comments'));
+        $request->send();
     }
 
     /**
@@ -168,8 +178,12 @@ class BitBucketRepository implements IssueRepository
      */
     public function changeStatus(Number $issue, Status $status)
     {
-        $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->repository, $issue->getNumber()));
-        $request->setBody(json_encode(array('state' => $status->getStatus())), 'application/json');
+        if ($status instanceof ClosedStatus) {
+            $status = new Status('resolved');
+        }
+
+        $request = $this->request('PUT', $this->getIssueUrl($issue));
+        $request->setBody(array('status' => $status->getStatus()));
         $request->send();
     }
 
@@ -178,8 +192,8 @@ class BitBucketRepository implements IssueRepository
      */
     public function assign(Number $issue, User $user)
     {
-        $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->repository, $issue->getNumber()));
-        $request->setBody(json_encode(array('assignee' => $user->getAccount())), 'application/json');
+        $request = $this->request('PUT', $this->getIssueUrl($issue));
+        $request->setBody(array('responsible' => $user->getAccount()));
         $request->send();
     }
 

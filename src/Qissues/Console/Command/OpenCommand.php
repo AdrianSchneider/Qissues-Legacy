@@ -3,7 +3,7 @@
 namespace Qissues\Console\Command;
 
 use Qissues\Model\Number;
-use Qissues\Model\Meta\Status;
+use Qissues\Model\Meta\OpenStatus;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -40,7 +40,7 @@ class OpenCommand extends Command
             $repository->comment($number, $comment);
         }
 
-        $repository->changeStatus($number, new Status('open'));
+        $repository->changeStatus($number, new OpenStatus());
         $output->writeln("Issue <info>#$number</info> has been opened");
     }
 }

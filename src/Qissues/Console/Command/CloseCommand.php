@@ -3,7 +3,7 @@
 namespace Qissues\Console\Command;
 
 use Qissues\Model\Number;
-use Qissues\Model\Meta\Status;
+use Qissues\Model\Meta\ClosedStatus;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -40,7 +40,7 @@ class CloseCommand extends Command
             $repository->comment($number, $comment);
         }
 
-        $repository->changeStatus($number, new Status('closed'));
+        $repository->changeStatus($number, new ClosedStatus());
         $output->writeln("Issue <info>#$number</info> has been closed");
     }
 }

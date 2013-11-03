@@ -24,8 +24,6 @@ class BasicView
                     ? (substr($issue['title'], 0, $width * 0.4) . '...')
                     : $issue['title'],
                 'Status'       => $issue['status'],
-                'Type'         => $issue['type'],
-                'P'            => $issue['priority'],
                 'Date updated' => $issue['dateUpdated']->format('Y-m-d g:ia')
             );
         }

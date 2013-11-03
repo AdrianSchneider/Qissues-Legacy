@@ -62,8 +62,21 @@ class Command extends BaseCommand
      */
     protected function getIssueStrategy(InputInterface $input, OutputInterface $output)
     {
-        $selected = $input->getOption('strategy') ?: $this->getParameter('console.input.default_strategy');
-        $strategy = sprintf('console.input.issue_strategy.%s', $selected);
+        if ($input->getOption('strategy')) {
+            $strategy = $input->getOption('strategy');
+        } elseif ($input->getOption('data')) {
+            $strategy = 'option';
+    /*
+        possible without blocking?
+
+        } elseif (strlen(trim(file_get_contents('php://stdin'))) {
+            $strategy = 'stdin';
+    */
+        } else {
+            $strategy = $this->getParameter('console.input.default_strategy');
+        }
+
+        $strategy = sprintf('console.input.issue_strategy.%s', $strategy);
 
         if (!$this->getApplication()->getContainer()->has($strategy)) {
             return;

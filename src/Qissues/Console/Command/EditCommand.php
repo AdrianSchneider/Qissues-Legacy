@@ -18,7 +18,8 @@ class EditCommand extends Command
             ->setDescription('Edit an existing issue')
             ->setDefinition(array(
                 new InputArgument('issue', InputArgument::OPTIONAL, 'The Issue ID'),
-                new InputOption('strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy')
+                new InputOption('strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy'),
+                new InputOption('data', 'd', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Specify fields manually')
             ))
         ;
     }

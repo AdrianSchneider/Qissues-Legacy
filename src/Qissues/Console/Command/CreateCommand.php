@@ -19,7 +19,8 @@ class CreateCommand extends Command
             ->setName('create')
             ->setDescription('Create a new issue')
             ->setDefinition(array(
-                new InputOption('strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy')
+                new InputOption('strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy'),
+                new InputOption('data', 'd', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Specify fields manually')
             ))
         ;
     }

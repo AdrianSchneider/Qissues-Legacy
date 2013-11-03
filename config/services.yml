@@ -24,6 +24,9 @@ services:
             - "php://stdin"
             - @console.input.format.active
 
+    console.input.issue_strategy.option:
+        class: Qissues\Console\Input\Strategy\Issue\OptionStrategy
+
     console.input.comment_strategy.option:
         class: Qissues\Console\Input\Strategy\Comment\OptionStrategy
 

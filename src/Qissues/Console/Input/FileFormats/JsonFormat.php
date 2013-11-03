@@ -9,7 +9,12 @@ class JsonFormat implements FileFormat
      */
     public function seed(array $fields)
     {
-        return json_encode($fields);
+        $flags = 0;
+        if (defined('JSON_PRETTY_PRINT')) {
+            $flags |= JSON_PRETTY_PRINT;
+        }
+
+        return json_encode($fields, $flags);
     }
 
     /**

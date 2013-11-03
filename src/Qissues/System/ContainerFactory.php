@@ -25,6 +25,8 @@ class ContainerFactory
             $container->setParameter($key, $value);
         }
 
+        $container->set('container', $container);
+
         $container->compile();
         return $container;
     }

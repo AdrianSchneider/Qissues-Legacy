@@ -54,4 +54,12 @@ class ContainerFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Symfony\Component\DependencyInjection\ContainerInterface', $container);
         $this->assertInternalType('array', $container->getParameter('reports.a'));
     }
+
+    public function testSetsContainerAsItself()
+    {
+        $factory = new ContainerFactory();
+        $container = $factory->create(array());
+
+        $this->assertSame($container, $container->get('container'));
+    }
 }

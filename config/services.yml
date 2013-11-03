@@ -3,6 +3,7 @@ parameters:
     console.tmp_file.prefix: "qissues"
     console.browser.command:
     console.input.default_strategy: "edit"
+    console.input.default_format: "frontmatter"
 
 services:
     console.shell:
@@ -12,7 +13,7 @@ services:
         class: Qissues\Console\Input\Strategy\Issue\EditStrategy
         arguments:
             - @console.input.external_editor
-            - @console.input.format.frontmatter
+            - @console.input.format.active
 
     console.input.issue_strategy.interactive:
         class: Qissues\Console\Input\Strategy\Issue\InteractiveStrategy
@@ -21,7 +22,7 @@ services:
         class: Qissues\Console\Input\Strategy\Issue\StdinStrategy
         arguments:
             - "php://stdin"
-            - @console.input.format.frontmatter
+            - @console.input.format.active
 
     console.input.comment_strategy.option:
         class: Qissues\Console\Input\Strategy\Comment\OptionStrategy
@@ -56,10 +57,23 @@ services:
             - %console.editor%
             - %console.tmp_file.prefix%
 
+    console.input.format.factory:
+        class: Qissues\System\FormatFactory
+        arguments:
+            - @container
+
+    console.input.format.active:
+        class: Qissues\Console\Input\FileFormats\FileFormat
+        factory_service: console.input.format.factory
+        factory_method: getFormat
+
     console.input.format.frontmatter:
         class: Qissues\Console\Input\FileFormats\FrontMatterFormat
         arguments:
             - @frontmatter_parser
+
+    console.input.format.json:
+        class: Qissues\Console\Input\FileFormats\JsonFormat
 
     console.output.table_renderer:
         class: Qissues\Console\Output\TableRenderer

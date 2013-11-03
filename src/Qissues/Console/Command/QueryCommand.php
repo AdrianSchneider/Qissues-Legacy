@@ -25,7 +25,7 @@ class QueryCommand extends Command
             ->addOption('report', 'r', InputOption::VALUE_OPTIONAL, 'Load a report from configuration', null)
 
             // criteria
-            ->addOption('status', 's', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by status', array('open'))
+            ->addOption('status', 's', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by status', array())
             ->addOption('assignee', 'a', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by assignee', null)
             ->addOption('priority', 'p', InputOption::VALUE_OPTIONAL, 'Filter by priority', null)
             ->addOption('type', 't', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by type', array())
@@ -54,11 +54,12 @@ class QueryCommand extends Command
         }
 
         if ($report = $input->getOption('report')) {
-            if (!$reportConfig = $this->getParameter("reports.$report")) {
+            $reports = $this->getParameter('reports');
+            if (empty($reports[$report])) {
                 $output->writeln("<error>Invalid report</error>");
                 return 1;
             }
-            $criteria = $this->get('console.input.report_criteria_builder')->build($reportConfig);
+            $criteria = $this->get('console.input.report_criteria_builder')->build($reports[$report]);
         } else {
             $criteria = $this->get('console.input.criteria_builder')->build($input);
         }

@@ -42,17 +42,28 @@ class ContainerFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Symfony\Component\Yaml\Parser', $container->get('yaml_parser'));
     }
 
-    public function testReportsArePreservedAsArrays()
+    public function testPluralKeysArePreservedAsArrays()
     {
         $factory = new ContainerFactory();
         $container = $factory->create(array(
             'reports' => array(
                 'a' => array('assignees' => 1),
                 'b' => array('something' => 0)
+            ),
+            'something.something.peanuts' => array(
+                'a' => true,
+                'b' => true
             )
         ));
-        $this->assertInstanceOf('Symfony\Component\DependencyInjection\ContainerInterface', $container);
-        $this->assertInternalType('array', $container->getParameter('reports.a'));
+
+        $this->assertEquals($container->getParameter('reports'), array(
+            'a' => array('assignees' => 1),
+            'b' => array('something' => 0)
+        ));
+        $this->assertEquals($container->getParameter('something.something.peanuts'), array(
+            'a' => true,
+            'b' => true
+        ));
     }
 
     public function testSetsContainerAsItself()

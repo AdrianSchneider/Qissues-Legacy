@@ -4,6 +4,14 @@ parameters:
     console.browser.command:
     console.input.default_strategy: "edit"
     console.input.default_format: "frontmatter"
+    console.output.tinyview_priorities:
+        5: '▲'
+        4: '▴'
+        3: '-'
+        2: '▾'
+        1: '▼'
+    console.output.tinyview_colors:
+        bug: "p5"
 
 services:
     console.shell:
@@ -96,9 +104,16 @@ services:
 
     console.output.issues_views.tiny:
         class: Qissues\Console\Output\IssuesList\TinyView
+        arguments:
+            - @console.output.spaced_table_renderer
+            - %console.output.tinyview_priorities%
+            - %console.output.tinyview_colors%
 
     console.output.issues_views.json:
         class: Qissues\Console\Output\IssuesList\JsonView
+
+    console.output.spaced_table_renderer:
+        class: Qissues\Console\Output\SpacedTableRenderer
 
     console.output.browser:
         class: Qissues\Console\Output\WebBrowser

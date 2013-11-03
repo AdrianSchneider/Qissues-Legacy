@@ -8,12 +8,21 @@ use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Meta\User;
 use Qissues\Model\Meta\Status;
+use Qissues\Model\Meta\Priority;
 use Qissues\Model\Meta\Type;
 use Qissues\Model\Meta\Label;
 use Qissues\Model\Tracker\FieldMapping;
 
 class BitBucketMapping implements FieldMapping
 {
+    protected $priorities = array(
+        'trivial'  => 1,
+        'minor'    => 2,
+        'major'    => 3,
+        'critical' => 4,
+        'blocker'  => 5
+    );
+
     /**
      * {@inheritDoc}
      */
@@ -25,6 +34,7 @@ class BitBucketMapping implements FieldMapping
                 'assignee' => $issue->getAssignee() ? $issue->getAssignee()->getAccount() : '',
                 'description' => $issue->getDescription(),
                 'type' => $issue->getType() ? strval($issue->getType()) : '',
+                'priority' => $issue->getPriority()->getPriority(),
                 'label' => $issue->getLabels()
                     ? implode(', ', array_map('strval', $issue->getLabels()))
                     : ''
@@ -36,6 +46,7 @@ class BitBucketMapping implements FieldMapping
             'assignee' => 'me',
             'type' => '',
             'label' => '',
+            'priority' => '',
             'description' => ''
         );
     }
@@ -53,7 +64,7 @@ class BitBucketMapping implements FieldMapping
             new \DateTime($issue['utc_created_on']),
             new \DateTime($issue['utc_last_updated']),
             !empty($issue['responsible']) ? new User($issue['responsible']['username'], null, $issue['responsible']['display_name']) : null,
-            null,
+            !empty($issue['priority']) ? new Priority($this->priorities[$issue['priority']], $issue['priority']) : null,
             !empty($issue['metadata']['kind']) ? new Type($issue['metadata']['kind']) : null,
             !empty($issue['metadata']['component']) ? new Label($issue['metadata']['component']) : array(),
             !empty($issue['comment_count']) ? intval($issue['comment_count']) : 0
@@ -65,11 +76,18 @@ class BitBucketMapping implements FieldMapping
      */
     public function toNewIssue(array $input)
     {
+        if (!empty($input['priority'])) {
+            if (intval($input['priority'])) {
+                $reversePriorities = array_flip($this->priorities);
+                $input['priority'] = $reversePriorities[$input['priority']];
+            }
+        }
+
         return new NewIssue(
             $input['title'],
             $input['description'],
             !empty($input['assignee']) ? new User($input['assignee']) : null,
-            null,
+            !empty($input['priority']) ? new Priority(null, $input['priority']) : null,
             !empty($input['type']) ? new Type($input['type']) : null,
             !empty($input['label']) ? array($this->prepareLabel($input['label'])) : null
         );
@@ -107,6 +125,9 @@ class BitBucketMapping implements FieldMapping
         }
         if ($type = $issue->getType()) {
             $new['kind'] = (string)$type;
+        }
+        if ($priority = $issue->getPriority()) {
+            $new['priority'] = $priority->getName();
         }
 
         return $new;

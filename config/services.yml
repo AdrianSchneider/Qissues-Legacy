@@ -89,8 +89,11 @@ services:
     console.output.table_renderer:
         class: Qissues\Console\Output\TableRenderer
 
-    console.output.views.single:
-        class: Qissues\Console\Output\SingleView
+    console.output.issue_views.standard:
+        class: Qissues\Console\Output\Issue\StandardView
+
+    console.output.issue_views.json:
+        class: Qissues\Console\Output\Issue\JsonView
 
     console.output.issues_views.detailed:
         class: Qissues\Console\Output\IssuesList\DetailedView

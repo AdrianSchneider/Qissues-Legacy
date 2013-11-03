@@ -1,36 +1,37 @@
 <?php
 
-namespace Qissues\Console\Output;
+namespace Qissues\Console\Output\Issue;
 
 use Qissues\Model\Issue;
-use Symfony\Component\Console\Output\OutputInterface;
 
-class SingleView
+class StandardView
 {
-    public function render(Issue $issue, OutputInterface $output, $width, $height, array $comments)
+    public function render(Issue $issue, $width, $height, array $comments)
     {
-        $output->writeln(str_repeat('-', $width));
+        $out = '';
+        $out = str_repeat('-', $width) . "\n";
 
         $title = wordwrap($issue['title'], min($width - 4, 100), "\n", true);
 
-        $output->writeln("<comment>$issue[id] - $title</comment>");
-        $output->writeln("  " . $this->prepareMeta($issue) . "\n");
+        $out .= "<comment>$issue[id] - $title</comment>\n";
+        $out .= "  " . $this->prepareMeta($issue) . "\n\n";
 
         $description = wordwrap($issue['description'], min($width - 4, 100), "\n", true);
         foreach (explode("\n", $description) as $row) {
-            $output->writeln($row);
+            $out .= "$row\n";
         }
 
-        $output->writeln("");
+        $out .= "\n";
 
         if ($comments) {
             foreach ($comments as $comment) {
                 $date = $comment['date']->format('Y-m-d g:ia');
-                $output->writeln("[$date] <info>$comment[author]</info>: $comment[message]");
+                $out .= "[$date] <info>$comment[author]</info>: $comment[message]\n";
             }
         }
 
-        $output->writeln(str_repeat('-', $width));
+        $out .= str_repeat('-', $width) . "\n";
+        return $out;
     }
 
     protected function prepareMeta(Issue $issue)

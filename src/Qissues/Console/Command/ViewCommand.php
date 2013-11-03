@@ -20,6 +20,7 @@ class ViewCommand extends Command
             ->addArgument('issue', InputArgument::OPTIONAL, 'The issue ID')
             ->addOption('no-comments', null, InputOption::VALUE_NONE, 'Don\'t print comments', null)
             ->addOption('web', 'w', InputOption::VALUE_NONE, 'Open in web browser.', null)
+            ->addOption('view', 'z', InputOption::VALUE_OPTIONAL, 'Change view', 'standard')
         ;
     }
 
@@ -38,8 +39,11 @@ class ViewCommand extends Command
         }
 
         list($width, $height) = $this->getApplication()->getTerminalDimensions();
-
         $comments = $input->getOption('no-comments') ? array() : $tracker->findComments($number);
-        $this->get('console.output.views.single')->render($issue, $output, $width, $height, $comments);
+
+        $view = $this->get(sprintf('console.output.issue_views.%s', $input->getOption('view')));
+        $rendered = $view->render($issue, $width, $height, $comments);
+
+        $output->writeln($rendered);
     }
 }

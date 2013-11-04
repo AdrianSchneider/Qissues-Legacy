@@ -24,13 +24,38 @@ class StandardView
         $out .= "\n";
 
         if ($comments) {
+
+            $out .= "<comment>$issue[id] - Comments</comment>\n\n";
+
+            $multiLine = false;
+            foreach ($comments as $comment) {
+                if (strpos(trim($comment['message']), "\n") !== false) {
+                    $multiLine = true;
+                }
+            }
+
             foreach ($comments as $comment) {
                 $date = $comment['date']->format('Y-m-d g:ia');
-                $out .= "[$date] <info>$comment[author]</info>: $comment[message]\n";
+                if ($multiLine) {
+                    $out .= "[$date] <info>$comment[author]</info>:\n";
+                    $out .= $this->indent($comment['message'], $width) . "\n";
+                } else {
+                    $out .= "[$date] <info>$comment[author]</info>: " . trim($comment['message']) . "\n";
+                }
             }
         }
 
         $out .= str_repeat('-', $width) . "\n";
+        return $out;
+    }
+
+    protected function indent($text, $width)
+    {
+        $out = '';
+        foreach (explode("\n", wordwrap($text, $width - 4)) as $line) {
+            $out .= "    $line\n";
+        }
+
         return $out;
     }
 

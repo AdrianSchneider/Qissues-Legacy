@@ -4,6 +4,12 @@ namespace Qissues\Tests\Trackers\GitHub;
 
 use Qissues\Model\Posting\NewIssue;
 use Qissues\Trackers\GitHub\GitHubMapping;
+use Qissues\Model\Meta\User;
+use Qissues\Model\Meta\Status;
+use Qissues\Model\Meta\Type;
+use Qissues\Model\Meta\Label;
+use Qissues\Model\Meta\Priority;
+use Qissues\Model\Querying\SearchCriteria;
 
 class GitHubMappingTest extends \PHPUnit_Framework_TestCase
 {
@@ -48,5 +54,119 @@ class GitHubMappingTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('Hello', $rawIssue['title']);
         $this->assertEquals('World', $rawIssue['body']);
+    }
+
+    public function testFilterByLabels()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addLabel(new Label('darn'));
+        $criteria->addLabel(new Label('it'));
+
+        $mapping = new GitHubMapping();
+        $query = $mapping->buildSearchQuery($criteria);
+
+        $this->assertEquals('darn,it', $query['labels']);
+    }
+
+    public function testQueryByStatuses()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addStatus(new Status('open'));
+
+        $mapping = new GitHubMapping();
+        $query = $mapping->buildSearchQuery($criteria);
+
+        $this->assertEquals('open', $query['state']);
+    }
+
+    public function testQueryingMultipleStatusesIsUnsupported()
+    {
+        $this->setExpectedException('DomainException', 'multiple statuses');
+
+        $criteria = new SearchCriteria();
+        $criteria->addStatus(new Status('a'));
+        $criteria->addStatus(new Status('b'));
+
+        $mapping = new GitHubMapping();
+        $mapping->buildSearchQuery($criteria);
+    }
+
+    public function testQuerySortingByField()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('comments');
+
+        $mapping = new GitHubMapping();
+        $query = $mapping->buildSearchQuery($criteria);
+
+        $this->assertEquals('comments', $query['sort']);
+    }
+
+    public function testQueryMultiSortThrowsException()
+    {
+        $this->setExpectedException('DomainException', 'multi-sort');
+
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('created');
+        $criteria->addSortField('updated');
+
+        $mapping = new GitHubMapping();
+        $mapping->buildSearchQuery($criteria);
+    }
+
+    public function testQuerySuportingByUnSupportedFieldThrowsException()
+    {
+        $this->setExpectedException('DomainException', 'unsupported');
+
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('priority');
+
+        $mapping = new GitHubMapping();
+        $mapping->buildSearchQuery($criteria);
+    }
+
+    public function testQueryingByIdsThrowsException()
+    {
+        $this->setExpectedException('DomainException', 'numbers');
+
+        $criteria = new SearchCriteria();
+        $criteria->setNumbers(array(1));
+
+        $mapping = new GitHubMapping();
+        $mapping->buildSearchQuery($criteria);
+    }
+
+    public function testQueryingByKeywordsThrowsException()
+    {
+        $this->setExpectedException('DomainException', 'keywords');
+
+        $criteria = new SearchCriteria();
+        $criteria->setKeywords('sadface');
+
+        $mapping = new GitHubMapping();
+        $mapping->buildSearchQuery($criteria);
+    }
+
+    public function testQueryingByPriorityThrowsException()
+    {
+        $this->setExpectedException('DomainException', 'priority');
+
+        $criteria = new SearchCriteria();
+        $criteria->addPriority(new Priority(1, 'meh'));
+
+        $mapping = new GitHubMapping();
+        $mapping->buildSearchQuery($criteria);
+    }
+
+    public function testQueryPerPage()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->setPaging(2, 50);
+
+        $mapping = new GitHubMapping();
+        $query = $mapping->buildSearchQuery($criteria);
+
+        $this->assertEquals(2, $query['page']);
+        $this->assertEquals(50, $query['per_page']);
     }
 }

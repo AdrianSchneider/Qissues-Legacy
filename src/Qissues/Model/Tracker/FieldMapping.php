@@ -5,6 +5,7 @@ namespace Qissues\Model\Tracker;
 use Qissues\Model\Issue;
 use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
+use Qissues\Model\Querying\SearchCriteria;
 
 interface FieldMapping
 {
@@ -44,9 +45,9 @@ interface FieldMapping
     function toComment(array $comment);
 
     /**
-     * Converts a NewComment to raw data 
-     * @param NewComment $comment
-     * @return array
+     * Maps the search query to the http query fields
+     * @param SearchCriteria $criteria
+     * @return array fields
      */
-    function commentToArray(NewComment $comment);
+    function buildSearchQuery(SearchCriteria $criteria);
 }

@@ -65,9 +65,17 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testQuery()
     {
+        $criteria = new SearchCriteria();
+        $query = array('keyword' => 'meh');
         $payload = array('issues' => array(array('issue')));
 
         $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping
+            ->expects($this->once())
+            ->method('buildSearchQuery')
+            ->with($criteria)
+            ->will($this->returnValue($query))
+        ;
         $mapping
             ->expects($this->once())
             ->method('toIssue')
@@ -82,231 +90,6 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(1, $issues);
         $this->assertEquals('real issue', $issues[0]);
-    }
-
-    public function testQueryFilterByType()
-    {
-        $payload = array('issues' => array(array('issue')));
-
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
-        $mapping
-            ->expects($this->once())
-            ->method('toIssue')
-            ->with(array('issue'))
-            ->will($this->returnValue($out = 'real issue'))
-        ;
-
-        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
-
-        $criteria = new SearchCriteria();
-        $criteria->addType(new Type('bug'));
-
-        $tracker = $this->getRepository($mapping);
-        $issues = $tracker->query($criteria);
-
-        $this->assertCount(1, $issues);
-        $this->assertEquals('real issue', $issues[0]);
-        $this->assertQueryEquals('kind', array('bug'));
-    }
-
-    public function testQueryFilterByUnsupportedTypeThrowsException()
-    {
-        $this->setExpectedException('DomainException', 'type');
-
-        $criteria = new SearchCriteria();
-        $criteria->addType(new Type('peanut'));
-
-        $tracker = $this->getRepository();
-        $tracker->query($criteria);
-    }
-
-    public function testQueryFilterByStatuses()
-    {
-        $payload = array('issues' => array(array('issue')));
-
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
-        $mapping
-            ->expects($this->once())
-            ->method('toIssue')
-            ->with(array('issue'))
-            ->will($this->returnValue($out = 'real issue'))
-        ;
-
-        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
-
-        $criteria = new SearchCriteria();
-        $criteria->addStatus(new Status('resolved'));
-
-        $tracker = $this->getRepository($mapping);
-        $issues = $tracker->query($criteria);
-
-        $this->assertCount(1, $issues);
-        $this->assertEquals('real issue', $issues[0]);
-        $this->assertQueryEquals('status', array('resolved'));
-    }
-
-    public function testQueryFilterByUnsupportedStatusThrowsException()
-    {
-        $this->setExpectedException('DomainException', 'status');
-
-        $criteria = new SearchCriteria();
-        $criteria->addStatus(new Status('lame'));
-
-        $tracker = $this->getRepository();
-        $tracker->query($criteria);
-    }
-
-    public function testQueryFilterByAssignees()
-    {
-        $payload = array('issues' => array(array('issue')));
-
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
-        $mapping
-            ->expects($this->once())
-            ->method('toIssue')
-            ->with(array('issue'))
-            ->will($this->returnValue($out = 'real issue'))
-        ;
-
-        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
-
-        $criteria = new SearchCriteria();
-        $criteria->addAssignee(new User('joe'));
-
-        $tracker = $this->getRepository($mapping);
-        $issues = $tracker->query($criteria);
-
-        $this->assertCount(1, $issues);
-        $this->assertEquals('real issue', $issues[0]);
-        $this->assertQueryEquals('responsible', array('joe'));
-    }
-
-    public function testQueryFilterByLabel()
-    {
-        $payload = array('issues' => array(array('issue')));
-
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
-        $mapping
-            ->expects($this->once())
-            ->method('toIssue')
-            ->with(array('issue'))
-            ->will($this->returnValue($out = 'real issue'))
-        ;
-
-        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
-
-        $criteria = new SearchCriteria();
-        $criteria->addLabel(new Label('cool'));
-
-        $tracker = $this->getRepository($mapping);
-        $issues = $tracker->query($criteria);
-
-        $this->assertCount(1, $issues);
-        $this->assertEquals('real issue', $issues[0]);
-        $this->assertQueryEquals('component', array('cool'));
-    }
-
-    public function testQueryFilterByKeywords()
-    {
-        $payload = array('issues' => array(array('issue')));
-
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
-        $mapping
-            ->expects($this->once())
-            ->method('toIssue')
-            ->with(array('issue'))
-            ->will($this->returnValue($out = 'real issue'))
-        ;
-
-        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
-
-        $criteria = new SearchCriteria();
-        $criteria->setKeywords('eggnog');
-
-        $tracker = $this->getRepository($mapping);
-        $issues = $tracker->query($criteria);
-
-        $this->assertCount(1, $issues);
-        $this->assertEquals('real issue', $issues[0]);
-        $this->assertQueryEquals('search', 'eggnog');
-    }
-
-    public function testQueryFilterByPriority()
-    {
-        $payload = array('issues' => array(array('issue')));
-
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
-        $mapping
-            ->expects($this->once())
-            ->method('toIssue')
-            ->with(array('issue'))
-            ->will($this->returnValue($out = 'real issue'))
-        ;
-
-        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
-
-        $criteria = new SearchCriteria();
-        $criteria->addPriority(new Priority(3, 'major'));
-
-        $tracker = $this->getRepository($mapping);
-        $issues = $tracker->query($criteria);
-
-        $this->assertCount(1, $issues);
-        $this->assertEquals('real issue', $issues[0]);
-        $this->assertQueryEquals('priority', array('major'));
-    }
-
-    public function testQueryFilterByUnsupportedPriorityThrowsException()
-    {
-        $this->setExpectedException('DomainException', 'priority');
-
-        $criteria = new SearchCriteria();
-        $criteria->addPriority(new Priority(99, 'made up'));
-
-        $tracker = $this->getRepository();
-        $tracker->query($criteria);
-    }
-
-    public function testQueryFilterByNumbersThrowsException()
-    {
-        $this->setExpectedException('DomainException', 'numbers');
-
-        $criteria = new SearchCriteria();
-        $criteria->setNumbers(array(1, 2, 3));
-
-        $tracker = $this->getRepository();
-        $tracker->query($criteria);
-    }
-
-    public function testSorting()
-    {
-        // TODO
-    }
-
-    public function testQueryPagination()
-    {
-        $payload = array('issues' => array(array('issue')));
-
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
-        $mapping
-            ->expects($this->once())
-            ->method('toIssue')
-            ->with(array('issue'))
-            ->will($this->returnValue($out = 'real issue'))
-        ;
-
-        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
-
-        $criteria = new SearchCriteria();
-        $criteria->setPaging(3, 25);
-
-        $tracker = $this->getRepository($mapping);
-        $issues = $tracker->query($criteria);
-
-        $this->assertCount(1, $issues);
-        $this->assertEquals('real issue', $issues[0]);
-        $this->assertQueryEquals('limit', 25);
-        $this->assertQueryEquals('offset', 50);
     }
 
     public function testFindComments()
@@ -435,14 +218,6 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
             'password',
             $mapping,
             $this->client
-        );
-    }
-
-    protected function assertQueryEquals($key, $value)
-    {
-        $this->assertEquals(
-            $value,
-            $this->history->getLastRequest()->getQuery()->get($key)
         );
     }
 

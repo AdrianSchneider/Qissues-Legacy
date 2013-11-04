@@ -69,79 +69,12 @@ class BitBucketRepository implements IssueRepository
      */
     public function query(SearchCriteria $criteria)
     {
-        $query = $this->convertCriteriaToQuery($criteria);
-
         $request = $this->request('GET', sprintf('/repositories/%s/issues', $this->repository));
         $request->getQuery()->setAggregator(new DuplicateAggregator());
-        $request->getQuery()->overwriteWith($query);
+        $request->getQuery()->overwriteWith($this->mapping->buildSearchQuery($criteria));
 
         $response = $request->send()->json();
         return array_map(array($this->mapping, 'toIssue'), $response['issues']);
-    }
-
-    /**
-     * Converts a SearchCriteria object into querystring pairs
-     * @param SearchCriteria $criteria
-     * @return array query
-     */
-    protected function convertCriteriaToQuery(SearchCriteria $criteria)
-    {
-        $query = array();
-
-        if ($types = $criteria->getTypes()) {
-            $validTypes = array('bug', 'enhancement', 'proposal', 'task');
-            foreach ($types as $type) {
-                if (!in_array($type->getName(), $validTypes)) {
-                    throw new \DomainException('That is an unknown type to BitBucket');
-                }
-                $query['kind'][] = $type->getName();
-            }
-        }
-
-        if ($statuses = $criteria->getStatuses()) {
-            $validStatuses = array('new', 'open', 'resolved', 'on hold', 'invalid', 'duplicate', 'wontfix');
-            foreach ($statuses as $status) {
-                if (!in_array($status->getStatus(), $validStatuses)) {
-                    throw new \DomainException("'$status' is an unknown status to BitBucket");
-                }
-                $query['status'][] = $status->getStatus();
-            }
-        }
-
-        if ($assignees = $criteria->getAssignees()) {
-            foreach ($assignees as $assignee) {
-                $query['responsible'][] = $assignee->getAccount();
-            }
-        }
-
-        if ($labels = $criteria->getLabels()) {
-            foreach ($labels as $label) {
-                $query['component'][] = $label->getName();
-            }
-        }
-
-        if ($priorities = $criteria->getPriorities()) {
-            foreach ($priorities as $priority) {
-                if (!in_array($name = $priority->getName(), array('trivial', 'minor', 'major', 'critical', 'blocker'))) {
-                    throw new \DomainException("'$name' is an unsupported priority for BitBucket");
-                }
-                $query['priority'][] = $priority->getName();
-            }
-        }
-
-        if ($keywords = $criteria->getKeywords()) {
-            $query['search'] = $keywords;
-        }
-
-        if ($criteria->getNumbers()) {
-            throw new \DomainException('BitBucket does not support querying by multiple numbers');
-        }
-
-        list($page, $limit) = $criteria->getPaging();
-        $query['limit'] = $limit;
-        $query['offset'] = ($page - 1) * $limit;
-
-        return $query;
     }
 
     /**

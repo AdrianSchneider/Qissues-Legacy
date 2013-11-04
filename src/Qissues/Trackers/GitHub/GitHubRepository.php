@@ -68,62 +68,12 @@ class GitHubRepository implements IssueRepository
     public function query(SearchCriteria $criteria)
     {
         $request = $this->request('GET', sprintf('/repos/%s/issues', $this->repository));
-        foreach ($this->convertCriteriaToQuery($criteria) as $key => $value) {
+        foreach ($this->mapping->buildSearchQuery($criteria) as $key => $value) {
             $request->getQuery()->set($key, $value);
         }
 
         $response = $request->send()->json();
         return array_map(array($this->mapping, 'toIssue'), $response);
-    }
-
-    /**
-     * Converts a SearchCriteria object into querystring pairs
-     * @param SearchCriteria $criteria
-     * @return array query
-     */
-    protected function convertCriteriaToQuery(SearchCriteria $criteria)
-    {
-        $query = array();
-
-        if ($sortFields = $criteria->getSortFields()) {
-            $validFields = array('created', 'updated', 'comments');
-
-            if (count($sortFields) > 1) {
-                throw new \DomainException('GitHub cannot multi-sort');
-            }
-            if (!in_array($sortFields[0], $validFields)) {
-                throw new \DomainException("Sorting by '$sortFields[0]' is unsupported on GitHub");
-            }
-
-            $query['sort'] = $sortFields[0];
-        }
-
-        if ($statuses = $criteria->getStatuses()) {
-            if (count($statuses) > 1) {
-                throw new \DomainException('GitHub cannot support multiple statuses');
-            }
-
-            $query['state'] = $statuses[0]->getStatus();
-        }
-
-        if ($labels = $criteria->getLabels()) {
-            $query['labels'] = implode(',', array_map('strval', $labels));
-        }
-
-        if ($criteria->getNumbers()) {
-            throw new \DomainException('Github cannot search by multiple numbers');
-        }
-        if ($criteria->getKeywords()) {
-            throw new \DomainException('Github cannot search by keywords');
-        }
-        if ($criteria->getPriorities()) {
-            throw new \DomainException('Github cannot search by priority');
-        }
-
-        list($offset, $limit) = $criteria->getPaging();
-        list($query['page'], $query['per_page']) = $criteria->getPaging();
-
-        return $query;
     }
 
     /**

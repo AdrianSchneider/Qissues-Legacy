@@ -25,7 +25,6 @@ class QueryCommand extends Command
             ->addOption('report', 'r', InputOption::VALUE_OPTIONAL, 'Load a report from configuration', null)
 
             // criteria
-            ->addOption('keyword', 'k', InputOption::VALUE_OPTIONAL, 'Filter by keyword', null)
             ->addOption('status', 's', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by status', array())
             ->addOption('assignee', 'a', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by assignee', null)
             ->addOption('priority', 'p', InputOption::VALUE_OPTIONAL, 'Filter by priority', null)

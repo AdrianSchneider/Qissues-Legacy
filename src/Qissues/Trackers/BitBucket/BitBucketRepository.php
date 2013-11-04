@@ -120,6 +120,27 @@ class BitBucketRepository implements IssueRepository
             }
         }
 
+        if ($priorities = $criteria->getPriorities()) {
+            foreach ($priorities as $priority) {
+                if (!in_array($name = $priority->getName(), array('trivial', 'minor', 'major', 'critical', 'blocker'))) {
+                    throw new \DomainException("'$name' is an unsupported priority for BitBucket");
+                }
+                $query['priority'][] = $priority->getName();
+            }
+        }
+
+        if ($keywords = $criteria->getKeywords()) {
+            $query['search'] = $keywords;
+        }
+
+        if ($criteria->getNumbers()) {
+            throw new \DomainException('BitBucket does not support querying by multiple numbers');
+        }
+
+        list($page, $limit) = $criteria->getPaging();
+        $query['limit'] = $limit;
+        $query['offset'] = ($page - 1) * $limit;
+
         return $query;
     }
 

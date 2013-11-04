@@ -32,6 +32,17 @@ class SearchCriteria
         $this->labels = array();
         $this->sortFields = array();
         $this->paging = array(1, 50);
+        $this->keywords = '';
+    }
+
+    public function setKeywords($keywords)
+    {
+        $this->keywords = $keywords;
+    }
+
+    public function getKeywords()
+    {
+        return $this->keywords;
     }
 
     public function addStatus(Status $status)
@@ -104,9 +115,9 @@ class SearchCriteria
         return $this->sortFields;
     }
 
-    public function setPaging($offset, $limit)
+    public function setPaging($page, $limit)
     {
-        $this->paging = array($offset, $limit);
+        $this->paging = array($page, $limit);
     }
 
     public function getPaging()

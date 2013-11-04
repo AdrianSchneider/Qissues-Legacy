@@ -18,6 +18,7 @@ class CriteriaBuilder
     {
         $criteria = new SearchCriteria();
 
+        $this->handleKeywords($input, $criteria);
         $this->handleStatuses($input, $criteria);
         $this->handlePriorities($input, $criteria);
         $this->handleTypes($input, $criteria);
@@ -29,6 +30,13 @@ class CriteriaBuilder
         $this->handlePaging($input, $criteria);
 
         return $criteria;
+    }
+
+    protected function handleKeywords($input, $criteria)
+    {
+        if ($keywords = $input->getOption('keyword')) {
+            $criteria->setKeywords($keywords);
+        }
     }
 
     protected function handleStatuses($input, $criteria)

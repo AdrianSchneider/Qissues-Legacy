@@ -14,6 +14,13 @@ class ReportCriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Qissues\Model\Querying\SearchCriteria', $criteria);
     }
 
+    public function testHandlesKeywords()
+    {
+        $builder = new ReportCriteriaBuilder();
+        $criteria = $builder->build(array('keyword' => 'pizza'));
+        $this->assertEquals('pizza', $criteria->getKeywords());
+    }
+
     public function testHandlesStatuses()
     {
         $builder = new ReportCriteriaBuilder();

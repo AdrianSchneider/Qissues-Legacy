@@ -5,6 +5,7 @@ namespace Qissues\Tests\Trackers\GitHub;
 use Qissues\Model\Number;
 use Qissues\Model\Meta\Status;
 use Qissues\Model\Meta\Label;
+use Qissues\Model\Meta\Priority;
 use Qissues\Model\Querying\SearchCriteria;
 use Qissues\Trackers\GitHub\GitHubRepository;
 use Guzzle\Http\Client;
@@ -203,6 +204,30 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
         $tracker = $this->getRepository($mapping);
 
         $this->setExpectedException('DomainException', 'numbers');
+        $tracker->query($criteria);
+    }
+
+    public function testQueryingByKeywordsThrowsException()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->setKeywords('sadface');
+
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $tracker = $this->getRepository($mapping);
+
+        $this->setExpectedException('DomainException', 'keywords');
+        $tracker->query($criteria);
+    }
+
+    public function testQueryingByPriorityThrowsException()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addPriority(new Priority(1, 'meh'));
+
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $tracker = $this->getRepository($mapping);
+
+        $this->setExpectedException('DomainException', 'priority');
         $tracker->query($criteria);
     }
 

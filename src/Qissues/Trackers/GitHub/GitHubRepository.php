@@ -113,6 +113,12 @@ class GitHubRepository implements IssueRepository
         if ($criteria->getNumbers()) {
             throw new \DomainException('Github cannot search by multiple numbers');
         }
+        if ($criteria->getKeywords()) {
+            throw new \DomainException('Github cannot search by keywords');
+        }
+        if ($criteria->getPriorities()) {
+            throw new \DomainException('Github cannot search by priority');
+        }
 
         list($offset, $limit) = $criteria->getPaging();
         list($query['page'], $query['per_page']) = $criteria->getPaging();

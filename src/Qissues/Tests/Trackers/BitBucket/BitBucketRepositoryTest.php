@@ -8,6 +8,7 @@ use Qissues\Model\Meta\ClosedStatus;
 use Qissues\Model\Meta\Label;
 use Qissues\Model\Meta\Type;
 use Qissues\Model\Meta\User;
+use Qissues\Model\Meta\Priority;
 use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Querying\SearchCriteria;
 use Qissues\Trackers\BitBucket\BitBucketRepository;
@@ -203,6 +204,109 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(1, $issues);
         $this->assertEquals('real issue', $issues[0]);
         $this->assertQueryEquals('component', array('cool'));
+    }
+
+    public function testQueryFilterByKeywords()
+    {
+        $payload = array('issues' => array(array('issue')));
+
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping
+            ->expects($this->once())
+            ->method('toIssue')
+            ->with(array('issue'))
+            ->will($this->returnValue($out = 'real issue'))
+        ;
+
+        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
+
+        $criteria = new SearchCriteria();
+        $criteria->setKeywords('eggnog');
+
+        $tracker = $this->getRepository($mapping);
+        $issues = $tracker->query($criteria);
+
+        $this->assertCount(1, $issues);
+        $this->assertEquals('real issue', $issues[0]);
+        $this->assertQueryEquals('search', 'eggnog');
+    }
+
+    public function testQueryFilterByPriority()
+    {
+        $payload = array('issues' => array(array('issue')));
+
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping
+            ->expects($this->once())
+            ->method('toIssue')
+            ->with(array('issue'))
+            ->will($this->returnValue($out = 'real issue'))
+        ;
+
+        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
+
+        $criteria = new SearchCriteria();
+        $criteria->addPriority(new Priority(3, 'major'));
+
+        $tracker = $this->getRepository($mapping);
+        $issues = $tracker->query($criteria);
+
+        $this->assertCount(1, $issues);
+        $this->assertEquals('real issue', $issues[0]);
+        $this->assertQueryEquals('priority', array('major'));
+    }
+
+    public function testQueryFilterByUnsupportedPriorityThrowsException()
+    {
+        $this->setExpectedException('DomainException', 'priority');
+
+        $criteria = new SearchCriteria();
+        $criteria->addPriority(new Priority(99, 'made up'));
+
+        $tracker = $this->getRepository();
+        $tracker->query($criteria);
+    }
+
+    public function testQueryFilterByNumbersThrowsException()
+    {
+        $this->setExpectedException('DomainException', 'numbers');
+
+        $criteria = new SearchCriteria();
+        $criteria->setNumbers(array(1, 2, 3));
+
+        $tracker = $this->getRepository();
+        $tracker->query($criteria);
+    }
+
+    public function testSorting()
+    {
+        // TODO
+    }
+
+    public function testQueryPagination()
+    {
+        $payload = array('issues' => array(array('issue')));
+
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping
+            ->expects($this->once())
+            ->method('toIssue')
+            ->with(array('issue'))
+            ->will($this->returnValue($out = 'real issue'))
+        ;
+
+        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
+
+        $criteria = new SearchCriteria();
+        $criteria->setPaging(3, 25);
+
+        $tracker = $this->getRepository($mapping);
+        $issues = $tracker->query($criteria);
+
+        $this->assertCount(1, $issues);
+        $this->assertEquals('real issue', $issues[0]);
+        $this->assertQueryEquals('limit', 25);
+        $this->assertQueryEquals('offset', 50);
     }
 
     public function testFindComments()

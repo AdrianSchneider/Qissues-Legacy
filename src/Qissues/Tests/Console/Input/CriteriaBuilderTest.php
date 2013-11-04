@@ -28,6 +28,14 @@ class CriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $this->setup = true;
     }
 
+    public function testByKeywords()
+    {
+        $input = new ArrayInput(array( '-k' => 'cheese'), $this->definition);
+
+        $criteria = $this->builder->build($input);
+        $this->assertEquals('cheese', $criteria->getKeywords());
+    }
+
     public function testByNumber()
     {
         $input = new ArrayInput(array( '-i' => array(1, 2, 3)), $this->definition);

@@ -16,6 +16,7 @@ class ReportCriteriaBuilder
     {
         $criteria = new SearchCriteria;
 
+        $this->handleKeywords($reportConfig, $criteria);
         $this->handleStatuses($reportConfig, $criteria);
         $this->handlePriorities($reportConfig, $criteria);
         $this->handleTypes($reportConfig, $criteria);
@@ -23,6 +24,13 @@ class ReportCriteriaBuilder
         $this->handleIds($reportConfig, $criteria);
 
         return $criteria;
+    }
+
+    protected function handleKeywords($reportConfig, $criteria)
+    {
+        if (!empty($reportConfig['keyword'])) {
+            $criteria->setKeywords($reportConfig['keyword']);
+        }
     }
 
     protected function handleStatuses($reportConfig, $criteria)

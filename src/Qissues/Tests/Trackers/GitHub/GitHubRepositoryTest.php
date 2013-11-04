@@ -194,6 +194,43 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
         $tracker->query($criteria);
     }
 
+    public function testQueryingByIdsThrowsException()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->setNumbers(array(1));
+
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $tracker = $this->getRepository($mapping);
+
+        $this->setExpectedException('DomainException', 'numbers');
+        $tracker->query($criteria);
+    }
+
+    public function testQueryPerPage()
+    {
+        $payload = array(array('issue'));
+
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping
+            ->expects($this->once())
+            ->method('toIssue')
+            ->with(array('issue'))
+            ->will($this->returnValue($out = 'real issue'))
+        ;
+
+        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
+
+        $criteria = new SearchCriteria();
+        $criteria->setPaging(2, 50);
+
+        $tracker = $this->getRepository($mapping);
+        $issues = $tracker->query($criteria);
+
+        $this->assertQueryEquals('page', 2);
+        $this->assertQueryEquals('per_page', 50);
+        $this->assertEquals('real issue', $issues[0]);
+    }
+
     public function testFindComments()
     {
         $payload = array(array('comment'));

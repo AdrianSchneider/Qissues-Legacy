@@ -107,7 +107,7 @@ class CriteriaBuilder
     protected function handlePaging($input, $criteria)
     {
         $criteria->setPaging(
-            $input->getOption('offset', 0),
+            $input->getOption('page', 1),
             $input->getOption('limit', 50)
         );
     }

@@ -110,6 +110,13 @@ class GitHubRepository implements IssueRepository
             $query['labels'] = implode(',', array_map('strval', $labels));
         }
 
+        if ($criteria->getNumbers()) {
+            throw new \DomainException('Github cannot search by multiple numbers');
+        }
+
+        list($offset, $limit) = $criteria->getPaging();
+        list($query['page'], $query['per_page']) = $criteria->getPaging();
+
         return $query;
     }
 

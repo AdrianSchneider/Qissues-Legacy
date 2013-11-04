@@ -31,7 +31,7 @@ class SearchCriteria
         $this->priorities = array();
         $this->labels = array();
         $this->sortFields = array();
-        $this->paging = array(0, 50);
+        $this->paging = array(1, 50);
     }
 
     public function addStatus(Status $status)

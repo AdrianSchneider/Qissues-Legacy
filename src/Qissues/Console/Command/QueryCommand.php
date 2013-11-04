@@ -25,6 +25,7 @@ class QueryCommand extends Command
             ->addOption('report', 'r', InputOption::VALUE_OPTIONAL, 'Load a report from configuration', null)
 
             // criteria
+            ->addOption('keyword', 'k', InputOption::VALUE_OPTIONAL, 'Filter by keyword', null)
             ->addOption('status', 's', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by status', array())
             ->addOption('assignee', 'a', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by assignee', null)
             ->addOption('priority', 'p', InputOption::VALUE_OPTIONAL, 'Filter by priority', null)
@@ -36,7 +37,7 @@ class QueryCommand extends Command
             // sorting or limiting
             ->addOption('sort', 'o', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Sort results by [priority]', array('updated'))
             ->addOption('limit', null, InputOption::VALUE_OPTIONAL, 'Limit the results', 50)
-            ->addOption('offset', null, InputOption::VALUE_OPTIONAL, 'Offset results for paging', 0)
+            ->addOption('page', null, InputOption::VALUE_OPTIONAL, 'Jump to results page', 1)
         ;
     }
 

@@ -132,11 +132,11 @@ class CriteriaBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testHandlePaging()
     {
-        $input = new ArrayInput(array('--limit' => 100, '--offset' => 23), $this->definition);
+        $input = new ArrayInput(array('--limit' => 100, '--page' => 1), $this->definition);
         $criteria = $this->builder->build($input);
 
         $this->assertEquals(
-            array(23, 100),
+            array(1, 100),
             $criteria->getPaging()
         );
     }

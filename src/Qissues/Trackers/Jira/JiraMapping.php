@@ -16,14 +16,6 @@ use Qissues\Model\Querying\SearchCriteria;
 
 class JiraMapping implements FieldMapping
 {
-    protected $priorities = array(
-        'trivial'  => 1,
-        'minor'    => 2,
-        'major'    => 3,
-        'critical' => 4,
-        'blocker'  => 5
-    );
-
     protected $project;
 
     public function __construct($project)
@@ -65,17 +57,17 @@ class JiraMapping implements FieldMapping
     public function toIssue(array $issue)
     {
         return new Issue(
-            $issue['local_id'],
-            $issue['title'],
-            $issue['content'],
-            new Status($issue['status']),
-            new \DateTime($issue['utc_created_on']),
-            new \DateTime($issue['utc_last_updated']),
-            !empty($issue['responsible']) ? new User($issue['responsible']['username'], null, $issue['responsible']['display_name']) : null,
-            !empty($issue['priority']) ? new Priority($this->priorities[$issue['priority']], $issue['priority']) : null,
-            !empty($issue['metadata']['kind']) ? new Type($issue['metadata']['kind']) : null,
-            !empty($issue['metadata']['component']) ? new Label($issue['metadata']['component']) : array(),
-            !empty($issue['comment_count']) ? intval($issue['comment_count']) : 0
+            substr($issue['key'], strpos($issue['key'], '-') + 1),
+            $issue['fields']['summary'],
+            $issue['fields']['description'],
+            new Status($issue['fields']['status']['name']),
+            new \DateTime($issue['fields']['created']),
+            new \DateTime($issue['fields']['updated']),
+            !empty($issue['fields']['assignee']) ? new User($issue['fields']['assignee']['name']) : null,
+            !empty($issue['fields']['priority']) ? new Priority($issue['fields']['priority']['id'], $issue['fields']['priority']['name']) : null,
+            !empty($issue['issuetype']['type']) ? new Type($issue['issuetype']['type']) : null
+            // TODO labels?
+            // TODO comments?
         );
     }
 
@@ -147,13 +139,9 @@ class JiraMapping implements FieldMapping
     public function toComment(array $comment)
     {
         return new Comment(
-            $comment['content'] ?: '(made some changes)',
-            new User(
-                $comment['author_info']['username'],
-                null,
-                $comment['author_info']['display_name']
-            ),
-            new \DateTime($comment['utc_created_on'])
+            $comment['body'],
+            new User($comment['author']['name']),
+            new \DateTime($comment['created'])
         );
     }
 
@@ -170,16 +158,13 @@ class JiraMapping implements FieldMapping
             $query['status'] = array_map('strval', $statuses);
         }
 
+        if ($types = $criteria->getTypes()) {
+            $query['issuetype'] = array_map('strval', $types);
+        }
+
         return $query;
 
         /*
-
-        if (!empty($options['assignee'])) {
-            $where[] = 'assignee IN (' . implode(',', array_map($quote, $options['assignee'])) . ')';
-        }
-        if (!empty($options['type'])) {
-            $where[] = 'issuetype IN (' . implode(',', array_map($quote, $options['type'])) . ')';
-        }
 
         if (!empty($options['status'])) {
             if (in_array('open', $options['status'])) {

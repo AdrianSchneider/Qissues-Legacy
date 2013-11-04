@@ -135,6 +135,8 @@ services:
 
     tracker.jira.mapping:
         class: Qissues\Trackers\Jira\JiraMapping
+        arguments:
+            - %jira.project%
 
     tracker.jira.features:
         class: Qissues\Model\Tracker\Support\FeatureSet

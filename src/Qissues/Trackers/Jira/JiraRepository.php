@@ -80,10 +80,50 @@ class JiraRepository implements IssueRepository
     public function query(SearchCriteria $criteria)
     {
         $query = $this->mapping->buildSearchQuery($criteria);
+        $jql = $this->buildJql($query);
 
-        $request = $this->request('GET', '/search?jql=1');
+        $request = $this->request('GET', "/search?jql=$jql");
         $response = $request->send()->json();
         return array_map(array($this->mapping, 'toIssue'), $response['issues']);
+    }
+
+    /**
+     * Constructs the JQL query from the translated field names
+     * @param array $query (usually http) field names
+     * @return string JQL
+     */
+    protected function buildJql(array $query)
+    {
+        if (!empty($query['sort'])) {
+            $sort = $query['sort'];
+            unset($query['sort']);
+        } else {
+            $sort = array();
+        }
+
+        $quote = function($string) { return "'" . addslashes($string) . "'"; };
+
+        $where = array();
+        foreach ($query as $key => $value) {
+            if (is_array($value)) {
+                $where[] = sprintf(
+                    '%s IN (%s)',
+                    $key,
+                    implode(',', array_map($quote, $value))
+                );
+            } else {
+                $where[] = sprintf('%s = %s', $key, $quote($value));
+            }
+        }
+
+        return sprintf(
+            '%s %s',
+            implode(' AND ', $where),
+            $sort ? sprintf(
+                'ORDER BY %s',
+                implode(', ', $sort)
+            ) : ''
+        );
     }
 
     /**
@@ -92,7 +132,7 @@ class JiraRepository implements IssueRepository
     public function findComments(Number $issue)
     {
         $request = $this->request('GET', sprintf(
-            '/rest/api/2/issue/%s-%d/comment',
+            '/issue/%s-%d/comment',
             $this->prefix,
             $issue->getNumber()
         ));
@@ -175,7 +215,7 @@ class JiraRepository implements IssueRepository
      */
     protected function request($method, $url)
     {
-        $url = '1.0' . $url;
+        $url = 'rest/api/2' . $url;
         $request = call_user_func(array($this->client, $method), $url);
         $request->setAuth($this->username, $this->password);
         return $request;
@@ -191,7 +231,7 @@ class JiraRepository implements IssueRepository
     protected function getIssueUrl(Number $number, $append = '')
     {
         return sprintf(
-            '/browse/%s-%d%s', 
+            '/issue/%s-%d%s', 
             $this->prefix,
             $number->getNumber(),
             $append

@@ -26,13 +26,13 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    protected function getRepository($mapping)
+    protected function getRepository($mapping = null)
     {
         return new GitHubRepository(
             $this->config['username'],
             $this->config['password'],
             $this->config['repository'],
-            $mapping,
+            $mapping ?: $this->getMockBuilder('Qissues\Model\Tracker\FieldMapping')->disableOriginalConstructor()->getMock(),
             $this->client
         );
     }
@@ -105,5 +105,12 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(1, $comments);
         $this->assertEquals('real comment', $comments[0]);
+    }
+
+    public function testDeleteThrowsException()
+    {
+        $this->setExpectedException('DomainException', 'cannot');
+        $repository = $this->getRepository();
+        $repository->delete(new Number(1));
     }
 }

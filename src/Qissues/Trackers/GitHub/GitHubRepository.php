@@ -122,7 +122,7 @@ class GitHubRepository implements IssueRepository
      */
     public function delete(Number $issue)
     {
-        throw new \Exception('not yet implemented');
+        throw new \DomainException('GitHub cannot delete issues');
     }
 
     /**

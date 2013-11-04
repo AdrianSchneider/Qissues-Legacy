@@ -8,6 +8,10 @@ parameters:
     trello.key: "application/developer api key"
     trello.token: "oauth token"
     trello.board: "Board Name"
+    jira.prefix: "PRFX"
+    jira.repository: "subdomain"
+    jira.username: "username"
+    jira.password: "password"
 
 services:
     tracker.github:
@@ -112,3 +116,33 @@ services:
                 statuses: [single]
                 labels: [multiple, dynamic]
                 metadata: [dynamic]
+
+    tracker.jira:
+        class: Qissues\Model\Tracker\IssueTracker
+        arguments:
+            - @tracker.jira.repository
+            - @tracker.jira.mapping
+            - @tracker.jira.features
+
+    tracker.jira.repository:
+        class: Qissues\Trackers\Jira\JiraRepository
+        arguments:
+            - %jira.repository%
+            - %jira.username%
+            - %jira.password%
+            - @tracker.jira.mapping
+
+    tracker.jira.mapping:
+        class: Qissues\Trackers\Jira\JiraMapping
+
+    tracker.jira.features:
+        class: Qissues\Model\Tracker\Support\FeatureSet
+        factory_service: support.featureset_builder
+        factory_method: build
+        arguments:
+            - @support.catalog
+            -
+                statuses: [single]
+                types: [single]
+                labels: [multiple, dynamic]
+                priorities: [single]

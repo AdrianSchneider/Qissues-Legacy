@@ -1,0 +1,213 @@
+<?php
+
+namespace Qissues\Trackers\Jira;
+
+use Qissues\Model\Issue;
+use Qissues\Model\Comment;
+use Qissues\Model\Posting\NewIssue;
+use Qissues\Model\Posting\NewComment;
+use Qissues\Model\Meta\User;
+use Qissues\Model\Meta\Status;
+use Qissues\Model\Meta\Priority;
+use Qissues\Model\Meta\Type;
+use Qissues\Model\Meta\Label;
+use Qissues\Model\Tracker\FieldMapping;
+use Qissues\Model\Querying\SearchCriteria;
+
+class JiraMapping implements FieldMapping
+{
+    protected $priorities = array(
+        'trivial'  => 1,
+        'minor'    => 2,
+        'major'    => 3,
+        'critical' => 4,
+        'blocker'  => 5
+    );
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getEditFields(Issue $issue = null)
+    {
+        if ($issue) {
+            return array(
+                'title' => $issue->getTitle(),
+                'assignee' => $issue->getAssignee() ? $issue->getAssignee()->getAccount() : '',
+                'description' => $issue->getDescription(),
+                'type' => $issue->getType() ? strval($issue->getType()) : '',
+                'priority' => $issue->getPriority()->getPriority(),
+                'label' => $issue->getLabels()
+                    ? implode(', ', array_map('strval', $issue->getLabels()))
+                    : ''
+            );
+        }
+
+        return array(
+            'title' => '',
+            'assignee' => 'me',
+            'type' => '',
+            'label' => '',
+            'priority' => '',
+            'description' => ''
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function toIssue(array $issue)
+    {
+        return new Issue(
+            $issue['local_id'],
+            $issue['title'],
+            $issue['content'],
+            new Status($issue['status']),
+            new \DateTime($issue['utc_created_on']),
+            new \DateTime($issue['utc_last_updated']),
+            !empty($issue['responsible']) ? new User($issue['responsible']['username'], null, $issue['responsible']['display_name']) : null,
+            !empty($issue['priority']) ? new Priority($this->priorities[$issue['priority']], $issue['priority']) : null,
+            !empty($issue['metadata']['kind']) ? new Type($issue['metadata']['kind']) : null,
+            !empty($issue['metadata']['component']) ? new Label($issue['metadata']['component']) : array(),
+            !empty($issue['comment_count']) ? intval($issue['comment_count']) : 0
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function toNewIssue(array $input)
+    {
+        if (!empty($input['priority'])) {
+            if (intval($input['priority'])) {
+                $reversePriorities = array_flip($this->priorities);
+                $input['priority'] = $reversePriorities[$input['priority']];
+            }
+        }
+
+        return new NewIssue(
+            $input['title'],
+            $input['description'],
+            !empty($input['assignee']) ? new User($input['assignee']) : null,
+            !empty($input['priority']) ? new Priority(null, $input['priority']) : null,
+            !empty($input['type']) ? new Type($input['type']) : null,
+            !empty($input['label']) ? array($this->prepareLabel($input['label'])) : null
+        );
+    }
+
+    protected function prepareLabel($label)
+    {
+        $label = array_map(
+            function($l) { return new Label($l); },
+            preg_split('/[\s,]+/', $label, -1, PREG_SPLIT_NO_EMPTY)
+        );
+
+        if (count($label) > 1) {
+            throw new \DomainException('Jira only supports a single label/component.');
+        }
+
+        return $label[0];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function issueToArray(NewIssue $issue)
+    {
+        $new = array(
+            'title' => $issue->getTitle(),
+            'content'  => $issue->getDescription()
+        );
+
+        if ($issue->getAssignee()) {
+            $new['responsible'] = $issue->getAssignee()->getAccount();
+        }
+        if ($labels = $issue->getLabels()) {
+            $new['component'] = (string)$labels[0];
+        }
+        if ($type = $issue->getType()) {
+            $new['kind'] = (string)$type;
+        }
+        if ($priority = $issue->getPriority()) {
+            $new['priority'] = $priority->getName();
+        }
+
+        return $new;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function toComment(array $comment)
+    {
+        return new Comment(
+            $comment['content'] ?: '(made some changes)',
+            new User(
+                $comment['author_info']['username'],
+                null,
+                $comment['author_info']['display_name']
+            ),
+            new \DateTime($comment['utc_created_on'])
+        );
+    }
+
+    public function buildSearchQuery(SearchCriteria $criteria)
+    {
+        $query = array();
+
+        if ($types = $criteria->getTypes()) {
+            $validTypes = array('bug', 'enhancement', 'proposal', 'task');
+            foreach ($types as $type) {
+                if (!in_array($type->getName(), $validTypes)) {
+                    throw new \DomainException('That is an unknown type to Jira');
+                }
+                $query['kind'][] = $type->getName();
+            }
+        }
+
+        if ($statuses = $criteria->getStatuses()) {
+            $validStatuses = array('new', 'open', 'resolved', 'on hold', 'invalid', 'duplicate', 'wontfix');
+            foreach ($statuses as $status) {
+                if (!in_array($status->getStatus(), $validStatuses)) {
+                    throw new \DomainException("'$status' is an unknown status to Jira");
+                }
+                $query['status'][] = $status->getStatus();
+            }
+        }
+
+        if ($assignees = $criteria->getAssignees()) {
+            foreach ($assignees as $assignee) {
+                $query['responsible'][] = $assignee->getAccount();
+            }
+        }
+
+        if ($labels = $criteria->getLabels()) {
+            foreach ($labels as $label) {
+                $query['component'][] = $label->getName();
+            }
+        }
+
+        if ($priorities = $criteria->getPriorities()) {
+            foreach ($priorities as $priority) {
+                if (!in_array($name = $priority->getName(), array('trivial', 'minor', 'major', 'critical', 'blocker'))) {
+                    throw new \DomainException("'$name' is an unsupported priority for Jira");
+                }
+                $query['priority'][] = $priority->getName();
+            }
+        }
+
+        if ($keywords = $criteria->getKeywords()) {
+            $query['search'] = $keywords;
+        }
+
+        if ($criteria->getNumbers()) {
+            throw new \DomainException('Jira does not support querying by multiple numbers');
+        }
+
+        list($page, $limit) = $criteria->getPaging();
+        $query['limit'] = $limit;
+        $query['offset'] = ($page - 1) * $limit;
+
+        return $query;
+    }
+}
+

@@ -53,7 +53,7 @@ After configuring a project,
 
 **Query issues**:
 
-    qissues [-s status [-t type [-a assignee [-k keyword [-l label [-o sortfield [--limit amt [--page num]]]]]]]]
+    qissues [-r report [-s status [-t type [-a assignee [-k keyword [-l label [-o sortfield [--limit amt [--page num]]]]]]]]]
 
 Will output something similar to:
 
@@ -66,16 +66,17 @@ Will output something similar to:
     | 4  | Working with JIRA is frustrating            | resolved | 2013-04-16 2:36am  |
     +-----------------------------------------------------------------------------------
 
-**View an Issue**:
-Once you know what you're looking for, you can view more details:
+Save common queries to `.qissues` as reports.
+
+**View an Issue**: Once you know what you're looking for, you can view more details:
 
     qissues view 4
 
-**Create Issue**:
+**Create Issue**: You can create new issues from Qissues many ways. The default launches $EDITOR with an empty frontmatter document.
 
     qissues create
 
-Will open your favorite editor in your terminal, and prompts you to enter as frontmatter YAML (configurable).
+Looks like this...
 
     ---
     title:
@@ -83,11 +84,11 @@ Will open your favorite editor in your terminal, and prompts you to enter as fro
     assignee:
     ---
 
-**Edit an Issue**:
+**Edit an Issue**: Works similar to create, but pre-populated.
 
     qissues edit 6
 
-Works similar to edit, but pre-populated.
+Looks like...
 
     ---
     title: The Internet is DOWN!

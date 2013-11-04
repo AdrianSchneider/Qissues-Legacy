@@ -6,7 +6,7 @@ Qissues was inspired by Mylyn for Eclipse, but meant to assist people who prefer
 ## Issue Trackers
 The system is set up to help abstract and normalize the differences between various systems. It was modelled by looking at a handful of systems and researching even more. Therefore, adding new trackers shouldn't take too much work.
 
-Currently, we supported:
+Currently supported:
 
 - GitHub
 - Bitbucket Issues
@@ -32,7 +32,7 @@ If you don't already have `~/bin` in your path, you can add it via:
 
     export PATH="$PATH":~/bin
 
-After that, running `qissues` from the root of a project.
+After that, run `qissues` from the root of a project.
 
 ## Project Setup
 

@@ -62,6 +62,57 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($out, $issue);
     }
 
+    public function testQuery()
+    {
+        $criteria = new SearchCriteria();
+        $query = array('keyword' => 'meh');
+        $payload = array('issues' => array(array('issue')));
+
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping
+            ->expects($this->once())
+            ->method('buildSearchQuery')
+            ->with($criteria)
+            ->will($this->returnValue($query))
+        ;
+        $mapping
+            ->expects($this->once())
+            ->method('toIssue')
+            ->with(array('issue'))
+            ->will($this->returnValue($out = 'real issue'))
+        ;
+
+        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
+
+        $tracker = $this->getRepository($mapping);
+        $issues = $tracker->query(new SearchCriteria());
+
+        $this->assertCount(1, $issues);
+        $this->assertEquals('real issue', $issues[0]);
+    }
+
+    public function testFindComments()
+    {
+        $payload = array('comments' => array(array('comment')));
+
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping
+            ->expects($this->once())
+            ->method('toComment')
+            ->with(array('comment'))
+            ->will($this->returnValue($out = 'real comment'))
+        ;
+
+        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
+
+        $tracker = $this->getRepository($mapping);
+        $comments = $tracker->findComments(new Number(1));
+
+        $this->assertCount(1, $comments);
+        $this->assertEquals('real comment', $comments[0]);
+
+    }
+
     protected function getRepository($mapping = null)
     {
         return new JiraRepository(

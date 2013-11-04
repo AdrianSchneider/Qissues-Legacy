@@ -9,8 +9,8 @@ parameters:
     trello.token: "oauth token"
     trello.board: "Board Name"
     jira.prefix: "PRFX"
-    jira.repository: "subdomain"
-    jira.username: "username"
+    jira.project: "subdomain"
+    jira.username: "account"
     jira.password: "password"
 
 services:
@@ -127,7 +127,8 @@ services:
     tracker.jira.repository:
         class: Qissues\Trackers\Jira\JiraRepository
         arguments:
-            - %jira.repository%
+            - %jira.project%
+            - %jira.prefix%
             - %jira.username%
             - %jira.password%
             - @tracker.jira.mapping

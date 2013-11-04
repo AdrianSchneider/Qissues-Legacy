@@ -24,6 +24,13 @@ class JiraMapping implements FieldMapping
         'blocker'  => 5
     );
 
+    protected $project;
+
+    public function __construct($project)
+    {
+        $this->project = $project;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -153,6 +160,55 @@ class JiraMapping implements FieldMapping
     public function buildSearchQuery(SearchCriteria $criteria)
     {
         $query = array();
+        $query['project'] = $this->project;
+
+        if ($assignees = $criteria->getAssignees()) {
+            $query['assignee'] = array_map('strval', $assignees);
+        }
+
+        if ($statuses = $criteria->getStatuses()) {
+            $query['status'] = array_map('strval', $statuses);
+        }
+
+        return $query;
+
+        /*
+
+        if (!empty($options['assignee'])) {
+            $where[] = 'assignee IN (' . implode(',', array_map($quote, $options['assignee'])) . ')';
+        }
+        if (!empty($options['type'])) {
+            $where[] = 'issuetype IN (' . implode(',', array_map($quote, $options['type'])) . ')';
+        }
+
+        if (!empty($options['status'])) {
+            if (in_array('open', $options['status'])) {
+                $where[] = 'resolution = Unresolved';
+                $options['status'] = array_diff($options['status'], array('open'));
+            }
+            if (!empty($options['status'])) {
+                $where[] = 'status IN (' . implode(',', array_map($quote, $options['status'])) . ')';
+            }
+        }
+
+        $sortMapping = array(
+            'priority' => 'priority DESC',
+            'updated' => 'updatedDate DESC',
+            'created' => 'createdDate DESC'
+        );
+        $sort = array();
+        foreach ($options['sort'] as $by) {
+            if (isset($sortMapping[$by])) {
+                $sort[] = $sortMapping[$by];
+            }
+        }
+
+        return urlencode(sprintf(
+            '%s ORDER BY %s',
+            implode(' AND ', $where),
+            implode(', ', $sort)
+        ));
+*/
 
         if ($types = $criteria->getTypes()) {
             $validTypes = array('bug', 'enhancement', 'proposal', 'task');

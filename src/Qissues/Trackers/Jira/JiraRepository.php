@@ -79,12 +79,9 @@ class JiraRepository implements IssueRepository
      */
     public function query(SearchCriteria $criteria)
     {
-        throw new \Exception('JQL :( ');
+        $query = $this->mapping->buildSearchQuery($criteria);
 
-        $request = $this->request('GET', sprintf('/repositories/%s/issues', $this->repository));
-        $request->getQuery()->setAggregator(new DuplicateAggregator());
-        $request->getQuery()->overwriteWith($this->mapping->buildSearchQuery($criteria));
-
+        $request = $this->request('GET', '/search?jql=1');
         $response = $request->send()->json();
         return array_map(array($this->mapping, 'toIssue'), $response['issues']);
     }
@@ -94,9 +91,13 @@ class JiraRepository implements IssueRepository
      */
     public function findComments(Number $issue)
     {
-        $request = $this->request('GET', $this->getIssueUrl($issue, '/comments'));
+        $request = $this->request('GET', sprintf(
+            '/rest/api/2/issue/%s-%d/comment',
+            $this->prefix,
+            $issue->getNumber()
+        ));
         $response = $request->send()->json();
-        return array_map(array($this->mapping, 'toComment'), $response);
+        return array_map(array($this->mapping, 'toComment'), $response['comments']);
     }
 
     /**
@@ -104,6 +105,7 @@ class JiraRepository implements IssueRepository
      */
     public function persist(NewIssue $issue)
     {
+        throw new \Exception('not yet implemented');
         $request = $this->request('POST', sprintf('/repositories/%s/issues', $this->repository));
         $request->setBody($this->mapping->issueToArray($issue));
         $response = $request->send()->json();
@@ -115,6 +117,7 @@ class JiraRepository implements IssueRepository
      */
     public function update(NewIssue $issue, Number $number)
     {
+        throw new \Exception('not yet implemented');
         $request = $this->request('PUT', $this->getIssueUrl($number));
         $request->setBody($this->mapping->issueToArray($issue));
         $request->send();

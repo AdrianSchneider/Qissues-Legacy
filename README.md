@@ -47,5 +47,56 @@ Example Configuration:
 
 It's advised to also create a `~/.qissues` file for credentials and non project-specific configuration.
 
+## Usage
+
+After configuring a project,
+
+**Query issues**:
+
+    qissues [-s status [-t type [-a assignee [-k keyword [-l label [-o sortfield [--limit amt [--page num]]]]]]]]
+
+Will output something similar to:
+
+    +-----------------------------------------------------------------------------------
+    | Id | Title                                       | Status   | Date updated       |
+    +-----------------------------------------------------------------------------------
+    | 1  | Dividing by zero upgrades PHP               | new      | 2013-11-03 7:01pm  |
+    | 2  | Qissues doesn't work in Python              | new      | 2013-11-03 7:00pm  |
+    | 3  | Insert coin here does not accept bitcoin    | new      | 2013-11-03 6:57pm  |
+    | 4  | Working with JIRA is frustrating            | resolved | 2013-04-16 2:36am  |
+    +-----------------------------------------------------------------------------------
+
+**View an Issue**:
+Once you know what you're looking for, you can view more details:
+
+    qissues view 4
+
+**Create Issue**:
+
+    qissues create
+
+Will open your favorite editor in your terminal, and prompts you to enter as frontmatter YAML (configurable).
+
+    ---
+    title:
+    labels:
+    assignee:
+    ---
+
+**Edit an Issue**:
+
+    qissues edit 6
+
+Works similar to edit, but pre-populated.
+
+    ---
+    title: The Internet is DOWN!
+    assignee: AdrianSchneider
+    labels: emergency, lol
+    ---
+    The internet is currently down. I cannot post TPS reports.
+
+Save and close.
+
 ## Documentation
-There is a lot more to learn in the [Docs](doc/).
+There is a lot more to learn in the [Docs](doc/). Nearly every aspect is customizable or extendable, so take a peek.

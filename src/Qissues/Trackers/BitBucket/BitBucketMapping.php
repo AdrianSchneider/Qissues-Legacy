@@ -24,6 +24,13 @@ class BitBucketMapping implements FieldMapping
         'blocker'  => 5
     );
 
+    protected $priorityMap;
+
+    public function __construct()
+    {
+        $this->priorityMap = array_flip($this->priorities);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -188,6 +195,10 @@ class BitBucketMapping implements FieldMapping
 
         if ($priorities = $criteria->getPriorities()) {
             foreach ($priorities as $priority) {
+                if (isset($this->priorityMap[$priority->getPriority()])) {
+                    $query['priority'][] = $this->priorityMap[$priority->getPriority()];
+                    continue;
+                }
                 if (!in_array($name = $priority->getName(), array('trivial', 'minor', 'major', 'critical', 'blocker'))) {
                     throw new \DomainException("'$name' is an unsupported priority for BitBucket");
                 }

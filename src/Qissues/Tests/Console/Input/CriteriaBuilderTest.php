@@ -82,7 +82,19 @@ class CriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('open', $statuses[0]->getStatus());
     }
 
-    public function testHandlePriorities()
+    public function testHandleTextPriorities()
+    {
+        $input = new ArrayInput(array('-p' => array('urgent')), $this->definition);
+
+        $criteria = $this->builder->build($input);
+        $priorities = $criteria->getPriorities();
+
+        $this->assertInstanceOf('Qissues\Model\Meta\Priority', $priorities[0]);
+        $this->assertEquals(0, $priorities[0]->getPriority());
+        $this->assertEquals('urgent', $priorities[0]->getName());
+    }
+
+    public function handleIntegerPriorities()
     {
         $input = new ArrayInput(array('-p' => array(5)), $this->definition);
 
@@ -90,6 +102,8 @@ class CriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $priorities = $criteria->getPriorities();
 
         $this->assertInstanceOf('Qissues\Model\Meta\Priority', $priorities[0]);
+        $this->assertEquals(5, $priorities[0]->getPriority());
+        $this->assertEquals('', $priorities[0]->getName());
     }
 
     public function testHandleAssignees()

@@ -52,7 +52,11 @@ class CriteriaBuilder
     {
         if ($priorities = $input->getOption('priority')) {
             foreach ($priorities as $priority) {
-                $criteria->addPriority(new Priority($priority, ''));
+                if (is_numeric($priority)) {
+                    $criteria->addPriority(new Priority($priority, ''));
+                } else {
+                    $criteria->addPriority(new Priority(0, $priority));
+                }
             }
         }
     }

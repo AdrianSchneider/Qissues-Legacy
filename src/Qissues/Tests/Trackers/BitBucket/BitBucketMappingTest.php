@@ -92,7 +92,18 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
     public function testQueryFilterByPriority()
     {
         $criteria = new SearchCriteria();
-        $criteria->addPriority(new Priority(3, 'major'));
+        $criteria->addPriority(new Priority(0, 'major'));
+
+        $mapping = new BitBucketMapping();
+        $query = $mapping->buildSearchQuery($criteria);
+
+        $this->assertEquals(array('major'), $query['priority']);
+    }
+
+    public function testQueryFilterByNumericPriority()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addPriority(new Priority(3, ''));
 
         $mapping = new BitBucketMapping();
         $query = $mapping->buildSearchQuery($criteria);

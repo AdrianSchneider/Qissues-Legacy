@@ -27,7 +27,7 @@ class QueryCommand extends Command
             ->addOption('keyword', 'k', InputOption::VALUE_OPTIONAL, 'Query by keyword', null)
             ->addOption('status', 's', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by status', array())
             ->addOption('assignee', 'a', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by assignee', null)
-            ->addOption('priority', 'p', InputOption::VALUE_OPTIONAL, 'Filter by priority', null)
+            ->addOption('priority', 'p', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by priority', null)
             ->addOption('type', 't', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by type', array())
             ->addOption('mine', null, InputOption::VALUE_NONE, 'Only show things assigned to me', null)
             ->addOption('ids', 'i', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by IDs', null)

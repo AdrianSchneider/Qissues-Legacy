@@ -79,10 +79,11 @@ class JiraRepository implements IssueRepository
      */
     public function query(SearchCriteria $criteria)
     {
-        $query = $this->mapping->buildSearchQuery($criteria);
-        $jql = $this->buildJql($query);
+        $mapping = $this->mapping->buildSearchQuery($criteria);
+        $query = array_merge($mapping['paging'], array('jql' => $this->buildJql($mapping)));
 
-        $request = $this->request('GET', "/search?jql=$jql");
+        $request = $this->request('GET', "/search");
+        $request->getQuery()->merge($query);
         $response = $request->send()->json();
         return array_map(array($this->mapping, 'toIssue'), $response['issues']);
     }
@@ -94,6 +95,8 @@ class JiraRepository implements IssueRepository
      */
     protected function buildJql(array $query)
     {
+        unset($query['paging']);
+
         if (!empty($query['sort'])) {
             $sort = $query['sort'];
             unset($query['sort']);

@@ -93,6 +93,39 @@ class JiraMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('resolved', 'fixed'), $query['issuetype']);
     }
 
+    public function testQuerySortByPrioritySortsDesc()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('priority');
+
+        $mapping = new JiraMapping('proj');
+        $query = $mapping->buildSearchQuery($criteria);
+
+        $this->assertEquals(array('priority DESC'), $query['sort']);
+    }
+
+    public function testQueryByUnsupportedFieldThrowsException()
+    {
+        $this->setExpectedException('Exception', 'unsupported sort field');
+
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('whatsdat');
+
+        $mapping = new JiraMapping('proj');
+        $mapping->buildSearchQuery($criteria);
+    }
+
+    public function testQueryPagination()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->setPaging(5, 10);
+
+        $mapping = new JiraMapping('proj');
+        $query = $mapping->buildSearchQuery($criteria);
+
+        $this->assertEquals(array('startAt' => 40, 'maxResults' => 10), $query['paging']);
+    }
+
     public function testToCommentCreatesComment()
     {
         $mapping = new JiraMapping('test');

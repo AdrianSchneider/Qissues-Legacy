@@ -162,91 +162,36 @@ class JiraMapping implements FieldMapping
             $query['issuetype'] = array_map('strval', $types);
         }
 
-        return $query;
-
-        /*
-
-        if (!empty($options['status'])) {
-            if (in_array('open', $options['status'])) {
-                $where[] = 'resolution = Unresolved';
-                $options['status'] = array_diff($options['status'], array('open'));
-            }
-            if (!empty($options['status'])) {
-                $where[] = 'status IN (' . implode(',', array_map($quote, $options['status'])) . ')';
-            }
-        }
-
-        $sortMapping = array(
-            'priority' => 'priority DESC',
-            'updated' => 'updatedDate DESC',
-            'created' => 'createdDate DESC'
+        $fieldMap = array(
+            'updated' => 'updatedDate',
+            'created' => 'createdDate'
         );
-        $sort = array();
-        foreach ($options['sort'] as $by) {
-            if (isset($sortMapping[$by])) {
-                $sort[] = $sortMapping[$by];
-            }
-        }
 
-        return urlencode(sprintf(
-            '%s ORDER BY %s',
-            implode(' AND ', $where),
-            implode(', ', $sort)
-        ));
-*/
+        $fieldSort = array(
+            'priority' => 'DESC',
+            'updatedDate' => 'DESC',
+            'createdDate' => 'DESC'
+        );
 
-        if ($types = $criteria->getTypes()) {
-            $validTypes = array('bug', 'enhancement', 'proposal', 'task');
-            foreach ($types as $type) {
-                if (!in_array($type->getName(), $validTypes)) {
-                    throw new \DomainException('That is an unknown type to Jira');
+        if ($fields = $criteria->getSortFields()) {
+            foreach ($fields as $field) {
+                if (isset($fieldMap[$field])) {
+                    $field = $fieldMap[$field];
                 }
-                $query['kind'][] = $type->getName();
-            }
-        }
 
-        if ($statuses = $criteria->getStatuses()) {
-            $validStatuses = array('new', 'open', 'resolved', 'on hold', 'invalid', 'duplicate', 'wontfix');
-            foreach ($statuses as $status) {
-                if (!in_array($status->getStatus(), $validStatuses)) {
-                    throw new \DomainException("'$status' is an unknown status to Jira");
+                if (isset($fieldSort[$field])) {
+                    $query['sort'][] = "$field " .  $fieldSort[$field];
+                } else {
+                    throw new \Exception("'$field' is an unsupported sort field");
                 }
-                $query['status'][] = $status->getStatus();
             }
         }
 
-        if ($assignees = $criteria->getAssignees()) {
-            foreach ($assignees as $assignee) {
-                $query['responsible'][] = $assignee->getAccount();
-            }
-        }
-
-        if ($labels = $criteria->getLabels()) {
-            foreach ($labels as $label) {
-                $query['component'][] = $label->getName();
-            }
-        }
-
-        if ($priorities = $criteria->getPriorities()) {
-            foreach ($priorities as $priority) {
-                if (!in_array($name = $priority->getName(), array('trivial', 'minor', 'major', 'critical', 'blocker'))) {
-                    throw new \DomainException("'$name' is an unsupported priority for Jira");
-                }
-                $query['priority'][] = $priority->getName();
-            }
-        }
-
-        if ($keywords = $criteria->getKeywords()) {
-            $query['search'] = $keywords;
-        }
-
-        if ($criteria->getNumbers()) {
-            throw new \DomainException('Jira does not support querying by multiple numbers');
-        }
-
-        list($page, $limit) = $criteria->getPaging();
-        $query['limit'] = $limit;
-        $query['offset'] = ($page - 1) * $limit;
+        list($page, $perPage) = $criteria->getPaging();
+        $query['paging'] = array(
+            'startAt' => ($page - 1) * $perPage,
+            'maxResults' => $perPage
+        );
 
         return $query;
     }

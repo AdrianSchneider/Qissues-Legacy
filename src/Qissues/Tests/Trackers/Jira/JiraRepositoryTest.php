@@ -65,7 +65,7 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
     public function testQuery()
     {
         $criteria = new SearchCriteria();
-        $query = array('keyword' => 'meh');
+        $query = array('keyword' => 'meh', 'paging' => array('limit' => 5));
         $payload = array('issues' => array(array('issue')));
 
         $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');

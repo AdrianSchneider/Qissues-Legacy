@@ -131,11 +131,7 @@ class JiraRepository implements IssueRepository
      */
     public function findComments(Number $issue)
     {
-        $request = $this->request('GET', sprintf(
-            '/issue/%s-%d/comment',
-            $this->prefix,
-            $issue->getNumber()
-        ));
+        $request = $this->request('GET', $this->getIssueUrl($issue, '/comment'));
         $response = $request->send()->json();
         return array_map(array($this->mapping, 'toComment'), $response['comments']);
     }
@@ -168,8 +164,8 @@ class JiraRepository implements IssueRepository
      */
     public function comment(Number $issue, NewComment $comment)
     {
-        $request = $this->request('POST', $this->getIssueUrl($issue, '/comments'));
-        $request->setBody(array('content' => $comment->getMessage()));
+        $request = $this->request('POST', $this->getIssueUrl($issue, '/comment'));
+        $request->setBody(json_encode(array('body' => $comment->getMessage())), 'application/json');
         $request->send();
     }
 

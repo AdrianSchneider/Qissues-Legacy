@@ -113,6 +113,17 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    public function testComment()
+    {
+        $comment = new NewComment('hello world');
+        $this->mock->addResponse(new Response(200));
+
+        $repository = $this->getRepository();
+        $repository->comment(new Number(5), $comment);
+
+        $this->assertBodyEquals(json_encode(array('body' => 'hello world')));
+    }
+
     protected function getRepository($mapping = null)
     {
         return new JiraRepository(
@@ -123,5 +134,15 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
             $mapping ?: $this->getMock('Qissues\Model\Tracker\FieldMapping'),
             $this->client
         );
+    } 
+
+    protected function assertBodyEquals($body, $toString = false)
+    {
+        $lastBody = $this->history->getLastRequest()->getBody();
+        if ($toString) {
+            $lastBody = strval($lastBody);
+        }
+
+        $this->assertEquals($body, $lastBody);
     }
 }

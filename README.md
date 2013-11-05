@@ -37,7 +37,7 @@ Clone or download the repository, and run `make`. This will create a `qissues.ph
 
 Qissues operates by checking for a `.qissues` file in the root of a project. You can generate one via
 
-    `qissues init`
+    qissues init
 
 That will create the config file, ready for editing and with all of the tracker-specific options added as a reference. It's also advised to create a `~/.qissues` file for credentials and non project-specific configurations. Be sure to add `.qissues` to your `~/.gitignore` file to prevent accidentally committing it.
 

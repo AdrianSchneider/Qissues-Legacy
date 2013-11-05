@@ -26,26 +26,20 @@ With immediate plans to support:
 
 ## Installation
 
-Clone or download the repository, and run `make`. This will install it in the current directory to play with. To make it globally available, run `make install`.
+Clone or download the repository, and run `make`. This will create a `qissues.phar` build in the current directory.
 
-If you don't already have `~/bin` in your path, you can add it via:
+### Adding it to your $PATH
+`make install` will move the phar build to `~/bin/qissues` so it's always accessible as `qissues`. If you don't already have `~/bin` in your path, you can add it via:
 
     export PATH="$PATH":~/bin
 
-After that, run `qissues` from the root of a project.
-
 ## Project Setup
 
-To use qissues with a project, create a `.qissues` file in the root of it. It's also a good idea to add it to your `~/.gitignore`. The config file is YML format, and you can see a configuration reference by looking at the `config/*.yml files`.
+Qissues operates by checking for a `.qissues` file in the root of a project. You can generate one via
 
-Example Configuration:
+    `qissues init`
 
-    tracker: github
-    github.repository: "AdrianSchneider/Qissues"
-    github.username: "YourAccount"
-    github.password: "YourPassword"
-
-It's advised to also create a `~/.qissues` file for credentials and non project-specific configuration.
+That will create the config file, ready for editing and with all of the tracker-specific options added as a reference. It's also advised to create a `~/.qissues` file for credentials and non project-specific configurations. Be sure to add `.qissues` to your `~/.gitignore` file to prevent accidentally committing it.
 
 ## Usage
 

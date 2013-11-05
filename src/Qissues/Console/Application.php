@@ -30,7 +30,7 @@ class Application extends BaseApplication
             } elseif (isset($this->config['connector'])) {
                 $name = $this->config['connector'];
             } else {
-                throw new \Exception('No tracker defined in .qissues');
+                throw new \Qissues\Console\Input\Exception('No configuration found; run "qissues init" first');
             }
         }
 

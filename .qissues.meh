@@ -1,0 +1,4 @@
+tracker: bitbucket
+github.repository: "Symfony/Symfony"
+bitbucket.repository: "AdrianSchneider/Qissues"
+console.input.default_format: "frontmatter"

@@ -21,6 +21,8 @@ class ContainerFactory
         $loader->load('services.yml');
         $loader->load('trackers.yml');
 
+        $container->setParameter('defaults', $container->getParameterBag()->all());
+
         foreach ($this->flatten($config) as $key => $value) {
             $container->setParameter($key, $value);
         }

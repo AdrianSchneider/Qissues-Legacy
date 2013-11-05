@@ -1,10 +1,10 @@
 parameters:
-    github.repository:
-    github.username:
-    github.password:
-    bitbucket.repository:
-    bitbucket.username:
-    bitbucket.password:
+    github.repository: "account/repo-name"
+    github.username: "account"
+    github.password: "password"
+    bitbucket.repository: "account/repo-name"
+    bitbucket.username: "account"
+    bitbucket.password: "password"
 
 services:
     tracker.github:

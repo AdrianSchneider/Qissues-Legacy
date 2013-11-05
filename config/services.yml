@@ -15,6 +15,11 @@ parameters:
         bug: "p5"
 
 services:
+    system.initializer:
+        class: Qissues\System\Initializer
+        arguments:
+            - @container
+
     console.shell:
         class: Qissues\Console\Shell\BasicShell
 

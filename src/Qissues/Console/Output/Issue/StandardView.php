@@ -14,11 +14,11 @@ class StandardView
         $title = wordwrap($issue['title'], min($width - 4, 100), "\n", true);
 
         $out .= "<comment>$issue[id] - $title</comment>\n";
-        $out .= "  " . $this->prepareMeta($issue) . "\n\n";
+        $out .= $this->prepareMeta($issue) . "\n\n";
 
         $description = wordwrap($issue['description'], min($width - 4, 100), "\n", true);
         foreach (explode("\n", $description) as $row) {
-            $out .= "$row\n";
+            $out .= "    $row\n";
         }
 
         $out .= "\n";

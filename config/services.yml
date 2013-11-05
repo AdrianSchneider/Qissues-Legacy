@@ -1,4 +1,5 @@
 parameters:
+    reports: []
     console.editor: "vim"
     console.tmp_file.prefix: "qissues"
     console.browser.command:
@@ -16,6 +17,11 @@ parameters:
 services:
     console.shell:
         class: Qissues\Console\Shell\BasicShell
+
+    console.input.report_manager:
+        class: Qissues\Console\Input\ReportManager
+        arguments:
+            - %reports%
 
     console.input.issue_strategy.edit:
         class: Qissues\Console\Input\Strategy\Issue\EditStrategy

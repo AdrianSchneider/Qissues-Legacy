@@ -179,4 +179,14 @@ class Application extends BaseApplication
     {
         return $this->container;
     }
+
+    public function renderException($e, $output)
+    {
+        if ($e instanceof Input\Exception) {
+            $output->writeln("<error>" . $e->getMessage() . "</error>");
+            return;
+        }
+
+        return parent::renderException($e, $output);
+    }
 }

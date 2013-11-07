@@ -3,15 +3,24 @@
 namespace Qissues\System;
 
 use Qissues\Console\Input\Exception;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Initializer
 {
-    public function __construct(ContainerInterface $container)
+    protected $container;
+    protected $filesystem;
+
+    public function __construct(ContainerInterface $container, Filesystem $filesystem)
     {
         $this->container = $container;
+        $this->filesystem = $filesystem;
     }
 
+    /**
+     * Returns a list of supported trackers to initialize
+     * @return array trackers
+     */
     public function getSupportedTrackers()
     {
         $trackers = array();
@@ -25,9 +34,13 @@ class Initializer
         return $trackers;
     }
 
+    /**
+     * Creates a .qissues file
+     * @param string $tracker
+     */
     public function initialize($tracker)
     {
-        if (file_exists('.qissues')) {
+        if ($this->filesystem->exists('.qissues')) {
             throw new Exception('.qissues already exists');
         }
 
@@ -38,9 +51,14 @@ class Initializer
             }
         }
 
-        file_put_contents('.qissues', $this->buildYml($parameters));
+        $this->filesystem->dumpFile('.qissues', $this->buildYml($parameters));
     }
 
+    /**
+     * Generates the YML to write
+     * @param array $parameters
+     * @return string YML
+     */
     protected function buildYml(array $parameters)
     {
         $out = array();
@@ -48,7 +66,7 @@ class Initializer
         foreach ($parameters as $key => $value) {
             if ($counter++) {
                 $key = "#$key";
-            } 
+            }
             $out[] = "$key: $value";
         }
 

@@ -25,6 +25,7 @@ services:
         class: Qissues\System\Initializer
         arguments:
             - @container
+            - @filesystem
 
     console.shell:
         class: Qissues\Console\Shell\BasicShell
@@ -160,3 +161,6 @@ services:
         class: Qissues\System\FrontMatterParser
         arguments:
              - @yaml_parser
+
+    filesystem:
+        class: Symfony\Component\Filesystem\Filesystem

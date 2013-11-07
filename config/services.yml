@@ -15,6 +15,12 @@ parameters:
         bug: "p5"
 
 services:
+    model.issue_serializer:
+        class: Qissues\Model\Serializer\IssueSerializer
+
+    model.comment_serializer:
+        class: Qissues\Model\Serializer\CommentSerializer
+
     system.initializer:
         class: Qissues\System\Initializer
         arguments:
@@ -105,6 +111,9 @@ services:
 
     console.output.issue_views.json:
         class: Qissues\Console\Output\Issue\JsonView
+        arguments:
+            - @model.issue_serializer
+            - @model.comment_serializer
 
     console.output.issues_views.detailed:
         class: Qissues\Console\Output\IssuesList\DetailedView
@@ -125,6 +134,8 @@ services:
 
     console.output.issues_views.json:
         class: Qissues\Console\Output\IssuesList\JsonView
+        arguments:
+            - @model.issue_serializer
 
     console.output.spaced_table_renderer:
         class: Qissues\Console\Output\SpacedTableRenderer

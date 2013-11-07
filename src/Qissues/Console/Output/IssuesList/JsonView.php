@@ -2,29 +2,29 @@
 
 namespace Qissues\Console\Output\IssuesList;
 
-use Qissues\Model\Issue;
 use Qissues\Model\Tracker\Support\FeatureSet;
+use Qissues\Model\Serializer\IssueSerializer;
 
 class JsonView
 {
-    public function render(array $issues, FeatureSet $features, $width, $height)
+    protected $issueSerializer;
+
+    public function __construct(IssueSerializer $issueSerializer)
     {
-        return json_encode(array_map(array($this, 'toJson'), $issues));
+        $this->issueSerializer = $issueSerializer;
+
     }
 
-    protected function toJson(Issue $issue)
+    /**
+     * Renders as serialized JSON
+     * @param Issue[] $issues
+     * @param FeatureSet $features
+     * @param integer $width
+     * @param integer $height
+     * @return string json
+     */
+    public function render(array $issues, FeatureSet $features, $width, $height)
     {
-        return array(
-            'number'      => $issue->getId(),
-            'title'       => $issue->getTitle(),
-            'description' => $issue->getDescription(),
-            'status'      => (string)$issue->getStatus(),
-            'type'        => (string)$issue->getType(),
-            'labels'      => array_map('strval', $issue->getLabels()),
-            'priority'    => (string)$issue->getPriority(),
-            'assignee'    => (string)$issue->getAssignee(),
-            'dateCreated' => $issue->getDateCreated()->format('Y-m-d g:ia'),
-            'dateUpdated' => $issue->getDateUpdated()->format('Y-m-d g:ia')
-        );
+        return json_encode(array_map(array($this->issueSerializer, 'serialize'), $issues));
     }
 }

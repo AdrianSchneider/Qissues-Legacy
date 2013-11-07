@@ -4,38 +4,34 @@ namespace Qissues\Console\Output\Issue;
 
 use Qissues\Model\Issue;
 use Qissues\Model\Comment;
-use Qissues\Model\Tracker\Support\FeatureSet;
+use Qissues\Model\Serializer\IssueSerializer;
+use Qissues\Model\Serializer\CommentSerializer;
 
 class JsonView
 {
+    protected $issueSerializer;
+    protected $commentSerializer;
+
+    public function __construct(IssueSerializer $issueSerializer, CommentSerializer $commentSerializer)
+    {
+        $this->issueSerializer = $issueSerializer;
+        $this->commentSerializer = $commentSerializer;
+
+    }
+
+    /**
+     * Render an Issue as JSON
+     *
+     * @param Issue $issue
+     * @param integer $width
+     * @param integer $height
+     * @param array $comments
+     */
     public function render(Issue $issue, $width, $height, array $comments)
     {
-        return json_encode($this->issueToJson($issue, $comments));
-    }
-
-    protected function issueToJson(Issue $issue, array $comments)
-    {
-        return array(
-            'number'      => $issue->getId(),
-            'title'       => $issue->getTitle(),
-            'description' => $issue->getDescription(),
-            'status'      => (string)$issue->getStatus(),
-            'type'        => (string)$issue->getType(),
-            'labels'      => array_map('strval', $issue->getLabels()),
-            'priority'    => (string)$issue->getPriority(),
-            'assignee'    => (string)$issue->getAssignee(),
-            'dateCreated' => $issue->getDateCreated()->format('Y-m-d g:ia'),
-            'dateUpdated' => $issue->getDateUpdated()->format('Y-m-d g:ia'),
-            'comments'    => array_map(array($this, 'commentToJson'), $comments)
-        );
-    }
-
-    protected function commentToJson(Comment $comment)
-    {
-        return array(
-            'message' => $comment->getMessage(),
-            'author'  => $comment->getAuthor()->getAccount(),
-            'date'    => $comment->getDate()->format('Y-m-d g:ia')
-        );
+        return json_encode(array_merge(
+            $this->issueSerializer->serialize($issue),
+            array('comments' => array_map(array($this->commentSerializer, 'serialize'), $comments))
+        ));
     }
 }

@@ -83,6 +83,8 @@ services:
     console.input.external_editor:
         class: Qissues\Console\Input\ExternalFileEditor
         arguments:
+            - @console.shell
+            - @filesystem
             - %console.editor%
             - %console.tmp_file.prefix%
 
@@ -163,4 +165,4 @@ services:
              - @yaml_parser
 
     filesystem:
-        class: Symfony\Component\Filesystem\Filesystem
+        class: Qissues\System\Filesystem

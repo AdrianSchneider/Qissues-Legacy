@@ -3,7 +3,6 @@
 namespace Qissues\System;
 
 use Qissues\Console\Input\Exception;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Initializer

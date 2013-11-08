@@ -2,17 +2,34 @@
 
 namespace Qissues\Console\Input;
 
+use Qissues\Console\Shell\Shell;
+use Qissues\System\Filesystem;
+
 class ExternalFileEditor
 {
+    protected $shell;
+    protected $filesystem;
     protected $editor;
-    protected $prefix;
+    protected $filename;
 
-    public function __construct($editor = null, $prefix = 'qissues')
+    public function __construct(Shell $shell, Filesystem $filesystem, $editor = null, $filename = '.qissues.tmp')
     {
-        $this->prefix = $prefix;
+        $this->shell = $shell;
+        $this->filesystem = $filesystem;
+        $this->filename = $filename;
+
         if (!$this->editor = $editor ?: getenv('VISUAL') ?: getenv('EDITOR')) {
-            throw new \Exception('No editor specified');
+            throw new \BadMethodCallException('No editor specified');
         }
+    }
+
+    /**
+     * Gets the selected editor name
+     * @return string
+     */
+    public function getEditor()
+    {
+        return $this->editor;
     }
 
     /**
@@ -24,39 +41,25 @@ class ExternalFileEditor
      */
     public function getEdited($template)
     {
-        $filename = $this->createTempFile($template);
+        $this->filesystem->dumpFile($this->filename, $template);
 
-        exec(sprintf(
+        $this->shell->run(sprintf(
             '%s %s > `tty`',
             $this->editor,
-            escapeshellarg($filename)
+            escapeshellarg($this->filename)
         ));
 
-        return $this->flushTempFile($filename);
-    }
-
-    /**
-     * Creates a temp file and returns the name
-     * @param string $content file contents
-     * @return string filename
-     */
-    protected function createTempFile($content)
-    {
-        $filename = tempnam('.', $this->prefix);
-        file_put_contents($filename, $content);
-
-        return $filename;
+        return $this->flushTempFile($this->filename);
     }
 
     /**
      * Deletes the temp file and returns its contents
-     * @param string $filename
      * @return string content
      */
-    protected function flushTempFile($filename)
+    protected function flushTempFile()
     {
-        $content = file_get_contents($filename);
-        unlink($filename);
+        $content = $this->filesystem->read($this->filename);
+        $this->filesystem->remove($this->filename);
         return $content;
     }
 }

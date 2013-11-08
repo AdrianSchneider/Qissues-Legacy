@@ -18,7 +18,7 @@ class InitializerTest extends \PHPUnit_Framework_TestCase
             )))
         ;
 
-        $filesystem = $this->getMockBuilder('Symfony\Component\Filesystem\Filesystem')->disableOriginalConstructor()->getMock();
+        $filesystem = $this->getMockBuilder('Qissues\System\Filesystem')->disableOriginalConstructor()->getMock();
 
         $initializer = new Initializer($container, $filesystem);
         $trackers = $initializer->getSupportedTrackers();
@@ -30,7 +30,7 @@ class InitializerTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerBuilder')->disableOriginalConstructor()->getMock();
 
-        $filesystem = $this->getMockBuilder('Symfony\Component\Filesystem\Filesystem')->disableOriginalConstructor()->getMock();
+        $filesystem = $this->getMockBuilder('Qissues\System\Filesystem')->disableOriginalConstructor()->getMock();
         $filesystem
             ->expects($this->once())
             ->method('exists')
@@ -56,7 +56,7 @@ class InitializerTest extends \PHPUnit_Framework_TestCase
             )))
         ;
 
-        $filesystem = $this->getMockBuilder('Symfony\Component\Filesystem\Filesystem')->disableOriginalConstructor()->getMock();
+        $filesystem = $this->getMockBuilder('Qissues\System\Filesystem')->disableOriginalConstructor()->getMock();
         $filesystem
             ->expects($this->once())
             ->method('exists')

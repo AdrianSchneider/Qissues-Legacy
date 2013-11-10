@@ -11,4 +11,12 @@ class BasicShell implements Shell
     {
         return exec($command);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function escape($argument)
+    {
+        return escapeshellarg($argument);
+    }
 }

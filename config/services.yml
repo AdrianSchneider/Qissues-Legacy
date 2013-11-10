@@ -146,6 +146,7 @@ services:
     console.output.browser:
         class: Qissues\Console\Output\WebBrowser
         arguments:
+             - @console.shell
              - %console.browser.command%
 
     support.catalog_builder:

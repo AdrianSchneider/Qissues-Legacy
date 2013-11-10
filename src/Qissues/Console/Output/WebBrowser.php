@@ -2,16 +2,20 @@
 
 namespace Qissues\Console\Output;
 
+use Qissues\Console\Shell\Shell;
+
 class WebBrowser
 {
+    protected $shell;
     protected $browser;
 
     /**
      * The default browser to use
      * @param string|null $browser
      */
-    public function __construct($browser)
+    public function __construct(Shell $shell, $browser = null)
     {
+        $this->shell = $shell;
         $this->browser = $browser;
     }
 
@@ -26,11 +30,12 @@ class WebBrowser
             return $this->browser;
         }
 
-        $uname = strtolower(php_uname());
-        if (strpos($uname, "linux") !== false) {
+        $environment = strtolower($this->shell->run('uname'));
+
+        if (strpos($environment, "linux") !== false) {
             return $this->browser = 'xdg-open';
         }
-        if (strpos($uname, "darwin") !== false) {
+        if (strpos($environment, "darwin") !== false) {
             return $this->browser = 'open';
         }
 
@@ -43,6 +48,6 @@ class WebBrowser
      */
     public function open($url)
     {
-        exec(sprintf('%s %s', $this->prepareBrowser(), escapeshellarg($url)));
+        $this->shell->run(sprintf('%s %s', $this->prepareBrowser(), $this->shell->escape($url)));
     }
 }

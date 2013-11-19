@@ -24,13 +24,13 @@ class TrelloRepository implements IssueRepository
      * @param string $board
      * @param string $key
      * @param string $token
-     * @param TrelloMetadata $metadata
+     * @param TrelloMetadataBuilder $metadata
      * @param FieldMapping $mapping
      * @param Client|null $client to override
      */
-    public function __construct($boardName, $key, $token, TrelloMetadata $metadata, FieldMapping $mapping, Client $client = null)
+    public function __construct($boardName, $key, $token, TrelloMetadataBuilder $metadata, FieldMapping $mapping, Client $client = null)
     {
-        $this->board = $metadata->get();
+        $this->board = $metadata->build();
         $this->query = array('key' => $key, 'token' => $token);
         $this->metadata = $metadata;
         $this->mapping = $mapping;
@@ -42,7 +42,7 @@ class TrelloRepository implements IssueRepository
      */
     public function getUrl()
     {
-        return sprintf('https://trello.com/b/%s', $this->board['id']);
+        return sprintf('https://trello.com/b/%s', $this->board->getBoardId());
     }
 
     /**
@@ -50,7 +50,7 @@ class TrelloRepository implements IssueRepository
      */
     public function lookup(Number $issue)
     {
-        $request = $this->request('GET', sprintf('/boards/%s/cards/%s', $this->board['id'], $issue));
+        $request = $this->request('GET', sprintf('/boards/%s/cards/%s', $this->board->getBoardId(), $issue));
         $request->getQuery()->set('actions', 'commentCard');
         $request->getQuery()->set('checklists', 'all');
         return $this->mapping->toIssue($request->send()->json());
@@ -61,7 +61,7 @@ class TrelloRepository implements IssueRepository
      */
     public function lookupUrl(Number $issue)
     {
-        $request = $this->request('GET', sprintf('/boards/%s/cards/%s', $this->board['id'], $issue));
+        $request = $this->request('GET', sprintf('/boards/%s/cards/%s', $this->board->getBoardId(), $issue));
         $rawIssue = $request->send()->json();
         return $rawIssue['url'];
     }
@@ -71,10 +71,14 @@ class TrelloRepository implements IssueRepository
      */
     public function query(SearchCriteria $criteria)
     {
-        $request = $this->request('GET', sprintf('/boards/%s/cards', $this->board['id']));
-        $request->getQuery()->merge($this->mapping->buildSearchQuery($criteria));
+        $query = $this->mapping->buildSearchQuery($criteria);
+
+        $request = $this->request('GET', $query['endpoint']);
+        $request->getQuery()->merge($query['params']);
         $response = $request->send()->json();
-        return array_map(array($this->mapping, 'toIssue'), $response);
+
+        $issues = array_map(array($this->mapping, 'toIssue'), $response);
+        return $this->mapping->filterIssues($issues, $criteria);
     }
 
     /**
@@ -82,7 +86,7 @@ class TrelloRepository implements IssueRepository
      */
     public function findComments(Number $issue)
     {
-        $request = $this->request('GET', sprintf('/boards/%s/cards/%s', $this->board['id'], $issue));
+        $request = $this->request('GET', sprintf('/boards/%s/cards/%s', $this->board->getBoardId(), $issue));
         $request->getQuery()->set('actions', 'commentCard');
         $response = $request->send()->json();
         return array_map(array($this->mapping, 'toComment'), $response['actions']);

@@ -5,7 +5,7 @@ namespace Qissues\Trackers\Trello;
 use Guzzle\Http\Client;
 use Qissues\System\Storage\LocalStorage;
 
-class TrelloMetadata
+class TrelloMetadataBuilder
 {
     protected $boardName;
     protected $query;
@@ -20,9 +20,9 @@ class TrelloMetadata
         $this->client  = $client ?: new Client('https://trello.com/', array('ssl.certificate_authority' => 'system'));
     }
 
-    public function get()
+    public function build()
     {
-        return $this->storage->get('trello');
+        return new Metadata($this->storage->get('trello'));
     }
 
     public function update()

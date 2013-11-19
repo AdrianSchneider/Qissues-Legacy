@@ -15,11 +15,11 @@ use Qissues\Model\Querying\SearchCriteria;
 
 class TrelloMapping implements FieldMapping
 {
-    protected $board;
+    protected $metadata;
 
-    public function __construct(TrelloMetadata $metadata)
+    public function __construct(TrelloMetadataBuilder $builder)
     {
-        $this->board = $metadata->get();
+        $this->metadata = $builder->build();
     }
 
     /**
@@ -52,15 +52,7 @@ class TrelloMapping implements FieldMapping
      */
     public function toIssue(array $issue)
     {
-        foreach ($this->board['lists'] as $list) {
-            if ($list['id'] == $issue['idList']) {
-                $status = new Status($list['name']);
-                break;
-            }
-        }
-        if (empty($status)) {
-            throw new \LogicException("Could not find status on Trello; update metadata");
-        }
+        $status = new Status($this->metadata->getListNameById($issue['idList']));
 
         if (!empty($issue['checklists'])) {
             foreach ($issue['checklists'] as $checklist) {
@@ -172,54 +164,51 @@ class TrelloMapping implements FieldMapping
      */
     public function buildSearchQuery(SearchCriteria $criteria)
     {
-        $query = array();
-
-        if ($statuses = $criteria->getStatuses()) {
-            foreach ($statuses as $status) {
-
-            }
-        }
-
-        /*
-        if ($sortFields = $criteria->getSortFields()) {
-            $validFields = array('created', 'updated', 'comments');
-
-            if (count($sortFields) > 1) {
-                throw new \DomainException('GitHub cannot multi-sort');
-            }
-            if (!in_array($sortFields[0], $validFields)) {
-                throw new \DomainException("Sorting by '$sortFields[0]' is unsupported on GitHub");
-            }
-
-            $query['sort'] = $sortFields[0];
-        }
-
-        if ($statuses = $criteria->getStatuses()) {
-            if (count($statuses) > 1) {
-                throw new \DomainException('GitHub cannot support multiple statuses');
-            }
-
-            $query['state'] = $statuses[0]->getStatus();
-        }
-
-        if ($labels = $criteria->getLabels()) {
-            $query['labels'] = implode(',', array_map('strval', $labels));
-        }
-
-        if ($criteria->getNumbers()) {
-            throw new \DomainException('Github cannot search by multiple numbers');
-        }
-        if ($criteria->getKeywords()) {
-            throw new \DomainException('Github cannot search by keywords');
-        }
         if ($criteria->getPriorities()) {
-            throw new \DomainException('Github cannot search by priority');
+            throw new \DomainException('Trello cannot search by priority');
         }
-         */
+
+        $query = array('params' => array());
+
+        if ($keywords = $criteria->getKeywords()) {
+            $query['params']['query'] = $keywords;
+            $query['endpoint'] = "/search";
+
+        } elseif (count($statuses = $criteria->getStatuses()) == 1) {
+            $query['endpoint'] = sprintf("/lists/%s/cards", $this->metadata->getListIdByName($statuses[0]->getStatus()));
+        } else {
+            $query['endpoint'] = sprintf("/boards/%s/cards", $this->metadata->getBoardId());
+        }
+
+        // TODO sorting
 
         list($offset, $limit) = $criteria->getPaging();
-        list($query['page'], $query['per_page']) = $criteria->getPaging();
+        list($query['params']['page'], $query['params']['per_page']) = $criteria->getPaging();
 
         return $query;
+    }
+
+    /**
+     * Post-query filtering based on search criteria
+     *
+     * @param Issue[] $issues
+     * @param SearchCriteria $criteria
+     * @return Issue[] filtered
+     */
+    public function filterIssues(array $issues, SearchCriteria $criteria)
+    {
+        $out = array();
+        foreach ($issues as $issue) {
+            if ($criteria->getStatuses() and !array_intersect(array($issue->getStatus()), $criteria->getStatuses())) {
+                continue;
+            }
+            if ($criteria->getLabels() and !array_intersect($issue->getLabels(), $criteria->getLabels())) {
+                continue;
+            }
+
+            $out[] = $issue;
+        }
+
+        return $out;
     }
 }

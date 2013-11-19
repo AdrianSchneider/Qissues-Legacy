@@ -99,9 +99,11 @@ services:
         class: Qissues\Trackers\Trello\TrelloSupport
 
     tracker.trello.metadata:
-        class: Qissues\Trackers\Trello\TrelloMetadata
+        class: Qissues\Trackers\Trello\TrelloMetadataBuilder
         arguments:
             - %trello.board%
             - %trello.key%
             - %trello.token%
             - @system.storage
+
+

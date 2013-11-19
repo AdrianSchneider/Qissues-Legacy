@@ -2,7 +2,10 @@
 
 namespace Qissues\Trackers\Trello;
 
+use Qissues\Model\Issue;
 use Qissues\Model\Meta\Status;
+use Qissues\Model\Meta\Label;
+use Qissues\Model\Meta\Priority;
 use Qissues\Model\Querying\SearchCriteria;
 use Qissues\Trackers\Trello\TrelloMapping;
 
@@ -79,38 +82,105 @@ class TrelloMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("Checklist\n    [x] Don't forget the milk", $issue->getDescription());
     }
 
-    public function testQueryByStatus()
+    public function testQueryByKeywords()
     {
-        return; // WORK IN PROGRESS
+        $criteria = new SearchCriteria();
+        $criteria->setKeywords('hello world');
+
+        $mapper = $this->getMapper(array());
+        $query = $mapper->buildSearchQuery($criteria);
+
+        $this->assertEquals("/search", $query['endpoint']);
+        $this->assertEquals("hello world", $query['params']['query']);
+    }
+
+    public function testQueryBySingleStatus()
+    {
         $criteria = new SearchCriteria();
         $criteria->addStatus(new Status('New'));
 
-        $mapper = $this->getMapper(array('lists' => array(
-            array(
-                'name' => 'New',
-                'id' => 5
-            )
-        )));
-
+        $mapper = $this->getMapper(array('lists' => array(array( 'name' => 'New', 'id' => 5))));
         $query = $mapper->buildSearchQuery($criteria);
 
-        $this->assertEquals(5, $query['idList']);
+        $this->assertEquals("/lists/5/cards", $query['endpoint']);
     }
 
-    public function testQueryByLabel()
+    public function testQueryByPriorityThrowsException()
     {
+        $criteria = new SearchCriteria();
+        $criteria->addPriority(new Priority(5, 'meh'));
 
+        $this->setExpectedException('DomainException', 'priority');
+
+        $mapper = $this->getMapper(array('lists' => array(array( 'name' => 'New', 'id' => 5))));
+        $mapper->buildSearchQuery($criteria);
+    }
+
+    public function testFilterIssuesByStatuses()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addStatus(new Status('New'));
+
+        $issues = array(
+            new MockIssue(new Status('New')),
+            new MockIssue(new Status('Open'))
+        );
+
+        $mapper = $this->getMapper(array());
+        $filtered = $mapper->filterIssues($issues, $criteria);
+
+        $this->assertCount(1, $filtered);
+        $this->assertSame($issues[0], $filtered[0]);
+    }
+
+    public function testFilterIssuesByLabels()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addLabel(new Label('blue'));
+
+        $issues = array(
+            new MockIssue(null, array(new Label('blue'))),
+            new MockIssue(null, array(new Label('red')))
+        );
+
+        $mapper = $this->getMapper(array());
+        $filtered = $mapper->filterIssues($issues, $criteria);
+
+        $this->assertCount(1, $filtered);
+        $this->assertSame($issues[0], $filtered[0]);
     }
 
     protected function getMapper(array $board)
     {
-        $metadata = $this->getMockBuilder('Qissues\Trackers\Trello\TrelloMetadata')->disableOriginalConstructor()->getMock();
+        $metadata = $this->getMockBuilder('Qissues\Trackers\Trello\TrelloMetadataBuilder')->disableOriginalConstructor()->getMock();
         $metadata
             ->expects($this->once())
-            ->method('get')
-            ->will($this->returnValue($board))
+            ->method('build')
+            ->will($this->returnValue(new Metadata($board)))
         ;
 
         return new TrelloMapping($metadata);
+    }
+}
+
+class MockIssue extends Issue
+{
+    protected $status;
+    protected $labels;
+
+    public function __construct(Status $status = null, array $labels = array())
+    {
+        $this->status = $status;
+        $this->labels = $labels;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    public function getLabels()
+    {
+        return $this->labels;
     }
 }

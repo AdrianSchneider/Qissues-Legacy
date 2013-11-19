@@ -22,23 +22,24 @@ An issue repository doesn't map onto Trello 100%, so there is some oddness to fi
 `GET /1/boards/[idBoard]/cards`
 We'll have to do in-memory filtering most of the time due to limitations in the Trello API.
 
-**Statuses**
-`GET /1/lists/[idList]/cards`
-Multiple throws exception
-
-**Ids**
-`GET /1/search?idCards=1,2,3`
-technically supported, but need to convert numbers to shortIds
-
 **Keyword**
 `GET /1/search?query=keywords`
-Removes support for status and member assignee.
+Removes support for status
+
+**Statuses**
+`GET /1/lists/[idList]/cards`
+Multiple requires run-time filtering
+
+**Ids**
+Technically feasible, but search requires full ids not numeric. 
+Later: query up to 1000 only grabbing ids for mapping in cache
+Not sure how useful this is as trello is a shorter term planning tool.
 
 **Assignees**
-TODO
+TODO ; run-time filtering probably
 
 **Types**
-not supported
+run-time filtering only
 
 **Priorities**
 not supported (default sort is prioritized, basically)

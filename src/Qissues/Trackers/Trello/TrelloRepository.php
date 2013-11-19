@@ -195,4 +195,9 @@ class TrelloRepository implements IssueRepository
     {
         return sprintf('/repos/%s/issues/%d%s', $this->repository, $number->getNumber(), $append);
     }
+
+    public function refreshMetadata()
+    {
+        $this->metadata->update();
+    }
 }

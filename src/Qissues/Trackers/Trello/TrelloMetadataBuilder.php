@@ -8,6 +8,7 @@ use Qissues\System\Storage\LocalStorage;
 class TrelloMetadataBuilder
 {
     protected $boardName;
+    protected $storageKey;
     protected $query;
     protected $client;
     protected $storage;
@@ -15,6 +16,7 @@ class TrelloMetadataBuilder
     public function __construct($boardName, $key, $token, LocalStorage $storage, Client $client = null)
     {
         $this->boardName = $boardName;
+        $this->storageKey = 'trello' . md5($boardName);
         $this->query = array('key' => $key, 'token' => $token);
         $this->storage = $storage;
         $this->client  = $client ?: new Client('https://trello.com/', array('ssl.certificate_authority' => 'system'));
@@ -22,7 +24,9 @@ class TrelloMetadataBuilder
 
     public function build()
     {
-        return new Metadata($this->storage->get('trello'));
+        if ($this->storage->exists($this->storageKey)) {
+            return new Metadata($this->storage->get($this->storageKey));
+        }
     }
 
     public function update()
@@ -34,12 +38,14 @@ class TrelloMetadataBuilder
         ));
 
         $response = $request->send()->json();
+        $found = false;
 
         foreach ($response as $board) {
             if ($board['name'] != $this->boardName) {
                 continue;
             }
 
+            $found = true;
             $lists = array();
             foreach ($board['lists'] as $list) {
                 $lists[$list['name']] = array(
@@ -54,13 +60,16 @@ class TrelloMetadataBuilder
                 return $a['pos'] < $b['pos'] ? -1 : 1;
             });
 
-            $this->storage->set('trello', array(
+            $this->storage->set($this->storageKey, array(
                 'id' => $board['id'],
                 'name' => $board['name'],
                 'labels' => $board['labelNames'],
                 'lists' => $lists
             ));
         }
-    }
 
+        if (!$found) {
+            throw new \Exception('Could not find Trello board; do you have the right name?');
+        }
+    }
 }

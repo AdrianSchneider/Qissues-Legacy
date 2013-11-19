@@ -18,13 +18,13 @@ class LocalStorage
      */
     public function __construct(Filesystem $filesystem, $filename)
     {
-        $this->filesystem = $filesystem;
-        $this->filename = $filename;
-
         if (function_exists('posix_getuid') && strpos($filename, '~') !== false) {
             $info = posix_getpwuid(posix_getuid());
             $filename = str_replace('~', $info['dir'], $filename);
         }
+
+        $this->filesystem = $filesystem;
+        $this->filename = $filename;
 
         if ($this->filesystem->exists($filename)) {
             $this->data = json_decode($this->filesystem->read($filename), true);

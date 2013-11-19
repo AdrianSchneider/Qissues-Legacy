@@ -150,6 +150,51 @@ class TrelloMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($issues[0], $filtered[0]);
     }
 
+    public function testFilterSortByCreated()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('created');
+
+        $issues = array(
+            new SortableMock(new \DateTime, 1),
+            new SortableMock(new \DateTime, 5)
+        );
+
+        $mapper = $this->getMapper(array());
+        $filtered = $mapper->filterIssues($issues, $criteria);
+
+        $this->assertSame($issues[0], $filtered[1]);
+        $this->assertSame($issues[1], $filtered[0]);
+    }
+
+    public function testFilterSortByUpdated()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('updated');
+
+        $issues = array(
+            new SortableMock(new \DateTime('-10 seconds'), 1),
+            new SortableMock(new \DateTime('+10 seconds'), 1)
+        );
+
+        $mapper = $this->getMapper(array());
+        $filtered = $mapper->filterIssues($issues, $criteria);
+
+        $this->assertSame($issues[0], $filtered[1]);
+        $this->assertSame($issues[1], $filtered[0]);
+    }
+
+    public function testFilterThrowsExceptionOnInvalidSortField()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('bananas');
+
+        $mapper = $this->getMapper(array());
+
+        $this->setExpectedException('DomainException', 'unsupported');
+        $mapper->filterIssues(array(), $criteria);
+    }
+
     protected function getMapper(array $board)
     {
         $metadata = $this->getMockBuilder('Qissues\Trackers\Trello\TrelloMetadataBuilder')->disableOriginalConstructor()->getMock();
@@ -182,5 +227,14 @@ class MockIssue extends Issue
     public function getLabels()
     {
         return $this->labels;
+    }
+}
+
+class SortableMock extends Issue
+{
+    public function __construct(\DateTime $updated, $id)
+    {
+        $this->dateUpdated = $updated;
+        $this->id = $id;
     }
 }

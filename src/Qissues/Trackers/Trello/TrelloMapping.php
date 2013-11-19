@@ -209,6 +209,32 @@ class TrelloMapping implements FieldMapping
             $out[] = $issue;
         }
 
+        if ($sortFields = $criteria->getSortFields()) {
+            if (count($sortFields) > 1) {
+                throw new \DomainException('Cannot multisort on Trello');
+            }
+
+            $sortField = $sortFields[0];
+            $validSortFields = array('priority', 'updated', 'created');
+
+            if (!in_array($sortField, $validSortFields)) {
+                throw new \DomainException("Sorting by $sortField is unsupported on Trello");
+            }
+
+            $numericSort = function($a, $b) { if ($a == $b) { return 0; } return $a > $b ? -1 : 1; };
+
+            if ($sortField == 'created') {
+                usort($out, function($a, $b) use ($numericSort) {
+                    return $numericSort($a->getId(), $b->getId());
+                });
+            }
+            if ($sortField == 'updated') {
+                usort($out, function($a, $b) use ($numericSort) {
+                    return $numericSort($a->getDateUpdated(), $b->getDateUpdated());
+                });
+            }
+        }
+
         return $out;
     }
 }

@@ -14,27 +14,27 @@ use Guzzle\Http\Client;
 
 class TrelloRepository implements IssueRepository
 {
-    protected $repository;
-    protected $username;
-    protected $password;
+    protected $board;
+    protected $query;
+    protected $metadata;
     protected $mapping;
     protected $client;
 
     /**
-     * @param string $repository
-     * @param string username
-     * @param string password
-     * @param IssueTracker $tracker
+     * @param string $board
+     * @param string $key
+     * @param string $token
+     * @param TrelloMetadata $metadata
+     * @param FieldMapping $mapping
      * @param Client|null $client to override
      */
-    public function __construct($repository, $username, $password, FieldMapping $mapping, Client $client = null)
+    public function __construct($boardName, $key, $token, TrelloMetadata $metadata, FieldMapping $mapping, Client $client = null)
     {
-        return;
-        $this->repository = $repository;
-        $this->username = $username;
-        $this->password = $password;
+        $this->board = $metadata->get();
+        $this->query = array('key' => $key, 'token' => $token);
+        $this->metadata = $metadata;
         $this->mapping = $mapping;
-        $this->client  = $client ?: new Client('https://api.github.com/', array('ssl.certificate_authority' => 'system'));
+        $this->client  = $client ?: new Client('https://trello.com/', array('ssl.certificate_authority' => 'system'));
     }
 
     /**
@@ -42,7 +42,7 @@ class TrelloRepository implements IssueRepository
      */
     public function getUrl()
     {
-        return sprintf('https://github.com/%s/issues', $this->repository);
+        return sprintf('https://trello.com/b/%s', $this->board['id']);
     }
 
     /**
@@ -50,9 +50,10 @@ class TrelloRepository implements IssueRepository
      */
     public function lookup(Number $issue)
     {
-        $request = $this->request('GET', $this->getIssueUrl($issue));
-        $data = $request->send()->json();
-        return $this->mapping->toIssue($data);
+        $request = $this->request('GET', sprintf('/boards/%s/cards/%s', $this->board['id'], $issue));
+        $request->getQuery()->set('actions', 'commentCard');
+        $request->getQuery()->set('checklists', 'all');
+        return $this->mapping->toIssue($request->send()->json());
     }
 
     /**
@@ -60,7 +61,9 @@ class TrelloRepository implements IssueRepository
      */
     public function lookupUrl(Number $issue)
     {
-        return sprintf('https://github.com/%s/issues/%d', $this->repository, (string)$issue);
+        $request = $this->request('GET', sprintf('/boards/%s/cards/%s', $this->board['id'], $issue));
+        $rawIssue = $request->send()->json();
+        return $rawIssue['url'];
     }
 
     /**
@@ -68,50 +71,10 @@ class TrelloRepository implements IssueRepository
      */
     public function query(SearchCriteria $criteria)
     {
-        $request = $this->request('GET', sprintf('/repos/%s/issues', $this->repository));
-        foreach ($this->convertCriteriaToQuery($criteria) as $key => $value) {
-            $request->getQuery()->set($key, $value);
-        }
-
+        $request = $this->request('GET', sprintf('/boards/%s/cards', $this->board['id']));
+        $request->getQuery()->merge($this->mapping->buildSearchQuery($criteria));
         $response = $request->send()->json();
         return array_map(array($this->mapping, 'toIssue'), $response);
-    }
-
-    /**
-     * Converts a SearchCriteria object into querystring pairs
-     * @param SearchCriteria $criteria
-     * @return array query
-     */
-    protected function convertCriteriaToQuery(SearchCriteria $criteria)
-    {
-        $query = array();
-
-        if ($sortFields = $criteria->getSortFields()) {
-            $validFields = array('created', 'updated', 'comments');
-
-            if (count($sortFields) > 1) {
-                throw new \DomainException('GitHub cannot multi-sort');
-            }
-            if (!in_array($sortFields[0], $validFields)) {
-                throw new \DomainException("Sorting by '$sortFields[0]' is unsupported on GitHub");
-            }
-
-            $query['sort'] = $sortFields[0];
-        }
-
-        if ($statuses = $criteria->getStatuses()) {
-            if (count($statuses) > 1) {
-                throw new \DomainException('GitHub cannot support multiple statuses');
-            }
-
-            $query['state'] = $statuses[0]->getStatus();
-        }
-
-        if ($labels = $criteria->getLabels()) {
-            $query['labels'] = implode(',', array_map('strval', $labels));
-        }
-
-        return $query;
     }
 
     /**
@@ -119,9 +82,10 @@ class TrelloRepository implements IssueRepository
      */
     public function findComments(Number $issue)
     {
-        $request = $this->request('GET', $this->getIssueUrl($issue, '/comments'));
+        $request = $this->request('GET', sprintf('/boards/%s/cards/%s', $this->board['id'], $issue));
+        $request->getQuery()->set('actions', 'commentCard');
         $response = $request->send()->json();
-        return array_map(array($this->mapping, 'toComment'), $response);
+        return array_map(array($this->mapping, 'toComment'), $response['actions']);
     }
 
     /**
@@ -192,8 +156,8 @@ class TrelloRepository implements IssueRepository
      */
     protected function request($method, $url)
     {
-        $request = call_user_func(array($this->client, $method), $url);
-        $request->setAuth($this->username, $this->password);
+        $request = call_user_func(array($this->client, $method), "/1" . $url);
+        $request->getQuery()->merge($this->query);
         return $request;
     }
 

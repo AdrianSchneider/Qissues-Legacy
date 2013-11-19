@@ -5,6 +5,9 @@ parameters:
     bitbucket.repository: "account/repo-name"
     bitbucket.username: "account"
     bitbucket.password: "password"
+    trello.key: "application/developer api key"
+    trello.token: "oauth token"
+    trello.board: "Board Name"
 
 services:
     tracker.github:
@@ -63,3 +66,42 @@ services:
 
     tracker.bitbucket.features_builder:
         class: Qissues\Trackers\BitBucket\BitBucketSupport
+
+    tracker.trello:
+        class: Qissues\Model\Tracker\IssueTracker
+        arguments:
+            - @tracker.trello.repository
+            - @tracker.trello.mapping
+            - @tracker.trello.features
+
+    tracker.trello.repository:
+        class: Qissues\Trackers\Trello\TrelloRepository
+        arguments:
+            - %trello.board%
+            - %trello.key%
+            - %trello.token%
+            - @tracker.trello.metadata
+            - @tracker.trello.mapping
+
+    tracker.trello.mapping:
+        class: Qissues\Trackers\Trello\TrelloMapping
+        arguments:
+            - @tracker.trello.metadata
+
+    tracker.trello.features:
+        class: Qissues\Model\Tracker\Support\FeatureSet
+        factory_service: tracker.trello.features_builder
+        factory_method: buildFor
+        arguments:
+             - @support.catalog
+
+    tracker.trello.features_builder:
+        class: Qissues\Trackers\Trello\TrelloSupport
+
+    tracker.trello.metadata:
+        class: Qissues\Trackers\Trello\TrelloMetadata
+        arguments:
+            - %trello.board%
+            - %trello.key%
+            - %trello.token%
+            - @system.storage

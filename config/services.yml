@@ -13,6 +13,7 @@ parameters:
         1: '▼'
     console.output.tinyview_colors:
         bug: "p5"
+    system.storage.filename: "~/.qissues.json"
 
 services:
     model.issue_serializer:
@@ -26,6 +27,12 @@ services:
         arguments:
             - @container
             - @filesystem
+
+    system.storage:
+        class: Qissues\System\Storage\LocalStorage
+        arguments:
+            - @filesystem
+            - %system.storage.filename%
 
     console.shell:
         class: Qissues\Console\Shell\BasicShell

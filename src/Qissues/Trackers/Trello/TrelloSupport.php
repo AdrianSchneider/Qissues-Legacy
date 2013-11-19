@@ -18,6 +18,7 @@ class TrelloSupport implements FeatureSetBuilder
         $features = new FeatureSet($catalog);
         $features->add($catalog->get('statuses'),   $this->level('single'));
         $features->add($catalog->get('labels'),     $this->level('multiple', 'dynamic'));
+        $features->add($catalog->get('metadata'),   $this->level('dynamic'));
         return $features;
     }
 

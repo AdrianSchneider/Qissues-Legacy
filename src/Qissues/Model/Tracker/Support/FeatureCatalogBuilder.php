@@ -11,6 +11,7 @@ class FeatureCatalogBuilder
         $catalog->add(new Feature('statuses'));
         $catalog->add(new Feature('labels'));
         $catalog->add(new Feature('priorities'));
+        $catalog->add(new Feature('metadata'));
         return $catalog;
     }
 }

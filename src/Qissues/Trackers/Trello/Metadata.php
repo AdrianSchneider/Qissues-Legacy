@@ -61,4 +61,9 @@ class Metadata
 
         throw new \LogicException('Could not find trello status; update metadata');
     }
+
+    public function getFirstListName()
+    {
+        return $this->board['lists'][0]['name'];
+    }
 }

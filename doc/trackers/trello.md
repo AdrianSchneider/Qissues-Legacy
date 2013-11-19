@@ -43,3 +43,15 @@ run-time filtering only
 
 **Priorities**
 not supported (default sort is prioritized, basically)
+
+## Posting Issues
+Basic fields map pretty well: 
+- title
+- body
+- assignee (later)
+
+Lists are statuses (by name) -> may need to be done at repo-level
+
+Priority will be either 'top' or 'bottom'
+
+Checklists will need to be embedded and parsed at repo-level.

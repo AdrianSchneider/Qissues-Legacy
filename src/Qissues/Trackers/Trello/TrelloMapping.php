@@ -8,6 +8,7 @@ use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Meta\User;
 use Qissues\Model\Meta\Status;
+use Qissues\Model\Meta\Priority;
 use Qissues\Model\Meta\Type;
 use Qissues\Model\Meta\Label;
 use Qissues\Model\Tracker\FieldMapping;
@@ -30,8 +31,8 @@ class TrelloMapping implements FieldMapping
         if ($issue) {
             return array(
                 'title' => $issue->getTitle(),
-                'assignee' => $issue->getAssignee() ? $issue->getAssignee()->getAccount() : '',
                 'description' => $issue->getDescription(),
+                'status' => $issue->getStatus()->getStatus(),
                 'labels' => $issue->getLabels()
                     ? implode(', ', array_map('strval', $issue->getLabels()))
                     : ''
@@ -40,10 +41,10 @@ class TrelloMapping implements FieldMapping
 
         return array(
             'title' => '',
-            'assignee' => 'me',
+            'status' => $this->metadata->getFirstListName(),
             'labels' => '',
-            'checklists' => '',
-            'description' => ''
+            'description' => '',
+            'priority' => 'bottom'
         );
     }
 
@@ -85,14 +86,20 @@ class TrelloMapping implements FieldMapping
      */
     public function toNewIssue(array $input)
     {
-        throw new \Exception('wip');
+        if (!empty($input['priority'])) {
+            if (!in_array($input['priority'], array('top', 'bottom'))) {
+                throw new \DomainException('Trello supports top and bottom priorities');
+            }
+        }
+
         return new NewIssue(
             $input['title'],
             $input['description'],
-            !empty($input['assignee']) ? new User($input['assignee']) : null,
-            null,
-            null,
-            !empty($input['labels']) ? $this->prepareLabels($input['labels']) : null
+            $assignee = null,
+            !empty($input['priority']) ? new Priority($input['priority'] == 'top' ? 5 : 1, $input['priority']) : null,
+            $type = null,
+            !empty($input['labels']) ? $this->prepareLabels($input['labels']) : null,
+            new Status($input['status'], $this->metadata->getListIdByName($input['status']))
         );
     }
 
@@ -110,28 +117,15 @@ class TrelloMapping implements FieldMapping
     public function issueToArray(NewIssue $issue)
     {
         $new = array(
-            'title' => $issue->getTitle(),
-            'body'  => $issue->getDescription()
+            'name' => $issue->getTitle(),
+            'desc'  => $issue->getDescription(),
+            'idList' => $issue->getStatus()->getId(),
+            'due' => null
         );
 
-        if ($issue->getAssignee()) {
-            $new['assignee'] = $issue->getAssignee()->getAccount();
+        if ($issue->getPriority()) {
+            $new['pos'] = $issue->getPriority()->getName();
         }
-        if ($labels = $issue->getLabels()) {
-            $new['labels'] = array_map('strval', $labels);
-        }
-
-        /*
-        if (!empty($issue['labels'])) {
-            $new['labels'] = $issue['labels'];
-        }
-        if (!empty($issue['milestone'])) {
-            $new['milestone'] = $issue['milestone'];
-        }
-        if (!empty($issue['assignee'])) {
-            $new['assignee'] = $issue['assignee'];
-        }
-         */
 
         return $new;
     }

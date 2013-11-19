@@ -82,6 +82,40 @@ class TrelloMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("Checklist\n    [x] Don't forget the milk", $issue->getDescription());
     }
 
+    public function testToNewIssue()
+    {
+        $mapper = $this->getMapper(array('lists' => array(
+            array('id' => 1, 'name' => 'New') 
+        )));
+
+        $issue = $mapper->toNewIssue(array(
+            'title' => 'Hello World',
+            'description' => 'Why, hello there!',
+            'status' => 'New'
+        ));
+
+        $this->assertEquals('Hello World', $issue->getTitle());
+        $this->assertEquals('Why, hello there!', $issue->getDescription());
+        $this->assertEquals('New', $issue->getStatus()->getStatus());
+        $this->assertNull($issue->getPriority());
+    }
+
+    public function testToNewIssueStatusAllowsTopOrBottom()
+    {
+        $mapper = $this->getMapper(array('lists' => array(
+            array('id' => 1, 'name' => 'New') 
+        )));
+
+        $issue = $mapper->toNewIssue(array(
+            'title' => '',
+            'description' => '',
+            'status' => 'New',
+            'priority' => 'top',
+        ));
+
+        $this->assertEquals('top', $issue->getPriority()->getName());
+    }
+
     public function testQueryByKeywords()
     {
         $criteria = new SearchCriteria();

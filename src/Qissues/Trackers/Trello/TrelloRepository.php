@@ -9,6 +9,7 @@ use Qissues\Model\Querying\SearchCriteria;
 use Qissues\Model\Tracker\IssueRepository;
 use Qissues\Model\Tracker\FieldMapping;
 use Qissues\Model\Meta\Status;
+use Qissues\Model\Meta\ClosedStatus;
 use Qissues\Model\Meta\User;
 use Guzzle\Http\Client;
 
@@ -57,6 +58,18 @@ class TrelloRepository implements IssueRepository
     }
 
     /**
+     * Lookup an ID using the short number
+     * @param Number $number
+     * @return string qualified ID
+     */
+    protected function lookupId(Number $issue)
+    {
+        $request = $this->request('GET', sprintf('/boards/%s/cards/%s', $this->board->getBoardId(), $issue));
+        $response = $request->send()->json();
+        return $response['id'];
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function lookupUrl(Number $issue)
@@ -97,10 +110,10 @@ class TrelloRepository implements IssueRepository
      */
     public function persist(NewIssue $issue)
     {
-        $request = $this->request('POST', sprintf('/repos/%s/issues', $this->repository));
+        $request = $this->request('POST', "/cards");
         $request->setBody(json_encode($this->mapping->issueToArray($issue)), 'application/json');
         $response = $request->send()->json();
-        return new Number($response['number']);
+        return new Number($response['idShort']);
     }
 
     /**
@@ -108,9 +121,9 @@ class TrelloRepository implements IssueRepository
      */
     public function update(NewIssue $issue, Number $number)
     {
-        $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->repository, $number->getNumber()));
+        $request = $this->request('PUT', sprintf("/cards/%s", $this->lookupId($number)));
         $request->setBody(json_encode($this->mapping->issueToArray($issue)), 'application/json');
-        $request->send();
+        $response = $request->send()->json();
     }
 
     /**
@@ -118,8 +131,8 @@ class TrelloRepository implements IssueRepository
      */
     public function comment(Number $issue, NewComment $comment)
     {
-        $request = $this->request('POST', $this->getIssueUrl($issue, '/comments'));
-        $request->setBody(json_encode(array('body' => $comment->getMessage())), 'application/json');
+        $request = $this->request('POST', sprintf("/cards/%s/actions/comments", $this->lookupId($issue)));
+        $request->setBody(json_encode(array('text' => $comment->getMessage())), 'application/json');
         $request->send();
     }
 
@@ -128,7 +141,8 @@ class TrelloRepository implements IssueRepository
      */
     public function delete(Number $issue)
     {
-        throw new \Exception('not yet implemented');
+        $request = $this->request('DELETE', sprintf("/cards/%s", $this->lookupId($issue)));
+        $request->send();
     }
 
     /**
@@ -136,8 +150,15 @@ class TrelloRepository implements IssueRepository
      */
     public function changeStatus(Number $issue, Status $status)
     {
-        $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->repository, $issue->getNumber()));
-        $request->setBody(json_encode(array('state' => $status->getStatus())), 'application/json');
+        if ($status instanceof ClosedStatus) {
+            $request = $this->request('PUT', sprintf("/cards/%s", $this->lookupId($issue)));
+            $request->setBody(json_encode(array('closed' => true)), 'application/json');
+            $request->send();
+            return;
+        }
+
+        $request = $this->request('PUT', sprintf("/cards/%s", $this->lookupId($issue)));
+        $request->setBody(json_encode(array('idList' => $this->metadata->getListIdByName($status->getStatus()))), 'application/json');
         $request->send();
     }
 
@@ -146,9 +167,7 @@ class TrelloRepository implements IssueRepository
      */
     public function assign(Number $issue, User $user)
     {
-        $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->repository, $issue->getNumber()));
-        $request->setBody(json_encode(array('assignee' => $user->getAccount())), 'application/json');
-        $request->send();
+        throw new \Exception('wip');
     }
 
     /**

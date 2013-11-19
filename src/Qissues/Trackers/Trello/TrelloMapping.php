@@ -55,7 +55,11 @@ class TrelloMapping implements FieldMapping
         foreach ($this->board['lists'] as $list) {
             if ($list['id'] == $issue['idList']) {
                 $status = new Status($list['name']);
+                break;
             }
+        }
+        if (empty($status)) {
+            throw new \LogicException("Could not find status on Trello; update metadata");
         }
 
         if (!empty($issue['checklists'])) {
@@ -78,7 +82,7 @@ class TrelloMapping implements FieldMapping
             null,#$issue['assignee'] ? new User($issue['assignee']['login']) : null,
             null,
             null,
-            $issue['labels'] ? array_map(function($label) {
+            !empty($issue['labels']) ? array_map(function($label) {
                 return new Label($label['name']);
             }, $issue['labels']) : array()
         );

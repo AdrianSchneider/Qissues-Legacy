@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Tests\System\Storage;
+namespace Tests\Qissues\System\Storage;
 
 use Qissues\System\Storage\LocalStorage;
 

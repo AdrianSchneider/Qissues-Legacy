@@ -2,6 +2,8 @@
 
 namespace Qissues\Trackers\Trello;
 
+use Qissues\Model\Meta\Status;
+use Qissues\Model\Querying\SearchCriteria;
 use Qissues\Trackers\Trello\TrelloMapping;
 
 class TrelloMappingTest extends \PHPUnit_Framework_TestCase
@@ -75,6 +77,29 @@ class TrelloMappingTest extends \PHPUnit_Framework_TestCase
         $issue = $mapper->toIssue($trelloCard);
 
         $this->assertEquals("Checklist\n    [x] Don't forget the milk", $issue->getDescription());
+    }
+
+    public function testQueryByStatus()
+    {
+        return; // WORK IN PROGRESS
+        $criteria = new SearchCriteria();
+        $criteria->addStatus(new Status('New'));
+
+        $mapper = $this->getMapper(array('lists' => array(
+            array(
+                'name' => 'New',
+                'id' => 5
+            )
+        )));
+
+        $query = $mapper->buildSearchQuery($criteria);
+
+        $this->assertEquals(5, $query['idList']);
+    }
+
+    public function testQueryByLabel()
+    {
+
     }
 
     protected function getMapper(array $board)

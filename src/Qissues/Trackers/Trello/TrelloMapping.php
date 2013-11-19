@@ -174,6 +174,12 @@ class TrelloMapping implements FieldMapping
     {
         $query = array();
 
+        if ($statuses = $criteria->getStatuses()) {
+            foreach ($statuses as $status) {
+
+            }
+        }
+
         /*
         if ($sortFields = $criteria->getSortFields()) {
             $validFields = array('created', 'updated', 'comments');

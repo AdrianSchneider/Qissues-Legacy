@@ -15,43 +15,13 @@ Finally, fill in `trello.board` with the **name** of the board you wish to use a
 ## 3. Grab Metadata
 Run `qissues refresh` to grab the latest metadata from Trello.
 
-# Mapping
-An issue repository doesn't map onto Trello 100%, so there is some oddness to figure out.
+# Differences in Trello
+Trello isn't an issue tracker, so some concepts don't translate perfect. It's a short term issue tracker, not a long term data repository. I tried to model it with that in mind, focusing on sprints or a more casual usage.
 
-## Querying
-`GET /1/boards/[idBoard]/cards`
-We'll have to do in-memory filtering most of the time due to limitations in the Trello API.
-
-**Keyword**
-`GET /1/search?query=keywords`
-Removes support for status
-
-**Statuses**
-`GET /1/lists/[idList]/cards`
-Multiple requires run-time filtering
-
-**Ids**
-Technically feasible, but search requires full ids not numeric. 
-Later: query up to 1000 only grabbing ids for mapping in cache
-Not sure how useful this is as trello is a shorter term planning tool.
-
-**Assignees**
-TODO ; run-time filtering probably
-
-**Types**
-run-time filtering only
-
-**Priorities**
-not supported (default sort is prioritized, basically)
-
-## Posting Issues
-Basic fields map pretty well: 
-- title
-- body
-- assignee (later)
-
-Lists are statuses (by name) -> may need to be done at repo-level
-
-Priority will be either 'top' or 'bottom'
-
-Checklists will need to be embedded and parsed at repo-level.
+- new issues default to furthest left List (status)
+- closing an issue archives it
+- use change-status to push status changes
+- checklists are read-only, for now
+- most of the querying is done in memory, API is too restricted
+- priority is 'top' or 'bottom'; omitting will save new ones as 'bottom', and leave existing as-is
+- priority when viewing is just the natural order in Trello

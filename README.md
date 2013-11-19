@@ -10,11 +10,11 @@ Currently supported:
 
 - GitHub
 - Bitbucket Issues
+- Trello (Lists as Statuses)
 
 With immediate plans to support:
 
 - JIRA (WIP)
-- Trello (Lists as Statuses)
 
 ## Features
 

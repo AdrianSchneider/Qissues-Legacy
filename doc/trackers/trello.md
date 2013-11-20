@@ -15,7 +15,7 @@ Finally, fill in `trello.board` with the **name** of the board you wish to use a
 ## 3. Grab Metadata
 Run `qissues refresh` to grab the latest metadata from Trello.
 
-# Differences in Trello
+# Mapping
 Trello isn't an issue tracker, so some concepts don't translate perfect. It's a short term issue tracker, not a long term data repository. I tried to model it with that in mind, focusing on sprints or a more casual usage.
 
 - new issues default to furthest left List (status)

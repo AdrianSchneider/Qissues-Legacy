@@ -45,7 +45,7 @@ class EditCommand extends Command
             return 1;
         }
 
-        $number = $repository->update($changes, $number);
+        $repository->update($changes, $number);
         $output->writeln("Issue <info>#$number</info> has been updated");
     }
 }

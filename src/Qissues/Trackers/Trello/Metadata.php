@@ -54,7 +54,7 @@ class Metadata
     public function getListIdByName($name)
     {
         foreach ($this->board['lists'] as $list) {
-            if ($list['name'] == $name) {
+            if (stripos($list['name'], $name) !== false) {
                 return $list['id'];
             }
         }
@@ -62,8 +62,34 @@ class Metadata
         throw new \LogicException('Could not find trello status; update metadata');
     }
 
+    /**
+     * Get the first list's name
+     * @return string
+     */
     public function getFirstListName()
     {
         return $this->board['lists'][0]['name'];
+    }
+
+    public function getLabelNameById($id)
+    {
+        foreach ($this->board['labels'] as $color => $label) {
+            if ($color === $id) {
+                return $label;
+            }
+        }
+
+        throw new \LogicException('Could not find trello label; update metadata');
+    }
+
+    public function getLabelIdByName($query)
+    {
+        foreach ($this->board['labels'] as $color => $name) {
+            if (stripos($name, $query) !== false) {
+                return $color;
+            }
+        }
+
+        throw new \LogicException('Could not find trello label; update metadata');
     }
 }

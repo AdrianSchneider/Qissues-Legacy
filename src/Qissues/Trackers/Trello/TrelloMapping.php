@@ -76,7 +76,7 @@ class TrelloMapping implements FieldMapping
             null,
             null,
             !empty($issue['labels']) ? array_map(function($label) {
-                return new Label($label['name']);
+                return new Label($label['name'], $label['color']);
             }, $issue['labels']) : array()
         );
     }
@@ -105,8 +105,13 @@ class TrelloMapping implements FieldMapping
 
     protected function prepareLabels($labels)
     {
+        $metadata = $this->metadata;
         return array_map(
-            function($label) { return new Label($label); },
+            function($label) use ($metadata) { 
+                $id = $metadata->getLabelIdByName($label);
+                $name = $metadata->getLabelNameById($id);
+                return new Label($name, $id);
+            },
             preg_split('/[\s,]+/', $labels, -1, PREG_SPLIT_NO_EMPTY)
         );
     }
@@ -125,6 +130,11 @@ class TrelloMapping implements FieldMapping
 
         if ($issue->getPriority()) {
             $new['pos'] = $issue->getPriority()->getName();
+        }
+        if ($labels = $issue->getLabels()) {
+            $new['labels'] = implode(',', array_map(function($label) {
+                return $label->getId();
+            }, $labels));
         }
 
         return $new;
@@ -193,11 +203,33 @@ class TrelloMapping implements FieldMapping
     {
         $out = array();
         foreach ($issues as $issue) {
-            if ($criteria->getStatuses() and !array_intersect(array($issue->getStatus()), $criteria->getStatuses())) {
-                continue;
+            $matchesStatus = false;
+
+            if ($statuses = $criteria->getStatuses()) {
+                foreach ($criteria->getStatuses() as $status) {
+                    if (stripos($issue->getStatus()->getStatus(), $status->getStatus()) !== false) {
+                        $matchesStatus = true;
+                        break;
+                    }
+                }
+                if (!$matchesStatus) {
+                    continue;
+                }
             }
-            if ($criteria->getLabels() and !array_intersect($issue->getLabels(), $criteria->getLabels())) {
-                continue;
+
+            $matchesLabel = false;
+            if ($labels = $criteria->getLabels()) {
+                foreach ($criteria->getLabels() as $label) {
+                    foreach ($issue->getLabels() as $issueLabel) {
+                        if (stripos($issueLabel->getName(), $label->getName()) !== false) {
+                            $matchesLabel = true;
+                            break 2;
+                        }
+                    }
+                }
+                if (!$matchesLabel) {
+                    continue;
+                }
             }
 
             $out[] = $issue;

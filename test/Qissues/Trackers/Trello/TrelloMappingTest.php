@@ -167,6 +167,23 @@ class TrelloMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($issues[0], $filtered[0]);
     }
 
+    public function testFilterIssuesByLazyStatuses()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addStatus(new Status('open'));
+
+        $issues = array(
+            new MockIssue(new Status('Open for Business')),
+            new MockIssue(new Status('Closed'))
+        );
+
+        $mapper = $this->getMapper(array());
+        $filtered = $mapper->filterIssues($issues, $criteria);
+
+        $this->assertCount(1, $filtered);
+        $this->assertSame($issues[0], $filtered[0]);
+    }
+
     public function testFilterIssuesByLabels()
     {
         $criteria = new SearchCriteria();

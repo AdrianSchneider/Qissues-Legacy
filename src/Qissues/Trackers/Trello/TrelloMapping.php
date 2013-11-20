@@ -77,7 +77,8 @@ class TrelloMapping implements FieldMapping
             null,
             !empty($issue['labels']) ? array_map(function($label) {
                 return new Label($label['name'], $label['color']);
-            }, $issue['labels']) : array()
+            }, $issue['labels']) : array(),
+            !empty($issue['actions']) ? count($issue['actions']) : null
         );
     }
 
@@ -185,6 +186,10 @@ class TrelloMapping implements FieldMapping
         }
 
         // TODO sorting
+
+        $query['params']['actions'] = 'commentCard';
+        $query['params']['actions_entities'] = true;
+        $query['params']['action_fields'] = 'id';
 
         list($offset, $limit) = $criteria->getPaging();
         list($query['params']['page'], $query['params']['per_page']) = $criteria->getPaging();

@@ -99,7 +99,7 @@ class Issue extends ReadOnlyArrayAccess
 
     public function getCommentCount()
     {
-        return 0;
+        return $this->comments;
     }
 
     protected function addLabel(Label $label)

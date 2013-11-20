@@ -57,7 +57,8 @@ class GitHubMapping implements FieldMapping
             null,
             $issue['labels'] ? array_map(function($label) {
                 return new Label($label['name']);
-            }, $issue['labels']) : array()
+            }, $issue['labels']) : array(),
+            !empty($issue['comments']) ? intval($issue['comments']) : 0
         );
     }
 

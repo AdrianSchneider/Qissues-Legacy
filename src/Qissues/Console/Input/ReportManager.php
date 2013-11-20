@@ -23,7 +23,7 @@ class ReportManager
             return $this->reports[$name];
         }
 
-        foreach (array('keyword', 'status', 'assignee', 'priority', 'type', 'mine', 'ids') as $field) {
+        foreach (array('keyword', 'status', 'assignee', 'priority', 'type', 'mine', 'ids', 'labels') as $field) {
             if ($input->getOption($field)) {
                 return;
             }

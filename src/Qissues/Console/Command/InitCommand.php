@@ -36,6 +36,7 @@ class InitCommand extends Command
         $initializer->initialize($name);
 
         $output->writeln("A new <info>.qissues</info> has been created. Edit it accordingly");
+        $output->writeln("For more information, see doc/trackers/$name.md");
     }
 
     protected function getTracker(InputInterface $input, OutputInterface $output)

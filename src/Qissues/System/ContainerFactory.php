@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class ContainerFactory
 {
-    /**
+   /**
      * Creates a new ContainerInterface from services.yml
      * @return ContainerInterface
      */
@@ -28,6 +28,16 @@ class ContainerFactory
         }
 
         $container->set('container', $container);
+
+        if ($container->hasParameter('tracker') and $container->getParameter('tracker')) {
+            $container->setParameter(
+                'mapping_class', 
+                $container->getDefinition(sprintf(
+                    'tracker.%s.metadata',
+                    $container->getParameter('tracker')
+                ))->getClass()
+            );
+        }
 
         $container->compile();
         return $container;

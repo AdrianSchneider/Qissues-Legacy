@@ -20,9 +20,17 @@ class RefreshCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $storage = $this->get('system.storage');
         $repository = $this->getApplication()->getTracker()->getRepository();
-        $repository->refreshMetadata();
 
-        $output->writeln("Metadata updated");
+        $storage->set(
+            sprintf( '%s-%s', $this->getParameter('tracker'), getcwd()),
+            $repository->fetchMetadata()
+        );
+
+        $output->writeln(sprintf(
+            "<info>%s</info> metadata has been updated!",
+            ucfirst($this->getParameter('tracker'))
+        ));
     }
 }

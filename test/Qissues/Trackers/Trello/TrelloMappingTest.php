@@ -248,14 +248,7 @@ class TrelloMappingTest extends \PHPUnit_Framework_TestCase
 
     protected function getMapper(array $board)
     {
-        $metadata = $this->getMockBuilder('Qissues\Trackers\Trello\TrelloMetadataBuilder')->disableOriginalConstructor()->getMock();
-        $metadata
-            ->expects($this->once())
-            ->method('build')
-            ->will($this->returnValue(new Metadata($board)))
-        ;
-
-        return new TrelloMapping($metadata);
+        return new TrelloMapping(new TrelloMetadata($board));
     }
 }
 

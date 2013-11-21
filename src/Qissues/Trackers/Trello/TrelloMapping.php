@@ -12,6 +12,7 @@ use Qissues\Model\Meta\Priority;
 use Qissues\Model\Meta\Type;
 use Qissues\Model\Meta\Label;
 use Qissues\Model\Tracker\FieldMapping;
+use Qissues\Model\Tracker\Metadata\Metadata;
 use Qissues\Model\Querying\SearchCriteria;
 use Qissues\System\Util\LocalTime;
 
@@ -19,9 +20,9 @@ class TrelloMapping implements FieldMapping
 {
     protected $metadata;
 
-    public function __construct(TrelloMetadataBuilder $builder)
+    public function __construct(Metadata $metadata)
     {
-        $this->metadata = $builder->build();
+        $this->metadata = $metadata;
     }
 
     /**

@@ -85,4 +85,16 @@ interface IssueRepository
      * @param NewComment $comment
      */
     function comment(Number $issue, NewComment $comment);
+
+    /**
+     * Retrieve the metadata required for mapping
+     * @return array
+     */
+    function fetchMetadata();
+
+    /**
+     * Build a Metadatata instance from storage
+     * @param array $metadata 
+     */
+    function buildMetadata(array $metadata);
 }

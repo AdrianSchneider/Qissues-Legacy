@@ -4,6 +4,7 @@ namespace Qissues\Console;
 
 use Qissues\Console\Command;
 use Qissues\System\ContainerFactory;
+use Qissues\Model\Tracker\Metadata\NullMetadataException;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -184,6 +185,11 @@ class Application extends BaseApplication
     {
         if ($e instanceof Input\Exception) {
             $output->writeln("<error>" . $e->getMessage() . "</error>");
+            return;
+        }
+
+        if ($e instanceof NullMetadataException) {
+            $output->writeln("<error>This tracker requires metadata; run `qissues refresh` to download.</error>");
             return;
         }
 

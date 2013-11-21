@@ -8,6 +8,7 @@ use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Querying\SearchCriteria;
 use Qissues\Model\Tracker\IssueRepository;
 use Qissues\Model\Tracker\FieldMapping;
+use Qissues\Model\Tracker\Metadata\NullMetadata;
 use Qissues\Model\Meta\Status;
 use Qissues\Model\Meta\User;
 use Guzzle\Http\Client;
@@ -170,4 +171,21 @@ class GitHubRepository implements IssueRepository
     {
         return sprintf('/repos/%s/issues/%d%s', $this->repository, $number->getNumber(), $append);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function fetchMetadata()
+    {
+        throw new \Exception('No metadata necessary for BitBucket');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function buildMetadata(array $metadata)
+    {
+        return new NullMetadata;
+    }
+
 }

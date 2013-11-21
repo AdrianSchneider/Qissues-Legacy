@@ -2,7 +2,9 @@
 
 namespace Qissues\Trackers\Trello;
 
-class Metadata
+use Qissues\Model\Tracker\Metadata\Metadata;
+
+class TrelloMetadata implements Metadata
 {
     protected $board;
     public function __construct(array $board)

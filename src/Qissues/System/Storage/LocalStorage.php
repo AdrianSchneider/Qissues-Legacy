@@ -2,9 +2,10 @@
 
 namespace Qissues\System\Storage;
 
+use Qissues\Model\Tracker\Metadata\Storage;
 use Qissues\System\Filesystem;
 
-class LocalStorage
+class LocalStorage implements Storage
 {
     protected $filesystem;
     protected $filename;

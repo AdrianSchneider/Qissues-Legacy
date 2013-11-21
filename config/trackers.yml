@@ -16,6 +16,7 @@ services:
             - @tracker.github.repository
             - @tracker.github.mapping
             - @tracker.github.features
+            - @system.storage
 
     tracker.github.repository:
         class: Qissues\Trackers\GitHub\GitHubRepository
@@ -45,6 +46,7 @@ services:
             - @tracker.bitbucket.repository
             - @tracker.bitbucket.mapping
             - @tracker.bitbucket.features
+            - @system.storage
 
     tracker.bitbucket.repository:
         class: Qissues\Trackers\BitBucket\BitBucketRepository
@@ -73,6 +75,7 @@ services:
             - @tracker.trello.repository
             - @tracker.trello.mapping
             - @tracker.trello.features
+            - @metadata
 
     tracker.trello.repository:
         class: Qissues\Trackers\Trello\TrelloRepository
@@ -80,13 +83,16 @@ services:
             - %trello.board%
             - %trello.key%
             - %trello.token%
-            - @tracker.trello.metadata
             - @tracker.trello.mapping
+            - @metadata
 
     tracker.trello.mapping:
         class: Qissues\Trackers\Trello\TrelloMapping
         arguments:
-            - @tracker.trello.metadata
+            - @metadata
+
+    tracker.trello.metadata:
+        class: Qissues\Trackers\Trello\TrelloMetadata
 
     tracker.trello.features:
         class: Qissues\Model\Tracker\Support\FeatureSet
@@ -97,13 +103,4 @@ services:
 
     tracker.trello.features_builder:
         class: Qissues\Trackers\Trello\TrelloSupport
-
-    tracker.trello.metadata:
-        class: Qissues\Trackers\Trello\TrelloMetadataBuilder
-        arguments:
-            - %trello.board%
-            - %trello.key%
-            - %trello.token%
-            - @system.storage
-
 

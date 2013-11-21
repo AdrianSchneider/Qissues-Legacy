@@ -8,6 +8,7 @@ use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Querying\SearchCriteria;
 use Qissues\Model\Tracker\IssueRepository;
 use Qissues\Model\Tracker\FieldMapping;
+use Qissues\Model\Tracker\Metadata\NullMetadata;
 use Qissues\Model\Meta\Status;
 use Qissues\Model\Meta\ClosedStatus;
 use Qissues\Model\Meta\User;
@@ -176,5 +177,15 @@ class BitBucketRepository implements IssueRepository
     protected function getIssueUrl(Number $number, $append = '')
     {
         return sprintf('/repositories/%s/issues/%d%s', $this->repository, $number->getNumber(), $append);
+    }
+
+    public function fetchMetadata()
+    {
+        throw new \Exception('No metadata necessary for BitBucket');
+    }
+
+    public function buildMetadata(array $metadata)
+    {
+        return new NullMetadata;
     }
 }

@@ -29,7 +29,7 @@ class ContainerFactory
 
         $container->set('container', $container);
 
-        if ($container->hasParameter('tracker') and $container->getParameter('tracker')) {
+        try {
             $container->setParameter(
                 'mapping_class', 
                 $container->getDefinition(sprintf(
@@ -37,6 +37,8 @@ class ContainerFactory
                     $container->getParameter('tracker')
                 ))->getClass()
             );
+        } catch (\Exception $e) {
+            $container->setParameter('mapping_class', 'Qissues\Model\Tracker\Metadata\NullMetadata');
         }
 
         $container->compile();

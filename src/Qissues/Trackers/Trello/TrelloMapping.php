@@ -13,6 +13,7 @@ use Qissues\Model\Meta\Type;
 use Qissues\Model\Meta\Label;
 use Qissues\Model\Tracker\FieldMapping;
 use Qissues\Model\Querying\SearchCriteria;
+use Qissues\System\Util\LocalTime;
 
 class TrelloMapping implements FieldMapping
 {
@@ -70,8 +71,8 @@ class TrelloMapping implements FieldMapping
             $issue['name'],
             trim($issue['desc']),
             $status,
-            new \DateTime($issue['dateLastActivity']),
-            new \DateTime($issue['dateLastActivity']),
+            LocalTime::convert(new \DateTime($issue['dateLastActivity'])),
+            LocalTime::convert(new \DateTime($issue['dateLastActivity'])),
             null,#$issue['assignee'] ? new User($issue['assignee']['login']) : null,
             null,
             null,
@@ -152,7 +153,7 @@ class TrelloMapping implements FieldMapping
                 $comment['memberCreator']['username'],
                 $comment['memberCreator']['fullName']
             ),
-            new \DateTime($comment['date'])
+            LocalTime::convert(new \DateTime($comment['date']))
         );
     }
 

@@ -8,6 +8,7 @@ use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Querying\SearchCriteria;
 use Qissues\Model\Tracker\IssueRepository;
 use Qissues\Model\Tracker\FieldMapping;
+use Qissues\Model\Tracker\Metadata\NullMetadata;
 use Qissues\Model\Meta\Status;
 use Qissues\Model\Meta\ClosedStatus;
 use Qissues\Model\Meta\User;
@@ -236,5 +237,20 @@ class JiraRepository implements IssueRepository
             $append
         );
     }
-}
 
+    /**
+     * {@inheritDoc}
+     */
+    public function fetchMetadata()
+    {
+        throw new \Exception('No metadata necessary for BitBucket');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function buildMetadata(array $metadata)
+    {
+        return new NullMetadata;
+    }
+}

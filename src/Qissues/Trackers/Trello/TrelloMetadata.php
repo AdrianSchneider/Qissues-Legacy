@@ -100,4 +100,29 @@ class TrelloMetadata implements Metadata
 
         throw new \LogicException('Could not find trello label; update metadata');
     }
+
+    public function getMemberNameById($id)
+    {
+        foreach ($this->board['members'] as $member) {
+            if ($id == $member['id']) {
+                return $member['username'];
+            }
+        }
+
+        throw new \LogicException('Member not found; try updating metadata');
+    }
+
+    public function getMemberIdByName($name)
+    {
+        $names = array();
+        foreach ($this->board['members'] as $member) {
+            if (stripos($member['username'], $name) !== false or stripos($member['fullName'], $name) !== false) {
+                return $member['id'];
+            }
+            $names[] = $member['username'];
+        }
+
+        $members = implode(', ', $names);
+        throw new \LogicException("$name not found; available members: $members");
+    }
 }

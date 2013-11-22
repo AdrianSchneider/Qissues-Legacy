@@ -205,9 +205,9 @@ class TrelloRepository implements IssueRepository
     {
         $request = $this->client->get('/1/members/my/boards');
         $request->getQuery()->merge($this->query);
-        $request->getQuery()->merge(array('lists' => 'open'));
-
+        $request->getQuery()->merge(array('lists' => 'open', 'members' => 'all', 'memberships_member' => true, 'memberships_member_fields' => 'all', 'member_fields' => 'all'));
         $response = $request->send()->json();
+
         $found = false;
 
         foreach ($response as $board) {
@@ -230,12 +230,26 @@ class TrelloRepository implements IssueRepository
                 return $a['pos'] < $b['pos'] ? -1 : 1;
             });
 
+            $request = $this->client->get("/1/boards/$board[id]");
+            $request->getQuery()->merge($this->query);
+            $request->getQuery()->merge(array('members' => 'all', 'memberships_member' => true));
+            $response = $request->send()->json();
+
+            $members = array();
+            foreach ($response['members'] as $member) {
+                $members[] = array(
+                    'id' => $member['id'],
+                    'username' => $member['username'],
+                    'fullName' => $member['fullName']
+                );
+            }
 
             return array(
                 'id' => $board['id'],
                 'name' => $board['name'],
                 'labels' => $board['labelNames'],
-                'lists' => $lists
+                'lists' => $lists,
+                'members' => $members
             );
         }
 
@@ -248,10 +262,5 @@ class TrelloRepository implements IssueRepository
     public function buildMetadata(array $metadata)
     {
         return new Metadata($metadata);
-    }
-
-    public function refreshMetadata()
-    {
-        $this->metadata->update();
     }
 }

@@ -35,6 +35,7 @@ class TrelloMapping implements FieldMapping
                 'title' => $issue->getTitle(),
                 'description' => $issue->getDescription(),
                 'status' => $issue->getStatus()->getStatus(),
+                'assignee' => $issue->getAssignee() ? $issue->getAssignee()->getAccount() : null,
                 'labels' => $issue->getLabels()
                     ? implode(', ', array_map('strval', $issue->getLabels()))
                     : ''
@@ -45,6 +46,7 @@ class TrelloMapping implements FieldMapping
             'title' => '',
             'status' => $this->metadata->getFirstListName(),
             'labels' => '',
+            'assignee' => '',
             'description' => '',
             'priority' => 'bottom'
         );
@@ -95,10 +97,17 @@ class TrelloMapping implements FieldMapping
             }
         }
 
+        $user = null;
+        if (!empty($input['assignee'])) {
+            $id = $this->metadata->getMemberIdByName($input['assignee']);
+            $name = $this->metadata->getMemberNameById($id);
+            $user = new User($name, $id);
+        }
+
         return new NewIssue(
             $input['title'],
             $input['description'],
-            $assignee = null,
+            $user,
             !empty($input['priority']) ? new Priority($input['priority'] == 'top' ? 5 : 1, $input['priority']) : null,
             $type = null,
             !empty($input['labels']) ? $this->prepareLabels($input['labels']) : null,
@@ -138,6 +147,10 @@ class TrelloMapping implements FieldMapping
             $new['labels'] = implode(',', array_map(function($label) {
                 return $label->getId();
             }, $labels));
+        }
+
+        if ($user = $issue->getAssignee()) {
+            $new['idMembers'] = $user->getId();
         }
 
         return $new;

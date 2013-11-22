@@ -75,4 +75,42 @@ class TrelloMetadataTest extends \PHPUnit_Framework_TestCase
         $metadata = new TrelloMetadata(array('labels' => array()));
         $metadata->getLabelIdByName('Open');
     }
+
+    public function testGetMemberNameById()
+    {
+        $metadata = new TrelloMetadata(array('members' => array(array('id' => 5, 'username' => 'Bob'))));
+        $this->assertEquals('Bob', $metadata->getMemberNameById(5));
+    }
+
+    public function testGetMemberNameByIdThrowsExceptionIfNotFound()
+    {
+        $this->setExpectedException('LogicException', 'not found');
+        $metadata = new TrelloMetadata(array('members' => array()));
+        $metadata->getMemberNameById(6);
+    }
+
+    public function testGetMemberIdByName()
+    {
+        $metadata = new TrelloMetadata(array('members' => array(array('id' => 5, 'username' => 'Bob'))));
+        $this->assertEquals(5, $metadata->getMemberIdByName('Bob'));
+    }
+
+    public function testGetMemberIdByNameLazy()
+    {
+        $metadata = new TrelloMetadata(array('members' => array(array('id' => 5, 'username' => 'Bobby Drop Tables'))));
+        $this->assertEquals(5, $metadata->getMemberIdByName('bob'));
+    }
+
+    public function testGetMemberIdByNameAlsoSearchesFullName()
+    {
+        $metadata = new TrelloMetadata(array('members' => array(array('id' => 5, 'username' => 'Bobby Drop Tables', 'fullName' => 'Robert'))));
+        $this->assertEquals(5, $metadata->getMemberIdByName('robert'));
+    }
+
+    public function testGetMemberIdByNameThrowsExceptionIfNotFoud()
+    {
+        $this->setExpectedException('LogicException', 'not found');
+        $metadata = new TrelloMetadata(array('members' => array()));
+        $metadata->getMemberIdByName('robert');
+    }
 }

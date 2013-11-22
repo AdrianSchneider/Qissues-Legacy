@@ -29,7 +29,7 @@ class StandardView
 
             $multiLine = false;
             foreach ($comments as $comment) {
-                if (strpos(trim($comment['message']), "\n") !== false) {
+                if (strpos(trim(wordwrap($comment['message'], $width - 4)), "\n") !== false) {
                     $multiLine = true;
                 }
             }

@@ -74,7 +74,7 @@ class TrelloMapping implements FieldMapping
             $status,
             LocalTime::convert(new \DateTime($issue['dateLastActivity'])),
             LocalTime::convert(new \DateTime($issue['dateLastActivity'])),
-            null,#$issue['assignee'] ? new User($issue['assignee']['login']) : null,
+            !empty($issue['members']) ? new User($issue['members'][0]['username'], $issue['members'][0]['id'], $issue['members'][0]['fullName']) : null,
             null,
             null,
             !empty($issue['labels']) ? array_map(function($label) {
@@ -161,14 +161,6 @@ class TrelloMapping implements FieldMapping
     /**
      * {@inheritDoc}
      */
-    public function toNewComment(array $comment)
-    {
-        throw new \Exception('wip');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function buildSearchQuery(SearchCriteria $criteria)
     {
         if ($criteria->getPriorities()) {
@@ -192,6 +184,7 @@ class TrelloMapping implements FieldMapping
         $query['params']['actions'] = 'commentCard';
         $query['params']['actions_entities'] = true;
         $query['params']['action_fields'] = 'id';
+        $query['params']['members'] = true;
 
         list($offset, $limit) = $criteria->getPaging();
         list($query['params']['page'], $query['params']['per_page']) = $criteria->getPaging();

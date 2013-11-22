@@ -61,7 +61,13 @@ class TrelloMetadata implements Metadata
             }
         }
 
-        throw new \LogicException('Could not find trello status; update metadata');
+        $statuses = array();
+        foreach ($this->board['lists'] as $list) {
+            $statuses[] = $list['name'];
+        }
+
+
+        throw new \LogicException('Could not find trello status; valid statuses: '  . implode(',', $statuses));
     }
 
     /**

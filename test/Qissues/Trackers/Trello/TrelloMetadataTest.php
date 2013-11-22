@@ -39,7 +39,7 @@ class TrelloMetadataTest extends \PHPUnit_Framework_TestCase
 
     public function testGetIdListByNameThrowsExceptionWhenInvalid()
     {
-        $this->setExpectedException('LogicException', 'update');
+        $this->setExpectedException('LogicException', 'status');
         $metadata = new TrelloMetadata(array('lists' => array()));
         $metadata->getListIdByName('Open');
     }

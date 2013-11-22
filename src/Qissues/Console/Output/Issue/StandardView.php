@@ -62,7 +62,7 @@ class StandardView
     protected function prepareMeta(Issue $issue)
     {
         $fields = array();
-        foreach (array('dateCreated', 'type', 'priority', 'labels', 'assignee') as $field) {
+        foreach (array('status', 'dateCreated', 'type', 'priority', 'labels', 'assignee') as $field) {
             $method = 'get' . ucfirst($field);
             $value = $issue->$method();
 

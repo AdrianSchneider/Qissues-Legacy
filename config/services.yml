@@ -19,7 +19,7 @@ parameters:
         - types
         - statuses
         - labels
-        - priorites
+        - priorities
         - metadata
 
     # Internal

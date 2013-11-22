@@ -6,7 +6,19 @@ use Qissues\Trackers\Trello\TrelloMetadata;
 
 class TrelloMetadataTest extends \PHPUnit_Framework_TestCase
 {
-    public function testHasList()
+    public function testGetBoardId()
+    {
+        $metadata = new TrelloMetadata(array('id' => 5));
+        $this->assertEquals(5, $metadata->getBoardId());
+    }
+
+    public function testHasListReturnsTrueWhenExists()
+    {
+        $metadata = new TrelloMetadata(array('lists' => array(array('name' => 'New', 'id' => 3))));
+        $this->assertTrue($metadata->hasList('New'));
+    }
+
+    public function testHasListReturnsFalseWhenDoesnt()
     {
         $metadata = new TrelloMetadata(array('lists' => array()));
         $this->assertFalse($metadata->hasList('New'));
@@ -40,7 +52,7 @@ class TrelloMetadataTest extends \PHPUnit_Framework_TestCase
     public function testGetIdListByNameThrowsExceptionWhenInvalid()
     {
         $this->setExpectedException('LogicException', 'status');
-        $metadata = new TrelloMetadata(array('lists' => array()));
+        $metadata = new TrelloMetadata(array('lists' => array(array('id' => 3, 'name' => 'yips'))));
         $metadata->getListIdByName('Open');
     }
 
@@ -110,7 +122,13 @@ class TrelloMetadataTest extends \PHPUnit_Framework_TestCase
     public function testGetMemberIdByNameThrowsExceptionIfNotFoud()
     {
         $this->setExpectedException('LogicException', 'not found');
-        $metadata = new TrelloMetadata(array('members' => array()));
+        $metadata = new TrelloMetadata(array('members' => array(array('id' => 2, 'username' => 'jimbob', 'fullName' => 'Jim Bob'))));
         $metadata->getMemberIdByName('robert');
+    }
+
+    public function testGetFirstListName()
+    {
+        $metadata = new TrelloMetadata(array('lists' => array(array('id' => 1, 'name' => 'First'), array('id' => 2, 'name' => 'Second'))));
+        $this->assertEquals('First', $metadata->getFirstListName());
     }
 }

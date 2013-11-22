@@ -177,6 +177,6 @@ class GitHubRepository implements IssueRepository
      */
     public function fetchMetadata()
     {
-        throw new \Exception('No metadata necessary for BitBucket');
+        throw new \DomainException('No metadata necessary for GitHub');
     }
 }

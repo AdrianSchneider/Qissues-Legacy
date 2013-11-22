@@ -174,7 +174,10 @@ class TrelloRepository implements IssueRepository
      */
     public function assign(Number $issue, User $user)
     {
-        throw new \Exception('wip');
+        $id = $this->metadata->getMemberIdByName($user->getAccount());
+        $request = $this->request('PUT', sprintf("/cards/%s", $this->lookupId($issue)));
+        $request->setBody(json_encode(array('idMembers' => $id)), 'application/json');
+        $request->send();
     }
 
     /**
@@ -189,18 +192,6 @@ class TrelloRepository implements IssueRepository
         $request = call_user_func(array($this->client, $method), "/1" . $url);
         $request->getQuery()->merge($this->query);
         return $request;
-    }
-
-    /**
-     * Prepare the URL for an issue
-     *
-     * @param Number $number issue num
-     * @param string $append to URL (ex: '/comments')
-     * @return string url
-     */
-    protected function getIssueUrl(Number $number, $append = '')
-    {
-        return sprintf('/repos/%s/issues/%d%s', $this->repository, $number->getNumber(), $append);
     }
 
     /**
@@ -262,10 +253,5 @@ class TrelloRepository implements IssueRepository
             throw new \Exception('Could not find Trello board; do you have the right name?');
         }
 
-    }
-
-    public function buildMetadata(array $metadata)
-    {
-        return new Metadata($metadata);
     }
 }

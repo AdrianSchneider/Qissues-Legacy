@@ -91,10 +91,4 @@ interface IssueRepository
      * @return array
      */
     function fetchMetadata();
-
-    /**
-     * Build a Metadatata instance from storage
-     * @param array $metadata 
-     */
-    function buildMetadata(array $metadata);
 }

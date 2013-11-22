@@ -15,6 +15,13 @@ parameters:
         bug: "p5"
     system.storage.filename: "~/.qissues.json"
 
+    features:
+        - types
+        - statuses
+        - labels
+        - priorites
+        - metadata
+
     # Internal
     tracker: ""
     mapping_class: ""
@@ -162,6 +169,8 @@ services:
 
     support.catalog_builder:
         class: Qissues\Model\Tracker\Support\FeatureCatalogBuilder
+        arguments:
+            - %features%
 
     support.catalog:
         class: Qissues\Model\Tracker\Support\FeatureCatalog

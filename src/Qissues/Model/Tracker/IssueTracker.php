@@ -46,9 +46,4 @@ class IssueTracker
     {
         return $this->features;
     }
-
-    public function getSupport(Feature $feature)
-    {
-        return $this->features->getSupport($feature);
-    }
 }

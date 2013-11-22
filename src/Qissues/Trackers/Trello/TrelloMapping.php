@@ -245,6 +245,18 @@ class TrelloMapping implements FieldMapping
                 }
             }
 
+            if ($assignees = $criteria->getAssignees()) {
+                if (!$issue->getAssignee()) {
+                    continue;
+                }
+                foreach ($assignees as $assignee) {
+                    if (stripos($issue->getAssignee()->getAccount(), $assignee->getAccount()) === false and
+                        stripos($issue->getAssignee()->getName(), $assignee->getAccount()) === false) {
+                        continue;
+                    }
+                }
+            }
+
             $out[] = $issue;
         }
 

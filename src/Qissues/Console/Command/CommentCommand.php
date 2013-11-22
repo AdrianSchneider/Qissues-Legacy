@@ -46,6 +46,6 @@ class CommentCommand extends Command
         }
 
         $repository->comment($number, $comment);
-        $output->writeln("Left a comment on #$number");
+        $output->writeln("Left a comment on <info>#$number</info>");
     }
 }

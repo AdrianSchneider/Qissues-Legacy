@@ -135,14 +135,6 @@ class GitHubMapping implements FieldMapping
     /**
      * {@inheritDoc}
      */
-    public function toNewComment(array $comment)
-    {
-        return new NewComment();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function buildSearchQuery(SearchCriteria $criteria)
     {
         $query = array();

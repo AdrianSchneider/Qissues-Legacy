@@ -31,10 +31,13 @@ services:
 
     tracker.github.features:
         class: Qissues\Model\Tracker\Support\FeatureSet
-        factory_service: tracker.github.features_builder
-        factory_method: buildFor
+        factory_service: support.featureset_builder
+        factory_method: build
         arguments:
              - @support.catalog
+             -
+                statuses: [single]
+                labels: [multiple, dynamic]
 
     tracker.github.features_builder:
         class: Qissues\Trackers\GitHub\GitHubSupport
@@ -61,10 +64,15 @@ services:
 
     tracker.bitbucket.features:
         class: Qissues\Model\Tracker\Support\FeatureSet
-        factory_service: tracker.bitbucket.features_builder
-        factory_method: buildFor
+        factory_service: support.featureset_builder
+        factory_method: build
         arguments:
              - @support.catalog
+             -
+                statuses: [single]
+                types: [single]
+                labels: [multiple, dynamic]
+                priorities: [single]
 
     tracker.bitbucket.features_builder:
         class: Qissues\Trackers\BitBucket\BitBucketSupport
@@ -96,11 +104,11 @@ services:
 
     tracker.trello.features:
         class: Qissues\Model\Tracker\Support\FeatureSet
-        factory_service: tracker.trello.features_builder
-        factory_method: buildFor
+        factory_service: support.featureset_builder
+        factory_method: build
         arguments:
              - @support.catalog
-
-    tracker.trello.features_builder:
-        class: Qissues\Trackers\Trello\TrelloSupport
-
+             -
+                statuses: [single]
+                labels: [multiple, dynamic]
+                metadata: [dynamic]

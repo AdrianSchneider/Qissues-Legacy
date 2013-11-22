@@ -25,3 +25,4 @@ Trello isn't an issue tracker, so some concepts don't translate perfect. It's a 
 - most of the querying is done in memory, API is too restricted
 - priority is 'top' or 'bottom'; omitting will save new ones as 'bottom', and leave existing as-is
 - priority when viewing is just the natural order in Trello
+- we can only use one (the first) assignee, so run-time filtering may not work correctly for issues with multiple assignees

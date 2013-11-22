@@ -54,6 +54,11 @@ class TrelloRepository implements IssueRepository
     public function lookup(Number $issue)
     {
         $request = $this->request('GET', sprintf('/boards/%s/cards/%s', $this->metadata->getBoardId(), $issue));
+        $request->getQuery()->merge(array(
+            'actions' => 'commentCard',
+            'checklists' => 'all',
+            'members' => true
+        ));
         $request->getQuery()->set('actions', 'commentCard');
         $request->getQuery()->set('checklists', 'all');
         return $this->mapping->toIssue($request->send()->json());

@@ -179,13 +179,4 @@ class GitHubRepository implements IssueRepository
     {
         throw new \Exception('No metadata necessary for BitBucket');
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function buildMetadata(array $metadata)
-    {
-        return new NullMetadata;
-    }
-
 }

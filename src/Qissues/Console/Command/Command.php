@@ -40,7 +40,7 @@ class Command extends BaseCommand
      */
     protected function getCommentStrategy(InputInterface $input, OutputInterface $output)
     {
-        $selected = $input->getOption('message') ? 'option' : ($input->getOption('strategy') ?: $this->getParameter('console.input.default_strategy'));
+        $selected = $this->getCommentStrategyType($input);
         $strategy = sprintf('console.input.comment_strategy.%s', $selected);
 
         if (!$this->getApplication()->getContainer()->has($strategy)) {
@@ -51,6 +51,23 @@ class Command extends BaseCommand
         $strategy->init($input, $output, $this->getApplication());
 
         return $strategy;
+    }
+
+    /**
+     * Determine the strategy to use
+     * @param InputInterface $input
+     * @return string strategy suffix
+     */
+    protected function getCommentStrategyType(InputInterface $input)
+    {
+        if ($input->getOption('message') !== null) {
+            return 'option';
+        }
+        if ($strategy = $input->getOption('strategy')) {
+            return $strategy;
+        }
+
+        return $this->getParameter('console.input.default_strategy');
     }
 
     /**

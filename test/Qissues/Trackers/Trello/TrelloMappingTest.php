@@ -79,7 +79,7 @@ class TrelloMappingTest extends \PHPUnit_Framework_TestCase
         $mapper = $this->getMapper(array('lists' => array(array( 'id' => 8, 'name' => 'New'))));
         $issue = $mapper->toIssue($trelloCard);
 
-        $this->assertEquals("Checklist\n    [x] Don't forget the milk", $issue->getDescription());
+        $this->assertEquals("Checklists:\n\nChecklist\n    [x] Don't forget the milk", $issue->getDescription());
     }
 
     public function testToNewIssue()

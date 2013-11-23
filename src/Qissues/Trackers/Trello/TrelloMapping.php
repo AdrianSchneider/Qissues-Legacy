@@ -30,10 +30,16 @@ class TrelloMapping implements FieldMapping
      */
     public function getEditFields(Issue $issue = null)
     {
+
         if ($issue) {
+            $description = $issue->getDescription();
+            if (false !== $pos = strpos($description, "\n\nChecklists:\n\n")) {
+                $description = trim(substr($description, 0, $pos));
+            }
+
             return array(
                 'title' => $issue->getTitle(),
-                'description' => $issue->getDescription(),
+                'description' => $description,
                 'status' => $issue->getStatus()->getStatus(),
                 'assignee' => $issue->getAssignee() ? $issue->getAssignee()->getAccount() : null,
                 'labels' => $issue->getLabels()
@@ -60,6 +66,7 @@ class TrelloMapping implements FieldMapping
         $status = new Status($this->metadata->getListNameById($issue['idList']));
 
         if (!empty($issue['checklists'])) {
+            $issue['desc'] .= "\n\nChecklists:";
             foreach ($issue['checklists'] as $checklist) {
                 $issue['desc'] .= "\n\n$checklist[name]";
                 foreach ($checklist['checkItems'] as $item) {

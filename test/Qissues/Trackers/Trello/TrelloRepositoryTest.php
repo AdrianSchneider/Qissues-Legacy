@@ -123,6 +123,44 @@ class TrelloRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("/1/here?key=devkey&token=usertoken&a=b", $this->history->getLastRequest()->getUrl());
     }
 
+    public function testQueryKeywordsReturnsCardsPortion()
+    {
+        $criteria = new SearchCriteria();
+        $query = array('params' => array('a' => 'b'), 'endpoint' => '/here');
+        $payload = array('cards' => array(array('issue')));
+        $issues = array('an issue yo');
+
+        $mapping = $this->getMockBuilder('Qissues\Trackers\Trello\TrelloMapping')->disableOriginalConstructor()->getMock();
+        $mapping
+            ->expects($this->once())
+            ->method('buildSearchQuery')
+            ->with($criteria)
+            ->will($this->returnValue($query))
+        ;
+        $mapping
+            ->expects($this->once())
+            ->method('toIssue')
+            ->with(array('issue'))
+            ->will($this->returnValue($issues[0]))
+        ;
+        $mapping
+            ->expects($this->once())
+            ->method('filterIssues')
+            ->with($issues)
+            ->will($this->returnValue($issues))
+        ;
+
+        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
+
+        $tracker = $this->getRepository($mapping);
+        $queried = $tracker->query($criteria);
+
+        $this->assertCount(1, $issues);
+        $this->assertEquals($queried, $issues);
+
+        $this->assertEquals("/1/here?key=devkey&token=usertoken&a=b", $this->history->getLastRequest()->getUrl());
+    }
+
     public function testFindComments()
     {
         $issue = new Number(1337);

@@ -121,11 +121,12 @@ class TrelloMappingTest extends \PHPUnit_Framework_TestCase
         $criteria = new SearchCriteria();
         $criteria->setKeywords('hello world');
 
-        $mapper = $this->getMapper(array());
+        $mapper = $this->getMapper(array('id' => 5));
         $query = $mapper->buildSearchQuery($criteria);
 
         $this->assertEquals("/search", $query['endpoint']);
         $this->assertEquals("hello world", $query['params']['query']);
+        $this->assertEquals(5, $query['params']['idBoards']);
     }
 
     public function testQueryBySingleStatus()

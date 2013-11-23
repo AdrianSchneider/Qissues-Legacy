@@ -97,6 +97,10 @@ class TrelloRepository implements IssueRepository
         $request->getQuery()->merge($query['params']);
         $response = $request->send()->json();
 
+        if (isset($response['cards'])) {
+            $response = $response['cards'];
+        }
+
         $issues = array_map(array($this->mapping, 'toIssue'), $response);
         return $this->mapping->filterIssues($issues, $criteria);
     }

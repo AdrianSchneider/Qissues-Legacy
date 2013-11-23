@@ -191,6 +191,8 @@ class TrelloMapping implements FieldMapping
 
         if ($keywords = $criteria->getKeywords()) {
             $query['params']['query'] = $keywords;
+            $query['params']['card_list'] = true;
+            $query['params']['idBoards'] = $this->metadata->getBoardId();
             $query['endpoint'] = "/search";
 
         } elseif (count($statuses = $criteria->getStatuses()) == 1) {

@@ -124,6 +124,70 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertBodyEquals(json_encode(array('body' => 'hello world')));
     }
 
+    public function testPersist()
+    {
+        $payload = array('local_id' => 5);
+        $issue = $this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock();
+        $serializedIssue = array('issue');
+        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
+
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping
+            ->expects($this->once())
+            ->method('issueToArray')
+            ->with($issue)
+            ->will($this->returnValue($serializedIssue))
+        ;
+
+        $repository = $this->getRepository($mapping);
+        $number = $repository->persist($issue);
+
+        $this->assertEquals(5, $number->getNumber());
+    }
+
+    public function testFetchMetadataThrowsExceptionWhenCannotFind()
+    {
+        //$this->mock->addResponse(new Response(200, null, json_encode(array('projects' => array()))));
+        //$this->setExpectedException('Exception', 'not find');
+
+        //$repository = $this->getRepository();
+        //$repository->fetchMetadata();
+    }
+
+    public function testFetchMetadataGrabsRightProject()
+    {
+        //$this->mock->addResponse(new Response(200, null, json_encode(array(
+            //'projects' => array(
+                //array( 'id' => 1, 'key' => 'wrongprefix', 'issuetypes' => array()),
+                //array( 'id' => 2, 'key' => 'PRE', 'issuetypes' => array())
+            //)
+        //))));
+
+        //$repository = $this->getRepository();
+        //$metadata = $repository->fetchMetadata();
+
+        //$this->assertEquals(2, $metadata['id']);
+    }
+
+    public function testFetchMetadataGrabsTypes()
+    {
+        //$this->mock->addResponse(new Response(200, null, json_encode(array(
+            //'projects' => array(array(
+                //'id' => 1,
+                //'key' => 'PRE',
+                //'issuetypes' => array(
+                    //array('id' => 6, 'name' => 'Task')
+                //)
+            //))
+        //))));
+
+        //$repository = $this->getRepository();
+        //$metadata = $repository->fetchMetadata();
+
+        //$this->assertEquals(6, $metadata['tasks'][0]['id']);
+        //$this->assertEquals('Task', $metadata['tasks'][0]['name']);
+    }
+
     protected function getRepository($mapping = null)
     {
         return new JiraRepository(

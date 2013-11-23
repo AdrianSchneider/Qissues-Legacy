@@ -142,9 +142,8 @@ class JiraRepository implements IssueRepository
      */
     public function persist(NewIssue $issue)
     {
-        throw new \Exception('not yet implemented');
-        $request = $this->request('POST', sprintf('/repositories/%s/issues', $this->repository));
-        $request->setBody($this->mapping->issueToArray($issue));
+        $request = $this->request('POST', "/issue");
+        $request->setBody(json_encode($this->mapping->issueToArray($issue)), 'application/json');
         $response = $request->send()->json();
         return new Number($response['local_id']);
     }
@@ -240,6 +239,50 @@ class JiraRepository implements IssueRepository
      */
     public function fetchMetadata()
     {
-        throw new \Exception('No metadata necessary for BitBucket');
+        $request = $this->request('GET', '/issue/createmeta');
+        $response = $request->send()->json();
+
+        foreach ($response['projects'] as $project) {
+            if ($project['key'] != $this->prefix) {
+                continue;
+            }
+
+            $metadata = array(
+                'id' => $project['id'],
+                'key' => $this->prefix,
+                'types' => array(),
+                'components' => array(),
+                'statuses' => array()
+            );
+
+            $request = $this->request('GET', "/project/$project[key]");
+            $request->getQuery()->set('expand', 'projectKeys');
+            $response = $request->send()->json();
+            
+            $tasks = array();
+            foreach ($response['issueTypes'] as $type) {
+                $metadata['tasks'][$type['id']] = array(
+                    'id' => $type['id'],
+                    'name' => $type['name']
+                );
+            }
+
+            $request = $this->request('GET', "/project/$project[key]/statuses");
+            $response = $request->send()->json();
+
+            foreach ($response as $type) {
+                $metadata['tasks'][$type['id']]['statuses'] = array();
+                foreach ($type['statuses'] as $status) {
+                    $metadata['tasks'][$type['id']]['statuses'][] = array(
+                        'id' => $status['id'],
+                        'name' => $status['name']
+                    );
+                }
+            }
+
+            return $metadata;
+        }
+
+        throw new \Exception('Could not find project with matching key');
     }
 }

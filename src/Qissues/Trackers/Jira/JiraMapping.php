@@ -16,11 +16,12 @@ use Qissues\Model\Querying\SearchCriteria;
 
 class JiraMapping implements FieldMapping
 {
-    protected $prefix;
+    protected $metadata;
 
-    public function __construct($prefix)
+    public function __construct(JiraMetadata $metadata)
     {
-        $this->prefix = $prefix;
+        $this->metadata = $metadata;
+        $this->prefix = 'project'; // TODO
     }
 
     /**
@@ -113,10 +114,14 @@ class JiraMapping implements FieldMapping
     public function issueToArray(NewIssue $issue)
     {
         $new = array(
-            'title' => $issue->getTitle(),
-            'content'  => $issue->getDescription()
+            'fields' => array(
+                'project' => $this->prefix,
+                'summary' => $issue->getTitle(),
+                'description'  => $issue->getDescription()
+            )
         );
 
+        /*
         if ($issue->getAssignee()) {
             $new['responsible'] = $issue->getAssignee()->getAccount();
         }
@@ -129,6 +134,7 @@ class JiraMapping implements FieldMapping
         if ($priority = $issue->getPriority()) {
             $new['priority'] = $priority->getName();
         }
+         */
 
         return $new;
     }
@@ -148,7 +154,7 @@ class JiraMapping implements FieldMapping
     public function buildSearchQuery(SearchCriteria $criteria)
     {
         $query = array();
-        $query['project'] = $this->prefix;
+        $query['project'] = $this->metadata->getId();
 
         if ($assignees = $criteria->getAssignees()) {
             $query['assignee'] = array_map('strval', $assignees);

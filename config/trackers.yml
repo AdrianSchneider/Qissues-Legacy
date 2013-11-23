@@ -136,7 +136,10 @@ services:
     tracker.jira.mapping:
         class: Qissues\Trackers\Jira\JiraMapping
         arguments:
-            - %jira.prefix%
+            - @metadata
+
+    tracker.jira.metadata:
+        class: Qissues\Trackers\Jira\JiraMetadata
 
     tracker.jira.features:
         class: Qissues\Model\Tracker\Support\FeatureSet

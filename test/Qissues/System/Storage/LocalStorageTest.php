@@ -6,6 +6,22 @@ use Qissues\System\Storage\LocalStorage;
 
 class LocalStorageTest extends \PHPUnit_Framework_TestCase
 {
+    public function testExpandsTildesToHomeDirectory()
+    {
+        $filename = '~/.test';
+        $info = posix_getpwuid(posix_getuid());
+
+        $filesystem = $this->getMockBuilder('Qissues\System\Filesystem')->disableOriginalConstructor()->getMock();
+        $filesystem
+            ->expects($this->once())
+            ->method('exists')
+            ->with("$info[dir]/.test")
+            ->will($this->returnValue(false))
+        ;
+
+        $storage = new LocalStorage($filesystem, $filename);
+    }
+
     public function testCreatesFileIfNotExist()
     {
         $filename = './.config.file';

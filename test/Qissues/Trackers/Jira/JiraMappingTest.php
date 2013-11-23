@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Tests\Trackers\Jira;
+namespace Qissues\Trackers\Jira;
 
 use Qissues\Trackers\Jira\JiraMapping;
 use Qissues\Model\Meta\User;

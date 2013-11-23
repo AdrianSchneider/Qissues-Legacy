@@ -38,10 +38,7 @@ class JiraRepository implements IssueRepository
         $this->username = $username;
         $this->password = $password;
         $this->mapping = $mapping;
-        $this->client  = $client ?: new Client(
-            sprintf('https://%s.atlassian.net/', $this->project),
-            array('ssl.certificate_authority' => 'system')
-        );
+        $this->client  = $client ?: new Client( sprintf('https://%s.atlassian.net/', $this->project), array('ssl.certificate_authority' => 'system'));
     }
 
     /**
@@ -231,7 +228,7 @@ class JiraRepository implements IssueRepository
     protected function getIssueUrl(Number $number, $append = '')
     {
         return sprintf(
-            '/issue/%s-%d%s', 
+            '/issue/%s-%d%s',
             $this->prefix,
             $number->getNumber(),
             $append
@@ -244,13 +241,5 @@ class JiraRepository implements IssueRepository
     public function fetchMetadata()
     {
         throw new \Exception('No metadata necessary for BitBucket');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function buildMetadata(array $metadata)
-    {
-        return new NullMetadata;
     }
 }

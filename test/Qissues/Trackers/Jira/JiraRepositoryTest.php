@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Tests\Trackers\Jira;
+namespace Qissues\Trackers\Jira;
 
 use Qissues\Model\Number;
 use Qissues\Model\Meta\Status;
@@ -18,7 +18,7 @@ use Guzzle\Plugin\Mock\MockPlugin;
 use Guzzle\Plugin\History\HistoryPlugin;
 
 class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
-{ 
+{
     public function setUp()
     {
         $this->mock = new MockPlugin();
@@ -134,7 +134,7 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
             $mapping ?: $this->getMock('Qissues\Model\Tracker\FieldMapping'),
             $this->client
         );
-    } 
+    }
 
     protected function assertBodyEquals($body, $toString = false)
     {

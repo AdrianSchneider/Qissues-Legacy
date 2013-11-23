@@ -16,11 +16,11 @@ use Qissues\Model\Querying\SearchCriteria;
 
 class JiraMapping implements FieldMapping
 {
-    protected $project;
+    protected $prefix;
 
-    public function __construct($project)
+    public function __construct($prefix)
     {
-        $this->project = $project;
+        $this->prefix = $prefix;
     }
 
     /**
@@ -148,7 +148,7 @@ class JiraMapping implements FieldMapping
     public function buildSearchQuery(SearchCriteria $criteria)
     {
         $query = array();
-        $query['project'] = $this->project;
+        $query['project'] = $this->prefix;
 
         if ($assignees = $criteria->getAssignees()) {
             $query['assignee'] = array_map('strval', $assignees);

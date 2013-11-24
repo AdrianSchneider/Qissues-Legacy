@@ -115,9 +115,10 @@ class JiraMapping implements FieldMapping
     {
         $new = array(
             'fields' => array(
-                'project' => $this->prefix,
+                'project' => array('id' => $this->metadata->getId()),
                 'summary' => $issue->getTitle(),
-                'description'  => $issue->getDescription()
+                'description'  => $issue->getDescription(),
+                'issuetype' => array('id' => $this->metadata->getTypeIdByName($issue->getType()->getName()))
             )
         );
 
@@ -127,9 +128,6 @@ class JiraMapping implements FieldMapping
         }
         if ($labels = $issue->getLabels()) {
             $new['component'] = (string)$labels[0];
-        }
-        if ($type = $issue->getType()) {
-            $new['kind'] = (string)$type;
         }
         if ($priority = $issue->getPriority()) {
             $new['priority'] = $priority->getName();

@@ -145,7 +145,8 @@ class JiraRepository implements IssueRepository
         $request = $this->request('POST', "/issue");
         $request->setBody(json_encode($this->mapping->issueToArray($issue)), 'application/json');
         $response = $request->send()->json();
-        return new Number($response['local_id']);
+        list($key, $id) = explode('-', $response['key']);
+        return new Number($id);
     }
 
     /**
@@ -174,7 +175,7 @@ class JiraRepository implements IssueRepository
      */
     public function delete(Number $issue)
     {
-        $request = $this->request('DELETE', $this->getIssueUrl($issue, '/comments'));
+        $request = $this->request('DELETE', $this->getIssueUrl($issue));
         $request->send();
     }
 
@@ -197,9 +198,9 @@ class JiraRepository implements IssueRepository
      */
     public function assign(Number $issue, User $user)
     {
-        $request = $this->request('PUT', $this->getIssueUrl($issue));
-        $request->setBody(array('responsible' => $user->getAccount()));
-        $request->send();
+        $request = $this->request('PUT', $this->getIssueUrl($issue, "/assignee"));
+        $request->setBody(json_encode(array('name' => $user->getAccount())), 'application/json');
+        $response = $request->send()->json();
     }
 
     /**
@@ -261,7 +262,7 @@ class JiraRepository implements IssueRepository
             
             $tasks = array();
             foreach ($response['issueTypes'] as $type) {
-                $metadata['tasks'][$type['id']] = array(
+                $metadata['types'][$type['id']] = array(
                     'id' => $type['id'],
                     'name' => $type['name']
                 );
@@ -271,9 +272,9 @@ class JiraRepository implements IssueRepository
             $response = $request->send()->json();
 
             foreach ($response as $type) {
-                $metadata['tasks'][$type['id']]['statuses'] = array();
+                $metadata['types'][$type['id']]['statuses'] = array();
                 foreach ($type['statuses'] as $status) {
-                    $metadata['tasks'][$type['id']]['statuses'][] = array(
+                    $metadata['types'][$type['id']]['statuses'][] = array(
                         'id' => $status['id'],
                         'name' => $status['name']
                     );

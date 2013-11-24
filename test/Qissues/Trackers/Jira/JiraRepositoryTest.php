@@ -126,7 +126,7 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testPersist()
     {
-        $payload = array('local_id' => 5);
+        $payload = array('key' => 'PRE-12');
         $issue = $this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock();
         $serializedIssue = array('issue');
         $this->mock->addResponse(new Response(200, null, json_encode($payload)));
@@ -142,7 +142,30 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
         $repository = $this->getRepository($mapping);
         $number = $repository->persist($issue);
 
-        $this->assertEquals(5, $number->getNumber());
+        $this->assertEquals(12, $number->getNumber());
+    }
+
+    public function testAssign()
+    {
+        $this->mock->addResponse(new Response(200));
+
+        $repository = $this->getRepository();
+        $repository->assign(new Number(5), new User('joe'));
+
+        $this->assertRequestMethod('PUT');
+        $this->assertRequestUrl("/rest/api/2/issue/PRE-5/assignee");
+        $this->assertRequestKeyEquals('name', 'joe');
+    }
+
+    public function testDelete()
+    {
+        $this->mock->addResponse(new Response(200));
+
+        $repository = $this->getRepository();
+        $repository->delete(new Number(5));
+
+        $this->assertRequestMethod('DELETE');
+        $this->assertRequestUrl("/rest/api/2/issue/PRE-5");
     }
 
     public function testFetchMetadataThrowsExceptionWhenCannotFind()
@@ -208,5 +231,27 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertEquals($body, $lastBody);
+    }
+
+    protected function assertRequestMethod($method)
+    {
+        $this->assertEquals(
+            $method,
+            $this->history->getLastRequest()->getMethod()
+        );
+    }
+
+    protected function assertRequestUrl($url)
+    {
+        $this->assertEquals(
+            $url,
+            $this->history->getLastRequest()->getPath()
+        );
+    }
+
+    protected function assertRequestKeyEquals($key, $value)
+    {
+        $body = json_decode((string)$this->history->getLastRequest()->getBody(), true);
+        $this->assertEquals($value, $body[$key]);
     }
 }

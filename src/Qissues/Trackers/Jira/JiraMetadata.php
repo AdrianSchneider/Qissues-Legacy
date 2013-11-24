@@ -20,4 +20,15 @@ class JiraMetadata
     {
         return $this->project['key'];
     }
+
+    public function getTypeIdByName($name)
+    {
+        foreach ($this->project['types'] as $type) {
+            if (stripos($type['name'], $name) !== false) {
+                return $type['id'];
+            }
+        }
+
+        throw new \Exception('not found');
+    }
 }

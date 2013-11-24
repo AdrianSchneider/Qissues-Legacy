@@ -34,6 +34,7 @@ class JqlQueryBuilder
         $this->handleTypes($criteria);
         $this->handleAssignees($criteria);
         $this->handleKeywords($criteria);
+        $this->handleSorting($criteria);
 
         return $this->generateJql($this->where, $this->sort);
     }
@@ -64,6 +65,38 @@ class JqlQueryBuilder
         if ($keywords = $criteria->getKeywords()) {
             $this->where[] = sprintf('text ~ %s', $this->quote($keywords));
         }
+    }
+
+    protected function handleSorting(SearchCriteria $criteria)
+    {
+        /*
+
+        $fieldMap = array(
+            'updated' => 'updatedDate',
+            'created' => 'createdDate'
+        );
+
+        $fieldSort = array(
+            'priority' => 'DESC',
+            'updatedDate' => 'DESC',
+            'createdDate' => 'DESC'
+        );
+
+        if ($fields = $criteria->getSortFields()) {
+            foreach ($fields as $field) {
+                if (isset($fieldMap[$field])) {
+                    $field = $fieldMap[$field];
+                }
+
+                if (isset($fieldSort[$field])) {
+                    $query['sort'][] = "$field " .  $fieldSort[$field];
+                } else {
+                    throw new \Exception("'$field' is an unsupported sort field");
+                }
+            }
+        }
+         */
+
     }
 
     /**

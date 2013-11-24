@@ -137,9 +137,15 @@ services:
         class: Qissues\Trackers\Jira\JiraMapping
         arguments:
             - @metadata
+            - @tracker.jira.jql
 
     tracker.jira.metadata:
         class: Qissues\Trackers\Jira\JiraMetadata
+
+    tracker.jira.jql:
+        class: Qissues\Trackers\Jira\JqlQueryBuilder
+        arguments:
+            - @metadata
 
     tracker.jira.features:
         class: Qissues\Model\Tracker\Support\FeatureSet

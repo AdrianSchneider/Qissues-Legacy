@@ -48,85 +48,25 @@ class JiraMappingTest extends \PHPUnit_Framework_TestCase
          */
     }
 
-    public function testQueryFiltersByProjectAutomatically()
-    {
-        $mapping = $this->getMapping(array('id' => 5));
-        $query = $mapping->buildSearchQuery(new SearchCriteria());
-
-        $this->assertEquals(5, $query['project']);
-    }
-
-    public function testQueryFilterByAssignees()
-    {
-        $criteria = new SearchCriteria();
-        $criteria->addAssignee(new User('adrian'));
-
-        $mapping = $this->getMapping(array('id' => 5));
-        $query = $mapping->buildSearchQuery($criteria);
-
-        $this->assertEquals(array('adrian'), $query['assignee']);
-    }
-
-    public function testQueryFilterByStatuses()
-    {
-        $criteria = new SearchCriteria();
-        $criteria->addStatus(new Status('resolved'));
-        $criteria->addStatus(new Status('fixed'));
-
-        $mapping = $this->getMapping(array('id' => 5));
-        $query = $mapping->buildSearchQuery($criteria);
-
-        $this->assertEquals(array('resolved', 'fixed'), $query['status']);
-    }
-
-    public function testQueryFilterByUnsupportedStatusThrowsException()
-    {
-        // TODO
-    }
-
-    public function testQueryFilterByTypes()
-    {
-        $criteria = new SearchCriteria();
-        $criteria->addType(new Type('resolved'));
-        $criteria->addType(new Type('fixed'));
-
-        $mapping = $this->getMapping(array('id' => 5));
-        $query = $mapping->buildSearchQuery($criteria);
-
-        $this->assertEquals(array('resolved', 'fixed'), $query['issuetype']);
-    }
-
-    public function testQuerySortByPrioritySortsDesc()
-    {
-        $criteria = new SearchCriteria();
-        $criteria->addSortField('priority');
-
-        $mapping = $this->getMapping(array('id' => 5));
-        $query = $mapping->buildSearchQuery($criteria);
-
-        $this->assertEquals(array('priority DESC'), $query['sort']);
-    }
-
-    public function testQueryByUnsupportedFieldThrowsException()
-    {
-        //$this->setExpectedException('Exception', 'unsupported sort field');
-
-        //$criteria = new SearchCriteria(array('id' => 5));
-        //$criteria->addSortField('whatsdat');
-
-        //$mapping = $this->getMapping();
-        //$mapping->buildSearchQuery($criteria);
-    }
-
-    public function testQueryPagination()
+    public function testBuildSearchQuery()
     {
         $criteria = new SearchCriteria();
         $criteria->setPaging(5, 10);
 
-        $mapping = $this->getMapping(array('id' => 5));
+        $jql = $this->getMockBuilder('Qissues\Trackers\Jira\JqlQueryBuilder')->disableOriginalConstructor()->getMock();
+        $jql
+            ->expects($this->once())
+            ->method('build')
+            ->with($criteria)
+            ->will($this->returnValue('SELECT * FROM jira'))
+        ;
+
+        $mapping = $this->getMapping(array(), $jql);
         $query = $mapping->buildSearchQuery($criteria);
 
-        $this->assertEquals(array('startAt' => 40, 'maxResults' => 10), $query['paging']);
+        $this->assertEquals('SELECT * FROM jira', $query['jql']);
+        $this->assertEquals(40, $query['startAt']);
+        $this->assertEquals(10, $query['maxResults']);
     }
 
     public function testToCommentCreatesComment()
@@ -143,8 +83,11 @@ class JiraMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('2013-01-01', $comment->getDate()->format('2013-01-01'));
     }
 
-    protected function getMapping($metadata = array())
+    protected function getMapping($metadata = array(), $jql = null)
     {
-        return new JiraMapping(new JiraMetadata($metadata));
+        return new JiraMapping(
+            new JiraMetadata($metadata),
+            $jql ?: $this->getMockBuilder('Qissues\Trackers\Jira\JqlQueryBuilder')->disableOriginalConstructor()->getMock()
+        );
     }
 }

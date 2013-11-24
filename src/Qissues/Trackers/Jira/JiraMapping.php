@@ -18,9 +18,10 @@ class JiraMapping implements FieldMapping
 {
     protected $metadata;
 
-    public function __construct(JiraMetadata $metadata)
+    public function __construct(JiraMetadata $metadata, JqlQueryBuilder $jql)
     {
         $this->metadata = $metadata;
+        $this->jql = $jql;
         $this->prefix = 'project'; // TODO
     }
 
@@ -151,53 +152,14 @@ class JiraMapping implements FieldMapping
 
     public function buildSearchQuery(SearchCriteria $criteria)
     {
-        $query = array();
-        $query['project'] = $this->metadata->getId();
-
-        if ($assignees = $criteria->getAssignees()) {
-            $query['assignee'] = array_map('strval', $assignees);
-        }
-
-        if ($statuses = $criteria->getStatuses()) {
-            $query['status'] = array_map('strval', $statuses);
-        }
-
-        if ($types = $criteria->getTypes()) {
-            $query['issuetype'] = array_map('strval', $types);
-        }
-
-        $fieldMap = array(
-            'updated' => 'updatedDate',
-            'created' => 'createdDate'
-        );
-
-        $fieldSort = array(
-            'priority' => 'DESC',
-            'updatedDate' => 'DESC',
-            'createdDate' => 'DESC'
-        );
-
-        if ($fields = $criteria->getSortFields()) {
-            foreach ($fields as $field) {
-                if (isset($fieldMap[$field])) {
-                    $field = $fieldMap[$field];
-                }
-
-                if (isset($fieldSort[$field])) {
-                    $query['sort'][] = "$field " .  $fieldSort[$field];
-                } else {
-                    throw new \Exception("'$field' is an unsupported sort field");
-                }
-            }
-        }
-
         list($page, $perPage) = $criteria->getPaging();
-        $query['paging'] = array(
-            'startAt' => ($page - 1) * $perPage,
-            'maxResults' => $perPage
-        );
 
-        return $query;
+        return array(
+            'jql' => $this->jql->build($criteria),
+            'startAt' => ($page - 1) * $perPage,
+            'maxResults' => $perPage,
+
+        );
     }
 }
 

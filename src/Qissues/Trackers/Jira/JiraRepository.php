@@ -77,11 +77,8 @@ class JiraRepository implements IssueRepository
      */
     public function query(SearchCriteria $criteria)
     {
-        $mapping = $this->mapping->buildSearchQuery($criteria);
-        $query = array_merge($mapping['paging'], array('jql' => $this->buildJql($mapping)));
-
         $request = $this->request('GET', "/search");
-        $request->getQuery()->merge($query);
+        $request->getQuery()->merge($this->mapping->buildSearchQuery($criteria));
         $response = $request->send()->json();
         return array_map(array($this->mapping, 'toIssue'), $response['issues']);
     }

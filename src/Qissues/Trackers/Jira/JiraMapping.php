@@ -17,12 +17,16 @@ use Qissues\Model\Querying\SearchCriteria;
 class JiraMapping implements FieldMapping
 {
     protected $metadata;
+    protected $jql;
 
+    /**
+     * @param JiraMetadata $metadata
+     * @param JqlQueryBuilder $jql
+     */
     public function __construct(JiraMetadata $metadata, JqlQueryBuilder $jql)
     {
         $this->metadata = $metadata;
         $this->jql = $jql;
-        $this->prefix = 'project'; // TODO
     }
 
     /**
@@ -150,6 +154,9 @@ class JiraMapping implements FieldMapping
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function buildSearchQuery(SearchCriteria $criteria)
     {
         list($page, $perPage) = $criteria->getPaging();
@@ -162,4 +169,3 @@ class JiraMapping implements FieldMapping
         );
     }
 }
-

@@ -39,6 +39,10 @@ class JqlQueryBuilder
         return $this->generateJql($this->where, $this->sort);
     }
 
+    /**
+     * Filter by statuses if specified
+     * @param SearchCriteria $criteria
+     */
     protected function handleStatuses(SearchCriteria $criteria)
     {
         if ($statuses = $criteria->getStatuses()) {
@@ -46,6 +50,10 @@ class JqlQueryBuilder
         }
     }
 
+    /**
+     * Filter by types if specified
+     * @param SearchCriteria $criteria
+     */
     protected function handleTypes(SearchCriteria $criteria)
     {
         if ($types = $criteria->getTypes()) {
@@ -53,6 +61,10 @@ class JqlQueryBuilder
         }
     }
 
+    /**
+     * Filter by assignees if specified
+     * @param SearchCriteria $criteria
+     */
     protected function handleAssignees(SearchCriteria $criteria)
     {
         if ($assignees = $criteria->getAssignees()) {
@@ -60,6 +72,10 @@ class JqlQueryBuilder
         }
     }
 
+    /**
+     * Filter by keywords if specified
+     * @param SearchCriteria $criteria
+     */
     protected function handleKeywords(SearchCriteria $criteria)
     {
         if ($keywords = $criteria->getKeywords()) {
@@ -67,10 +83,12 @@ class JqlQueryBuilder
         }
     }
 
+    /**
+     * Add sorting, if specified
+     * @param SearchCriteria $criteria
+     */
     protected function handleSorting(SearchCriteria $criteria)
     {
-        /*
-
         $fieldMap = array(
             'updated' => 'updatedDate',
             'created' => 'createdDate'
@@ -89,14 +107,12 @@ class JqlQueryBuilder
                 }
 
                 if (isset($fieldSort[$field])) {
-                    $query['sort'][] = "$field " .  $fieldSort[$field];
+                    $this->sort[] = "$field " . $fieldSort[$field];
                 } else {
-                    throw new \Exception("'$field' is an unsupported sort field");
+                    throw new \DomainException("JIRA cannot sort by '$field'");
                 }
             }
         }
-         */
-
     }
 
     /**
@@ -128,7 +144,7 @@ class JqlQueryBuilder
     /**
      * Quotes a string for usage
      * Injection isn't a concern here; just user annoyance
-     * 
+     *
      * @param mixed $literal
      * @return string quoted string with quotes escaped
      */

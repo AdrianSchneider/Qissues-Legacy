@@ -64,6 +64,52 @@ class JqlQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertContains("text ~ 'hello world'", $jql);
     }
 
+    public function testSortsByExpectedFields()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('priority');
+
+        $builder = $this->getBuilder(array('id' => 5));
+        $jql = $builder->build($criteria);
+
+        $this->assertContains("ORDER BY priority DESC", $jql);
+    }
+
+    public function testSortsByTranslatedFields()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('updated');
+
+        $builder = $this->getBuilder(array('id' => 5));
+        $jql = $builder->build($criteria);
+
+        $this->assertContains("ORDER BY updatedDate DESC", $jql);
+    }
+
+    public function testSortsByMultipleFields()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('priority');
+        $criteria->addSortField('updated');
+
+        $builder = $this->getBuilder(array('id' => 5));
+        $jql = $builder->build($criteria);
+
+        $this->assertContains("ORDER BY priority DESC, updatedDate DESC", $jql);
+    }
+
+    public function testSortingByInvalidFieldThrowsException()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('peanuts');
+
+        $builder = $this->getBuilder(array('id' => 5));
+
+        $this->setExpectedException('DomainException', 'peanuts');
+        $builder->build($criteria);
+
+    }
+
     protected function getBuilder(array $metadata = array())
     {
         return new JqlQueryBuilder(new JiraMetadata($metadata));

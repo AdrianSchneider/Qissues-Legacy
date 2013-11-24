@@ -30,10 +30,19 @@ class JqlQueryBuilder
 
         $this->where[] = $this->whereEquals('project', $this->metadata->getId());
 
+        $this->handleStatuses($criteria);
         $this->handleTypes($criteria);
         $this->handleAssignees($criteria);
+        $this->handleKeywords($criteria);
 
         return $this->generateJql($this->where, $this->sort);
+    }
+
+    protected function handleStatuses(SearchCriteria $criteria)
+    {
+        if ($statuses = $criteria->getStatuses()) {
+            $this->where[] = $this->whereEquals('status', array_map('strval', $statuses));
+        }
     }
 
     protected function handleTypes(SearchCriteria $criteria)
@@ -50,6 +59,19 @@ class JqlQueryBuilder
         }
     }
 
+    protected function handleKeywords(SearchCriteria $criteria)
+    {
+        if ($keywords = $criteria->getKeywords()) {
+            $this->where[] = sprintf('text ~ %s', $this->quote($keywords));
+        }
+    }
+
+    /**
+     * Constructs a where clause, assuming a = b, or a in (b, c)
+     *
+     * @param string $field name
+     * @param string|array $values
+     */
     protected function whereEquals($field, $values)
     {
         if (is_array($values)) {
@@ -59,16 +81,34 @@ class JqlQueryBuilder
         return sprintf('%s = %s', $field, $this->quote($values));
     }
 
+    /**
+     * Quote an array of literals
+     *
+     * @param array $literals
+     * @return string comma-delimited escaped literals
+     */
     protected function quoteArray(array $literals)
     {
         return implode(',', array_map(array($this, 'quote'), $literals));
     }
 
+    /**
+     * Quotes a string for usage
+     * Injection isn't a concern here; just user annoyance
+     * 
+     * @param mixed $literal
+     * @return string quoted string with quotes escaped
+     */
     protected function quote($literal)
     {
         return "'" . addslashes($literal) . "'";
     }
 
+    /**
+     * Generate the final JQL for returning
+     * @param array $where conditions
+     * @param array $sort clauses
+     */
     protected function generateJql(array $where, array $sort)
     {
         return trim(sprintf(

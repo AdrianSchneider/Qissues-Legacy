@@ -84,47 +84,6 @@ class JiraRepository implements IssueRepository
     }
 
     /**
-     * Constructs the JQL query from the translated field names
-     * @param array $query (usually http) field names
-     * @return string JQL
-     */
-    protected function buildJql(array $query)
-    {
-        unset($query['paging']);
-
-        if (!empty($query['sort'])) {
-            $sort = $query['sort'];
-            unset($query['sort']);
-        } else {
-            $sort = array();
-        }
-
-        $quote = function($string) { return "'" . addslashes($string) . "'"; };
-
-        $where = array();
-        foreach ($query as $key => $value) {
-            if (is_array($value)) {
-                $where[] = sprintf(
-                    '%s IN (%s)',
-                    $key,
-                    implode(',', array_map($quote, $value))
-                );
-            } else {
-                $where[] = sprintf('%s = %s', $key, $quote($value));
-            }
-        }
-
-        return sprintf(
-            '%s %s',
-            implode(' AND ', $where),
-            $sort ? sprintf(
-                'ORDER BY %s',
-                implode(', ', $sort)
-            ) : ''
-        );
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function findComments(Number $issue)

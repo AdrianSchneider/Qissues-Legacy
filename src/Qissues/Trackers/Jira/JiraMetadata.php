@@ -2,7 +2,9 @@
 
 namespace Qissues\Trackers\Jira;
 
-class JiraMetadata
+use Qissues\Model\Tracker\Metadata\Metadata;
+
+class JiraMetadata implements Metadata
 {
     protected $project;
 

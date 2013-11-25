@@ -12,6 +12,7 @@ use Qissues\Model\Meta\Priority;
 use Qissues\Model\Meta\Type;
 use Qissues\Model\Meta\Label;
 use Qissues\Model\Tracker\FieldMapping;
+use Qissues\Model\Tracker\Metadata\Metadata;
 use Qissues\Model\Querying\SearchCriteria;
 
 class JiraMapping implements FieldMapping
@@ -23,7 +24,7 @@ class JiraMapping implements FieldMapping
      * @param JiraMetadata $metadata
      * @param JqlQueryBuilder $jql
      */
-    public function __construct(JiraMetadata $metadata, JqlQueryBuilder $jql)
+    public function __construct(Metadata $metadata, JqlQueryBuilder $jql)
     {
         $this->metadata = $metadata;
         $this->jql = $jql;

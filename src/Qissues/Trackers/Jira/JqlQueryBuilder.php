@@ -3,6 +3,7 @@
 namespace Qissues\Trackers\Jira;
 
 use Qissues\Model\Querying\SearchCriteria;
+use QIssues\Model\Tracker\Metadata\Metadata;
 
 class JqlQueryBuilder
 {
@@ -10,7 +11,7 @@ class JqlQueryBuilder
     protected $where;
     protected $sort;
 
-    public function __construct(JiraMetadata $metadata)
+    public function __construct(Metadata $metadata)
     {
         $this->metadata = $metadata;
     }

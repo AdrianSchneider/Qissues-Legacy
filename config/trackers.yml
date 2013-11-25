@@ -8,7 +8,7 @@ parameters:
     trello.key: "application/developer api key"
     trello.token: "oauth token"
     trello.board: "Board Name"
-    jira.prefix: "PRFX"
+    jira.projectKey: "PROJ"
     jira.host: "subdomain.atlassian.net"
     jira.username: "account"
     jira.password: "password"
@@ -128,7 +128,7 @@ services:
         class: Qissues\Trackers\Jira\JiraRepository
         arguments:
             - %jira.host%
-            - %jira.prefix%
+            - %jira.projectKey%
             - %jira.username%
             - %jira.password%
             - @tracker.jira.mapping

@@ -25,16 +25,16 @@ class JiraRepository implements IssueRepository
 
     /**
      * @param string $host
-     * @param string $prefix ex "PROJ"
+     * @param string $projectKey (or issue prefix)
      * @param string username
      * @param string password
      * @param IssueTracker $tracker
      * @param Client|null $client to override
      */
-    public function __construct($host, $prefix, $username, $password, FieldMapping $mapping, Client $client = null)
+    public function __construct($host, $projectKey, $username, $password, FieldMapping $mapping, Client $client = null)
     {
         $this->host = $host;
-        $this->prefix = $prefix;
+        $this->projectKey = $projectKey;
         $this->username = $username;
         $this->password = $password;
         $this->mapping = $mapping;
@@ -67,7 +67,7 @@ class JiraRepository implements IssueRepository
         return sprintf(
             'https://%s/browse/%s-%d',
             $this->host,
-            $this->prefix,
+            $this->projectKey,
             $issue->getNumber()
         );
     }
@@ -190,7 +190,7 @@ class JiraRepository implements IssueRepository
     {
         return sprintf(
             '/issue/%s-%d%s',
-            $this->prefix,
+            $this->projectKey,
             $number->getNumber(),
             $append
         );
@@ -205,13 +205,13 @@ class JiraRepository implements IssueRepository
         $response = $request->send()->json();
 
         foreach ($response['projects'] as $project) {
-            if ($project['key'] != $this->prefix) {
+            if ($project['key'] != $this->projectKey) {
                 continue;
             }
 
             $metadata = array(
                 'id' => $project['id'],
-                'key' => $this->prefix,
+                'key' => $this->projectKey,
                 'types' => array(),
                 'components' => array(),
                 'statuses' => array()

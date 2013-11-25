@@ -4,6 +4,7 @@ namespace Qissues\Trackers\Jira;
 
 use Qissues\Trackers\Jira\JiraMapping;
 use Qissues\Trackers\Jira\JiraMetadata;
+use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Meta\User;
 use Qissues\Model\Meta\Status;
 use Qissues\Model\Meta\Priority;
@@ -54,6 +55,79 @@ class JiraMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('The Details', $issue->getDescription());
         $this->assertEquals('fixed', $issue->getStatus()->getStatus());
         $this->assertEquals('urgent', $issue->getPriority()->getName());
+    }
+
+    public function testToNewIssueCreatesBasicIssue()
+    {
+        $input = array(
+            'title' => 'Hello World',
+            'description' => 'Nice to meet you'
+        );
+
+        $mapping = $this->getMapping();
+        $issue = $mapping->tonewIssue($input);
+
+        $this->assertEquals('Hello World', $issue->getTitle());
+        $this->assertEquals('Nice to meet you', $issue->getDescription());
+    }
+
+    public function testToNewIssueWithOptionalFields()
+    {
+        $input = array(
+            'title' => '',
+            'description' => '',
+            'assignee' => 'adrian',
+            'priority' => 'important',
+            'type' => 'bug',
+            'label' => 'wowza'
+        );
+
+        $mapping = $this->getMapping();
+        $issue = $mapping->tonewIssue($input);
+
+        $this->assertEquals('adrian', $issue->getAssignee()->getAccount());
+        $this->assertEquals('important', $issue->getPriority()->getName());
+        $this->assertEquals('bug', $issue->getType()->getName());
+        $this->assertEquals('wowza', end($issue->getLabels())->getName());
+    }
+
+    public function testToNewIssueThrowsArrayWithMultipleLabels()
+    {
+        $input = array(
+            'title' => '',
+            'description' => '',
+            'assignee' => '',
+            'priority' => '',
+            'type' => '',
+            'label' => 'a, b, c'
+        );
+
+        $this->setExpectedException('DomainException', 'single label');
+
+        $mapping = $this->getMapping();
+        $mapping->tonewIssue($input);
+    }
+
+    public function testIssueToArray()
+    {
+        $mapping = $this->getMapping(array(
+            'id' => 5,
+            'types' => array(
+                array('id' => 1, 'name' => 'bug')
+            )
+        ));
+
+        $issue = new NewIssue("Hello World", "Nice to meet you", null, null, new Type('bug'));
+        $array = $mapping->issueToArray($issue);
+
+        $this->assertEquals(array(
+            'fields' => array(
+                'project' => array('id' => 5),
+                'summary' => "Hello World",
+                'description' => "Nice to meet you",
+                'issuetype' => array('id' => 1)
+            )
+        ), $array);
     }
 
     public function testBuildSearchQuery()

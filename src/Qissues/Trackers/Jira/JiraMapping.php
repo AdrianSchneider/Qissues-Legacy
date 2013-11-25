@@ -83,13 +83,6 @@ class JiraMapping implements FieldMapping
      */
     public function toNewIssue(array $input)
     {
-        if (!empty($input['priority'])) {
-            if (intval($input['priority'])) {
-                $reversePriorities = array_flip($this->priorities);
-                $input['priority'] = $reversePriorities[$input['priority']];
-            }
-        }
-
         return new NewIssue(
             $input['title'],
             $input['description'],
@@ -127,18 +120,6 @@ class JiraMapping implements FieldMapping
                 'issuetype' => array('id' => $this->metadata->getTypeIdByName($issue->getType()->getName()))
             )
         );
-
-        /*
-        if ($issue->getAssignee()) {
-            $new['responsible'] = $issue->getAssignee()->getAccount();
-        }
-        if ($labels = $issue->getLabels()) {
-            $new['component'] = (string)$labels[0];
-        }
-        if ($priority = $issue->getPriority()) {
-            $new['priority'] = $priority->getName();
-        }
-         */
 
         return $new;
     }

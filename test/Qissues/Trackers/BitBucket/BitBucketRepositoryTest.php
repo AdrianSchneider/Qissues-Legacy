@@ -208,6 +208,12 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertBodyEquals('responsible=adrian');
     }
 
+    public function testFetchMetadataThrowsDomainException()
+    {
+        $this->setExpectedException('DomainException', 'No metadata');
+        $this->getRepository()->fetchMetadata();
+    }
+
     protected function getRepository($mapping = null)
     {
         $mapping = $mapping ?: $this->getMock('Qissues\Model\Tracker\FieldMapping');

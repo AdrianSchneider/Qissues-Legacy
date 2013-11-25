@@ -165,7 +165,6 @@ class JiraMapping implements FieldMapping
             'jql' => $this->jql->build($criteria),
             'startAt' => ($page - 1) * $perPage,
             'maxResults' => $perPage,
-
         );
     }
 }

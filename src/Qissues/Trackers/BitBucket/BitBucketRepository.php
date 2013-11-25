@@ -181,11 +181,6 @@ class BitBucketRepository implements IssueRepository
 
     public function fetchMetadata()
     {
-        throw new \Exception('No metadata necessary for BitBucket');
-    }
-
-    public function buildMetadata(array $metadata)
-    {
-        return new NullMetadata;
+        throw new \DomainException('No metadata necessary for BitBucket');
     }
 }

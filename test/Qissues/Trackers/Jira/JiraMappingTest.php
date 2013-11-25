@@ -13,9 +13,18 @@ use Qissues\Model\Querying\SearchCriteria;
 
 class JiraMappingTest extends \PHPUnit_Framework_TestCase
 {
+    public function testGetEditFields()
+    {
+        $mapping = $this->getMapping(array());
+
+        $this->assertEquals(
+            array('title', 'assignee', 'type', 'label', 'priority', 'description'),
+            array_keys($mapping->getEditFields())
+        );
+    }
+
     public function testToIssueCreatesIssue()
     {
-        /*
         $mapping = $this->getMapping(array());
         $issue = $mapping->toIssue(array(
             'key' => 'PREFIX-5',
@@ -45,7 +54,6 @@ class JiraMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('The Details', $issue->getDescription());
         $this->assertEquals('fixed', $issue->getStatus()->getStatus());
         $this->assertEquals('urgent', $issue->getPriority()->getName());
-         */
     }
 
     public function testBuildSearchQuery()

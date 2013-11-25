@@ -157,6 +157,14 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertRequestKeyEquals('name', 'joe');
     }
 
+    public function testJiraDoesNotSupportStatusChanges()
+    {
+        $this->setExpectedException('DomainException', 'later');
+
+        $repository = $this->getRepository();
+        $repository->changeStatus(new Number(1), new Status('never'));
+    }
+
     public function testDelete()
     {
         $this->mock->addResponse(new Response(200));
@@ -170,45 +178,73 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testFetchMetadataThrowsExceptionWhenCannotFind()
     {
-        //$this->mock->addResponse(new Response(200, null, json_encode(array('projects' => array()))));
-        //$this->setExpectedException('Exception', 'not find');
+        $this->mock->addResponse(new Response(200, null, json_encode(array('projects' => array()))));
+        $this->setExpectedException('Exception', 'not find');
 
-        //$repository = $this->getRepository();
-        //$repository->fetchMetadata();
+        $repository = $this->getRepository();
+        $repository->fetchMetadata();
     }
 
     public function testFetchMetadataGrabsRightProject()
     {
-        //$this->mock->addResponse(new Response(200, null, json_encode(array(
-            //'projects' => array(
-                //array( 'id' => 1, 'key' => 'wrongprefix', 'issuetypes' => array()),
-                //array( 'id' => 2, 'key' => 'PRE', 'issuetypes' => array())
-            //)
-        //))));
+        $this->mock->addResponse(new Response(200, null, json_encode(array(
+            'projects' => array(
+                array( 'id' => 1, 'key' => 'wrongprefix', 'issuetypes' => array()),
+                array( 'id' => 2, 'key' => 'PRE', 'issuetypes' => array())
+            )
+        ))));
+        $this->mock->addResponse(new Response(200, null, json_encode(array('issueTypes' => array()))));
+        $this->mock->addResponse(new Response(200, null, json_encode(array())));
 
-        //$repository = $this->getRepository();
-        //$metadata = $repository->fetchMetadata();
+        $repository = $this->getRepository();
+        $metadata = $repository->fetchMetadata();
 
-        //$this->assertEquals(2, $metadata['id']);
+        $this->assertEquals(2, $metadata['id']);
     }
 
     public function testFetchMetadataGrabsTypes()
     {
-        //$this->mock->addResponse(new Response(200, null, json_encode(array(
-            //'projects' => array(array(
-                //'id' => 1,
-                //'key' => 'PRE',
-                //'issuetypes' => array(
-                    //array('id' => 6, 'name' => 'Task')
-                //)
-            //))
-        //))));
+        $this->mock->addResponse(new Response(200, null, json_encode(array(
+            'projects' => array(
+                array( 'id' => 1, 'key' => 'wrongprefix', 'issuetypes' => array()),
+                array( 'id' => 2, 'key' => 'PRE', 'issuetypes' => array())
+            )
+        ))));
+        $this->mock->addResponse(new Response(200, null, json_encode(array(
+            'issueTypes' => array(
+                array(
+                    'id' => 1,
+                    'name' => 'bug'
+                )
+            )
+        ))));
+        $this->mock->addResponse(new Response(200, null, json_encode(array(
+            array(
+                'id' => 1,
+                'statuses' => array(
+                    array(
+                        'id' => 10,
+                        'name' => 'new'
+                    ),
+                    array(
+                        'id' => 12,
+                        'name' => 'fixed'
+                    )
+                )
+            )
+        ))));
 
-        //$repository = $this->getRepository();
-        //$metadata = $repository->fetchMetadata();
+        $repository = $this->getRepository();
+        $metadata = $repository->fetchMetadata();
 
-        //$this->assertEquals(6, $metadata['tasks'][0]['id']);
-        //$this->assertEquals('Task', $metadata['tasks'][0]['name']);
+        $this->assertEquals(array(
+            'id' => 1,
+            'name' => 'bug',
+            'statuses' => array(
+                array( 'id' => 10, 'name' => 'new'),
+                array( 'id' => 12, 'name' => 'fixed')
+            )
+        ), $metadata['types'][1]);
     }
 
     protected function getRepository($mapping = null)

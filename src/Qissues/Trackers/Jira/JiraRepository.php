@@ -136,17 +136,22 @@ class JiraRepository implements IssueRepository
     }
 
     /**
+     * JIRA's statuses are much more complex and involve transitions
+     * or a workflow model to be introduced before we can effectively
+     * support it.
+     *
+     * For example,
+     * start -> in progress (require assignee)
+     * resolve -> resolved (require resolution)
+     *
+     * These are entirely dynamic and customizable by the PM.
+     *
      * {@inheritDoc}
+     * @throws DomainException
      */
     public function changeStatus(Number $issue, Status $status)
     {
-        if ($status instanceof ClosedStatus) {
-            $status = new Status('resolved');
-        }
-
-        $request = $this->request('PUT', $this->getIssueUrl($issue));
-        $request->setBody(array('status' => $status->getStatus()));
-        $request->send();
+        throw new \DomainException('Status changes coming in a later version when workflows are better modeled');
     }
 
     /**
@@ -215,7 +220,7 @@ class JiraRepository implements IssueRepository
             $request = $this->request('GET', "/project/$project[key]");
             $request->getQuery()->set('expand', 'projectKeys');
             $response = $request->send()->json();
-            
+
             $tasks = array();
             foreach ($response['issueTypes'] as $type) {
                 $metadata['types'][$type['id']] = array(

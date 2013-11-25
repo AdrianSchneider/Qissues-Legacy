@@ -24,21 +24,21 @@ class JiraRepository implements IssueRepository
     protected $client;
 
     /**
-     * @param string $project ex "project"(.atlassian.net)
+     * @param string $host
      * @param string $prefix ex "PROJ"
      * @param string username
      * @param string password
      * @param IssueTracker $tracker
      * @param Client|null $client to override
      */
-    public function __construct($project, $prefix, $username, $password, FieldMapping $mapping, Client $client = null)
+    public function __construct($host, $prefix, $username, $password, FieldMapping $mapping, Client $client = null)
     {
-        $this->project = $project;
+        $this->host = $host;
         $this->prefix = $prefix;
         $this->username = $username;
         $this->password = $password;
         $this->mapping = $mapping;
-        $this->client  = $client ?: new Client( sprintf('https://%s.atlassian.net/', $this->project), array('ssl.certificate_authority' => 'system'));
+        $this->client  = $client ?: new Client( sprintf('https://%s/', $this->host), array('ssl.certificate_authority' => 'system'));
     }
 
     /**
@@ -46,7 +46,7 @@ class JiraRepository implements IssueRepository
      */
     public function getUrl()
     {
-        return sprintf('https://%s.atlassian.net/issues', $this->project);
+        return sprintf('https://%s/issues', $this->host);
     }
 
     /**
@@ -65,8 +65,8 @@ class JiraRepository implements IssueRepository
     public function lookupUrl(Number $issue)
     {
         return sprintf(
-            'https://%s.atlassian.net/browse/%s-%d',
-            $this->project,
+            'https://%s/browse/%s-%d',
+            $this->host,
             $this->prefix,
             $issue->getNumber()
         );

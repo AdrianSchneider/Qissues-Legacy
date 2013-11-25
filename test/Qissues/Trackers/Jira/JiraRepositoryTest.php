@@ -250,7 +250,7 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
     protected function getRepository($mapping = null)
     {
         return new JiraRepository(
-            'project',
+            'project.atlassian.net',
             'PRE',
             'username',
             'password',

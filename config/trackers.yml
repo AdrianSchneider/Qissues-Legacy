@@ -9,7 +9,7 @@ parameters:
     trello.token: "oauth token"
     trello.board: "Board Name"
     jira.prefix: "PRFX"
-    jira.project: "subdomain"
+    jira.host: "subdomain.atlassian.net"
     jira.username: "account"
     jira.password: "password"
 
@@ -127,7 +127,7 @@ services:
     tracker.jira.repository:
         class: Qissues\Trackers\Jira\JiraRepository
         arguments:
-            - %jira.project%
+            - %jira.host%
             - %jira.prefix%
             - %jira.username%
             - %jira.password%

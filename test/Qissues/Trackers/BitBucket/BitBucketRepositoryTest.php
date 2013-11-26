@@ -2,7 +2,7 @@
 
 namespace Qissues\Tests\Trackers\BitBucket;
 
-use Qissues\Model\Number;
+use Qissues\Model\Querying\Number;
 use Qissues\Model\Meta\Status;
 use Qissues\Model\Meta\ClosedStatus;
 use Qissues\Model\Meta\Label;

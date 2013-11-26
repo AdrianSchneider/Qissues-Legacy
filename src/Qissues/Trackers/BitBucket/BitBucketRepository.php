@@ -2,7 +2,7 @@
 
 namespace Qissues\Trackers\BitBucket;
 
-use Qissues\Model\Number;
+use Qissues\Model\Querying\Number;
 use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Querying\SearchCriteria;

@@ -2,7 +2,7 @@
 
 namespace Qissues\Console\Input;
 
-use Qissues\Model\Number;
+use Qissues\Model\Querying\Number;
 use Qissues\Model\Querying\SearchCriteria;
 use Qissues\Model\Meta\User;
 use Qissues\Model\Meta\CurrentUser;

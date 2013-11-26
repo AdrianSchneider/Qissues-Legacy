@@ -2,7 +2,7 @@
 
 namespace Qissues\Console\Command;
 
-use Qissues\Model\Number;
+use Qissues\Model\Querying\Number;
 use Qissues\Model\Meta\ClosedStatus;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;

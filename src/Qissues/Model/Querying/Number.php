@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Model;
+namespace Qissues\Model\Querying;
 
 class Number
 {

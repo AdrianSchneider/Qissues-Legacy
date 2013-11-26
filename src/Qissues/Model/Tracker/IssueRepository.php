@@ -2,7 +2,7 @@
 
 namespace Qissues\Model\Tracker;
 
-use Qissues\Model\Number;
+use Qissues\Model\Querying\Number;
 use Qissues\Model\Issue;
 use Qissues\Model\Meta\Status;
 use Qissues\Model\Meta\User;

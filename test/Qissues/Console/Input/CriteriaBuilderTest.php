@@ -2,7 +2,7 @@
 
 namespace Qissues\Tests\Input;
 
-use Qissues\Model\Number;
+use Qissues\Model\Querying\Number;
 use Qissues\Console\Command\QueryCommand;
 use Qissues\Console\Input\CriteriaBuilder;
 use Symfony\Component\Console\Input\ArrayInput;

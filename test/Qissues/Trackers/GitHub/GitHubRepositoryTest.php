@@ -2,7 +2,7 @@
 
 namespace Qissues\Tests\Trackers\GitHub;
 
-use Qissues\Model\Number;
+use Qissues\Model\Querying\Number;
 use Qissues\Model\Meta\User;
 use Qissues\Model\Meta\Status;
 use Qissues\Model\Posting\NewComment;

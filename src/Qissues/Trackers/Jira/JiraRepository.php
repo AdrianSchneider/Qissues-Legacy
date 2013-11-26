@@ -10,6 +10,7 @@ use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Tracker\IssueRepository;
 use Qissues\Model\Tracker\FieldMapping;
+use Qissues\Model\Workflow\Transition;
 use Guzzle\Http\Client;
 
 class JiraRepository implements IssueRepository
@@ -67,6 +68,27 @@ class JiraRepository implements IssueRepository
             $this->projectKey,
             $issue->getNumber()
         );
+    }
+
+    /**
+     * Grab available transitions for an Issue
+     * @param Number $issue
+     * @return array
+     */
+    public function lookupTransitions(Number $issue)
+    {
+        static $transitions = array();
+        $id = $issue->getNumber();
+
+        if (isset($transitions[$id])) {
+            return $transitions[$id];
+        }
+
+        $request = $this->request('GET', $this->getIssueUrl($issue, "/transitions"));
+        $request->getQuery()->set('expand', 'transitions.fields');
+        $response = $request->send()->json();
+
+        return $transitions[$id] = $response['transitions'];
     }
 
     /**
@@ -132,22 +154,28 @@ class JiraRepository implements IssueRepository
     }
 
     /**
-     * JIRA's statuses are much more complex and involve transitions
-     * or a workflow model to be introduced before we can effectively
-     * support it.
+     * Apply a transition to an Issue
      *
-     * For example,
-     * start -> in progress (require assignee)
-     * resolve -> resolved (require resolution)
-     *
-     * These are entirely dynamic and customizable by the PM.
-     *
-     * {@inheritDoc}
-     * @throws DomainException
+     * @param Transition $transition
      */
-    public function changeStatus(Number $issue, Status $status)
+    public function changeStatus(Number $issue, Status $status, $transitionId, $fields)
     {
-        throw new \DomainException('Status changes coming in a later version when workflows are better modeled');
+        $payload = array(
+            'transition' => array('id' => $transitionId),
+            'fields' => $fields
+        );
+
+        if (!empty($payload['fields']['resolution'])) {
+            $payload['fields']['resolution'] = array('name' => $payload['fields']['resolution']);
+        }
+
+        if (empty($payload['fields'])) {
+            unset($payload['fields']);
+        }
+
+        $request = $this->request('POST', $this->getIssueUrl($issue, "/transitions"));
+        $request->setBody(json_encode($payload), 'application/json');
+        $response = $request->send()->json();
     }
 
     /**

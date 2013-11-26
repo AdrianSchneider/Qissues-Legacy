@@ -20,7 +20,7 @@ services:
             - @tracker.github.repository
             - @tracker.github.mapping
             - @tracker.github.features
-            - @system.storage
+            - @basic_workflow
 
     tracker.github.repository:
         class: Qissues\Trackers\GitHub\GitHubRepository
@@ -53,7 +53,7 @@ services:
             - @tracker.bitbucket.repository
             - @tracker.bitbucket.mapping
             - @tracker.bitbucket.features
-            - @system.storage
+            - @basic_workflow
 
     tracker.bitbucket.repository:
         class: Qissues\Trackers\BitBucket\BitBucketRepository
@@ -87,7 +87,7 @@ services:
             - @tracker.trello.repository
             - @tracker.trello.mapping
             - @tracker.trello.features
-            - @metadata
+            - @basic_workflow
 
     tracker.trello.repository:
         class: Qissues\Trackers\Trello\TrelloRepository
@@ -123,6 +123,7 @@ services:
             - @tracker.jira.repository
             - @tracker.jira.mapping
             - @tracker.jira.features
+            - @tracker.jira.workflow
 
     tracker.jira.repository:
         class: Qissues\Trackers\Jira\JiraRepository
@@ -158,3 +159,8 @@ services:
                 types: [single]
                 labels: [multiple, dynamic]
                 priorities: [single]
+
+    tracker.jira.workflow:
+        class: Qissues\Trackers\Jira\JiraWorkflow
+        arguments:
+            - @tracker.jira.repository

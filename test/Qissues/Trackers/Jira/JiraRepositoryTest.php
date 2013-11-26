@@ -156,12 +156,17 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertRequestKeyEquals('name', 'joe');
     }
 
-    public function testJiraDoesNotSupportStatusChanges()
+    public function testStatusChange()
     {
-        $this->setExpectedException('DomainException', 'later');
+        $this->mock->addResponse(new Response(200));
 
         $repository = $this->getRepository();
-        $repository->changeStatus(new Number(1), new Status('never'));
+        $repository->changeStatus(new Number(5), new Status('open'), 5, array('a' => 'b'));
+
+        $this->assertRequestMethod('POST');
+        $this->assertRequestUrl("/rest/api/2/issue/PRE-5/transitions");
+        $this->assertRequestKeyEquals('transition', array('id' => 5));
+        $this->assertRequestKeyEquals('fields', array('a' => 'b'));
     }
 
     public function testUpdate()

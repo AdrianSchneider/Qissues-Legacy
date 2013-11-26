@@ -2,8 +2,11 @@
 
 namespace Qissues\Console\Command;
 
-use Qissues\Model\Querying\Number;
 use Qissues\Model\Meta\Status;
+use Qissues\Model\Querying\Number;
+use Qissues\Model\Workflow\Transition;
+use Qissues\Model\Workflow\TransitionDetails;
+use Qissues\Model\Workflow\TransitionRequirements;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,7 +25,8 @@ class MoveCommand extends Command
                 new InputArgument('status', InputArgument::OPTIONAL, 'New status'),
                 new InputOption('status', 's', InputOption::VALUE_OPTIONAL, 'New status'),
                 new InputOption('message', 'm', InputOption::VALUE_OPTIONAL, 'Specify message', null),
-                new InputOption('strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy')
+                new InputOption('strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy'),
+                new InputOption('data', 'd', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Specify fields manually')
             ))
         ;
     }
@@ -38,18 +42,56 @@ class MoveCommand extends Command
             return 1;
         }
 
-        $comment = $this->getComment($input, $output);
-
         if (!$status = $input->getArgument('status') ?: $input->getOption('status')) {
             $output->writeln("<error>Please specify a status</error>");
             return 1;
         }
 
-        $repository->changeStatus($number, new Status($status));
-        if ($comment) {
-            $repository->comment($number, $comment);
-        }
 
-        $output->writeln("Issue <info>#$number</info> is now $status");
+        try {
+            $workflow = $tracker->getWorkflow();
+
+            $workflow->apply(
+                $transition = new Transition($issue, new Status($status)),
+                $this->getDetails(
+                    $workflow->getRequirements($transition),
+                    $input,
+                    $output
+                )
+            );
+
+            $output->writeln("Issue <info>#$number</info> is now $status");
+            return 0;
+
+        } catch (UnsupportedTransitionException $e) {
+            $output->writeln("<error>Cannot transition #$number to $status at this time</error>");
+            return 1;
+        }
+    }
+
+    /**
+     * Prepares the details for a transition
+     *
+     * @param TransitionRequirements $requirements
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
+    protected function getDetails(TransitionRequirements $requirements, InputInterface $input, OutputInterface $output)
+    {
+        $strategy = $this->getStrategy($input);
+        $strategy->init($input, $output, $this->getApplication());
+
+        return $strategy->create($requirements);
+    }
+
+    protected function getStrategy(InputInterface $input)
+    {
+        return $this->get(sprintf(
+            'console.input.details_strategy.%s',
+            $input->getOption('strategy') 
+                ?: $input->getOption('data') ? 'option' 
+                : $this->getParameter('console.input.default_strategy')
+
+        ));
     }
 }

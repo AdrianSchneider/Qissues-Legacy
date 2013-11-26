@@ -4,7 +4,6 @@ namespace Qissues\Model\Tracker;
 
 use Qissues\Model\Querying\Number;
 use Qissues\Model\Issue;
-use Qissues\Model\Meta\Status;
 use Qissues\Model\Meta\User;
 use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
@@ -37,13 +36,6 @@ interface IssueRepository
      * @param Number $num (issue number)
      */
     function delete(Number $num);
-
-    /**
-     * Change an issue's status
-     * @param Number $issue number
-     * @param Status new status
-     */
-    function changeStatus(Number $issue, Status $status);
 
     /**
      * Assign an Issue to User

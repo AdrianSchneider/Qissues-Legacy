@@ -87,6 +87,12 @@ services:
     console.input.comment_strategy.interactive:
         class: Qissues\Console\Input\Strategy\Comment\InteractiveStrategy
 
+    console.input.details_strategy.edit:
+        class: Qissues\Console\Input\Strategy\Transition\EditStrategy
+        arguments:
+            - @console.input.external_editor
+            - @console.input.format.yaml
+
     console.input.git_id:
         class: Qissues\Console\Input\GitId
         arguments:
@@ -115,6 +121,12 @@ services:
         class: Qissues\Console\Input\FileFormats\FileFormat
         factory_service: console.input.format.factory
         factory_method: getFormat
+
+    console.input.format.yaml:
+        class: Qissues\Console\Input\FileFormats\YmlFormat
+        arguments:
+            - @yaml_parser
+            - @yaml_builder
 
     console.input.format.frontmatter:
         class: Qissues\Console\Input\FileFormats\FrontMatterFormat
@@ -183,6 +195,9 @@ services:
     yaml_parser:
         class: Symfony\Component\Yaml\Parser
 
+    yaml_builder:
+        class: Symfony\Component\Yaml\Dumper
+
     frontmatter_parser:
         class: Qissues\System\FrontMatterParser
         arguments:
@@ -202,3 +217,7 @@ services:
         class: Qissues\Model\Tracker\Metadata\Metadata
         factory_service: metadata.builder
         factory_method: build
+
+    basic_workflow:
+        class: Qissues\Model\Workflow\BasicWorkflow
+        

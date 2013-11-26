@@ -2,7 +2,7 @@
 
 namespace Qissues\Trackers\Jira;
 
-use Qissues\Model\Number;
+use Qissues\Model\Querying\Number;
 use Qissues\Model\Meta\Status;
 use Qissues\Model\Meta\Label;
 use Qissues\Model\Meta\Type;

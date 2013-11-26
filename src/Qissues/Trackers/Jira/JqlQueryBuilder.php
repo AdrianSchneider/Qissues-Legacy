@@ -36,6 +36,7 @@ class JqlQueryBuilder
         $this->handleAssignees($criteria);
         $this->handleKeywords($criteria);
         $this->handleSorting($criteria);
+        $this->handleIds($criteria);
 
         return $this->generateJql($this->where, $this->sort);
     }
@@ -81,6 +82,23 @@ class JqlQueryBuilder
     {
         if ($keywords = $criteria->getKeywords()) {
             $this->where[] = sprintf('text ~ %s', $this->quote($keywords));
+        }
+    }
+
+    /**
+     * Filter by ids if specified
+     * @param SearchCriteria $criteria
+     */
+    protected function handleIds(SearchCriteria $criteria)
+    {
+        if ($ids = $criteria->getNumbers()) {
+            $key = $this->metadata->getKey();
+            $this->where[] = $this->whereEquals(
+                'id',
+                array_map(function($id) use ($key) {
+                    return $key . '-' . $id;
+                }, $ids)
+            );
         }
     }
 

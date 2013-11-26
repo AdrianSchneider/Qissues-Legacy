@@ -6,6 +6,7 @@ use Qissues\Model\Meta\User;
 use Qissues\Model\Meta\Type;
 use Qissues\Model\Meta\Status;
 use Qissues\Trackers\Jira\JqlQueryBuilder;
+use Qissues\Model\Querying\Number;
 use Qissues\Model\Querying\SearchCriteria;
 
 class JqlQueryBuilderTest extends \PHPUnit_Framework_TestCase
@@ -62,6 +63,17 @@ class JqlQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $jql = $builder->build($criteria);
 
         $this->assertContains("text ~ 'hello world'", $jql);
+    }
+
+    public function testFilterByIds()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->setNumbers(array(new Number(1), new Number(2)));
+
+        $builder = $this->getBuilder(array('id' => 5, 'key' => 'PRX'));
+        $jql = $builder->build($criteria);
+
+        $this->assertContains("id IN ('PRX-1','PRX-2')", $jql);
     }
 
     public function testSortsByExpectedFields()

@@ -2,14 +2,14 @@
 
 namespace Qissues\Trackers\Jira;
 
+use Qissues\Model\Meta\User;
+use Qissues\Model\Meta\Status;
 use Qissues\Model\Querying\Number;
+use Qissues\Model\Querying\SearchCriteria;
 use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
-use Qissues\Model\Querying\SearchCriteria;
 use Qissues\Model\Tracker\IssueRepository;
 use Qissues\Model\Tracker\FieldMapping;
-use Qissues\Model\Meta\Status;
-use Qissues\Model\Meta\User;
 use Guzzle\Http\Client;
 
 class JiraRepository implements IssueRepository

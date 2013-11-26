@@ -84,11 +84,13 @@ class JiraMappingTest extends \PHPUnit_Framework_TestCase
 
         $mapping = $this->getMapping();
         $issue = $mapping->tonewIssue($input);
+        $labels = $issue->getLabels();
 
         $this->assertEquals('adrian', $issue->getAssignee()->getAccount());
         $this->assertEquals('important', $issue->getPriority()->getName());
         $this->assertEquals('bug', $issue->getType()->getName());
-        $this->assertEquals('wowza', end($issue->getLabels())->getName());
+
+        $this->assertEquals('wowza', $labels[0]->getName());
     }
 
     public function testToNewIssueThrowsArrayWithMultipleLabels()

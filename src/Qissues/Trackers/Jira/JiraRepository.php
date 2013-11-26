@@ -107,9 +107,8 @@ class JiraRepository implements IssueRepository
      */
     public function update(NewIssue $issue, Number $number)
     {
-        throw new \Exception('not yet implemented');
         $request = $this->request('PUT', $this->getIssueUrl($number));
-        $request->setBody($this->mapping->issueToArray($issue));
+        $request->setBody(json_encode($this->mapping->issueToArray($issue)), 'application/json');
         $request->send();
     }
 

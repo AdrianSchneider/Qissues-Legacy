@@ -4,7 +4,6 @@ namespace Qissues\Trackers\Jira;
 
 use Qissues\Model\Number;
 use Qissues\Model\Meta\Status;
-use Qissues\Model\Meta\ClosedStatus;
 use Qissues\Model\Meta\Label;
 use Qissues\Model\Meta\Type;
 use Qissues\Model\Meta\User;
@@ -163,6 +162,28 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $repository = $this->getRepository();
         $repository->changeStatus(new Number(1), new Status('never'));
+    }
+
+    public function testUpdate()
+    {
+        $issue = $this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock();
+        $mapped = array('a' => 'b');
+        $this->mock->addResponse(new Response(200));
+
+        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping
+            ->expects($this->once())
+            ->method('issueToArray')
+            ->with($issue)
+            ->will($this->returnValue($mapped))
+        ;
+
+        $repository = $this->getRepository($mapping);
+        $repository->update($issue, new Number(5));
+
+        $this->assertRequestMethod('PUT');
+        $this->assertRequestUrl("/rest/api/2/issue/PRE-5");
+        $this->assertRequestKeyEquals('a', 'b');
     }
 
     public function testDelete()

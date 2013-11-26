@@ -54,7 +54,8 @@ class JiraMappingTest extends \PHPUnit_Framework_TestCase
                 'components' => array(array(
                     'id' => 4,
                     'name' => 'Important'
-                ))
+                )),
+                'comment' => array('total' => 5)
             )
         ));
         $labels = $issue->getLabels();

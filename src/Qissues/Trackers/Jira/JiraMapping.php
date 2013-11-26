@@ -91,7 +91,8 @@ class JiraMapping implements FieldMapping
             $assignee,
             $priority,
             $type,
-            $labels
+            $labels,
+            intval($issue['fields']['comment']['total'])
         );
     }
 
@@ -169,6 +170,7 @@ class JiraMapping implements FieldMapping
         list($page, $perPage) = $criteria->getPaging();
 
         return array(
+            'fields' => '*all',
             'jql' => $this->jql->build($criteria),
             'startAt' => ($page - 1) * $perPage,
             'maxResults' => $perPage,

@@ -238,6 +238,16 @@ class JiraRepository implements IssueRepository
                 }
             }
 
+            $request = $this->request('GET', "/project/$project[key]/components");
+            $response = $request->send()->json();
+
+            foreach ($response as $component) {
+                $metadata['components'][] = array(
+                    'id' => $component['id'],
+                    'name' => $component['name']
+                );
+            }
+
             return $metadata;
         }
 

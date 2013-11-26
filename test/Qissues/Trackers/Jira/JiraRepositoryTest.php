@@ -216,6 +216,7 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
         ))));
         $this->mock->addResponse(new Response(200, null, json_encode(array('issueTypes' => array()))));
         $this->mock->addResponse(new Response(200, null, json_encode(array())));
+        $this->mock->addResponse(new Response(200, null, json_encode(array())));
 
         $repository = $this->getRepository();
         $metadata = $repository->fetchMetadata();
@@ -255,6 +256,8 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
             )
         ))));
 
+        $this->mock->addResponse(new Response(200, null, json_encode(array())));
+
         $repository = $this->getRepository();
         $metadata = $repository->fetchMetadata();
 
@@ -266,6 +269,31 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
                 array( 'id' => 12, 'name' => 'fixed')
             )
         ), $metadata['types'][1]);
+    }
+
+    public function testFetchMetadataGrabsComponents()
+    {
+        $this->mock->addResponse(new Response(200, null, json_encode(array(
+            'projects' => array(
+                array( 'id' => 1, 'key' => 'wrongprefix', 'issuetypes' => array()),
+                array( 'id' => 2, 'key' => 'PRE', 'issuetypes' => array())
+            )
+        ))));
+        $this->mock->addResponse(new Response(200, null, json_encode(array('issueTypes' => array()))));
+        $this->mock->addResponse(new Response(200, null, json_encode(array())));
+        $this->mock->addResponse(new Response(200, null, json_encode(array(
+            array('id' => 1, 'name' => 'Important'),
+            array('id' => 2, 'name' => 'Really Important')
+        ))));
+
+        $repository = $this->getRepository();
+        $metadata = $repository->fetchMetadata();
+
+        $this->assertEquals(1, $metadata['components'][0]['id']);
+        $this->assertEquals('Important', $metadata['components'][0]['name']);
+
+        $this->assertEquals(2, $metadata['components'][1]['id']);
+        $this->assertEquals('Really Important', $metadata['components'][1]['name']);
     }
 
     protected function getRepository($mapping = null)

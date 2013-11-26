@@ -40,21 +40,32 @@ class JiraMappingTest extends \PHPUnit_Framework_TestCase
                 ),
                 'created' => '01/02/2013',
                 'updated' => '01/01/2013',
+                'issuetype' => array(
+                    'id' => 12,
+                    'name' => 'bug'
+                ),
                 'priority' => array(
                     'id' => 5,
                     'name' => 'urgent'
                 ),
                 'issuetype' => array(
-                    'type' => 'bug'
-                )
+                    'name' => 'bug'
+                ),
+                'components' => array(array(
+                    'id' => 4,
+                    'name' => 'Important'
+                ))
             )
         ));
+        $labels = $issue->getLabels();
 
         $this->assertEquals(5, $issue->getId());
         $this->assertEquals('New Issue', $issue->getTitle());
         $this->assertEquals('The Details', $issue->getDescription());
         $this->assertEquals('fixed', $issue->getStatus()->getStatus());
+        $this->assertEquals('bug', $issue->getType()->getName());
         $this->assertEquals('urgent', $issue->getPriority()->getName());
+        $this->assertEquals('Important', $labels[0]->getName());
     }
 
     public function testToNewIssueCreatesBasicIssue()

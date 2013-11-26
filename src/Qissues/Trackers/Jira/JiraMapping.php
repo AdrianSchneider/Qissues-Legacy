@@ -63,6 +63,24 @@ class JiraMapping implements FieldMapping
      */
     public function toIssue(array $issue)
     {
+        $assignee = $priority = $type = $labels = null;
+
+        if (!empty($issue['fields']['assignee'])) {
+            $assignee = new User($issue['fields']['assignee']['name']);
+        }
+        if (!empty($issue['fields']['priority'])) {
+            $priority = new Priority($issue['fields']['priority']['id'], $issue['fields']['priority']['name']);
+        }
+        if (!empty($issue['fields']['components'])) {
+            $labels = array();
+            foreach ($issue['fields']['components'] as $component) {
+                $labels[] = new Label($component['name'], $component['id']);
+            }
+        }
+        if (!empty($issue['fields']['issuetype'])) {
+            $type = new Type($issue['fields']['issuetype']['name']);
+        }
+
         return new Issue(
             substr($issue['key'], strpos($issue['key'], '-') + 1),
             $issue['fields']['summary'],
@@ -70,11 +88,10 @@ class JiraMapping implements FieldMapping
             new Status($issue['fields']['status']['name']),
             new \DateTime($issue['fields']['created']),
             new \DateTime($issue['fields']['updated']),
-            !empty($issue['fields']['assignee']) ? new User($issue['fields']['assignee']['name']) : null,
-            !empty($issue['fields']['priority']) ? new Priority($issue['fields']['priority']['id'], $issue['fields']['priority']['name']) : null,
-            !empty($issue['issuetype']['type']) ? new Type($issue['issuetype']['type']) : null
-            // TODO labels?
-            // TODO comments?
+            $assignee,
+            $priority,
+            $type,
+            $labels
         );
     }
 
@@ -83,14 +100,22 @@ class JiraMapping implements FieldMapping
      */
     public function toNewIssue(array $input)
     {
-        return new NewIssue(
-            $input['title'],
-            $input['description'],
-            !empty($input['assignee']) ? new User($input['assignee']) : null,
-            !empty($input['priority']) ? new Priority(null, $input['priority']) : null,
-            !empty($input['type']) ? new Type($input['type']) : null,
-            !empty($input['label']) ? array($this->prepareLabel($input['label'])) : null
-        );
+        $assignee = $priority = $type = $label = null;
+
+        if (!empty($input['assignee'])) {
+            $assignee = new User($input['assignee']);
+        }
+        if (!empty($input['priority'])) {
+            $priority = new Priority(null, $input['priority']);
+        }
+        if (!empty($input['type'])) {
+            $type = new Type($input['type']);
+        }
+        if (!empty($input['label'])) {
+            $label = array($this->prepareLabel($input['label']));
+        }
+
+        return new NewIssue( $input['title'], $input['description'], $assignee, $priority, $type, $label);
     }
 
     protected function prepareLabel($label)

@@ -8,12 +8,9 @@ use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Querying\SearchCriteria;
 use Qissues\Model\Tracker\IssueRepository;
 use Qissues\Model\Tracker\FieldMapping;
-use Qissues\Model\Tracker\Metadata\NullMetadata;
 use Qissues\Model\Meta\Status;
-use Qissues\Model\Meta\ClosedStatus;
 use Qissues\Model\Meta\User;
 use Guzzle\Http\Client;
-use Guzzle\Http\QueryAggregator\DuplicateAggregator;
 
 class JiraRepository implements IssueRepository
 {

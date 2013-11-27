@@ -1,8 +1,8 @@
 # Qissues Documentation
 
-1. [Querying](querying.md)
-2. [Posting](posting.md)
-3. [Management](management.md)
+1. [Querying](1.querying.md)
+2. [Posting](2.posting.md)
+3. [Management](3.management.md)
 
 ## Tracker Information
 

@@ -5,6 +5,8 @@ parameters:
     console.browser.command:
     console.input.default_strategy: "edit"
     console.input.default_format: "frontmatter"
+    console.input.default_issue_format: "frontmatter"
+    console.input.default_details_format: "yaml"
     console.output.tinyview_priorities:
         5: '▲'
         4: '▴'
@@ -57,7 +59,7 @@ services:
         class: Qissues\Console\Input\Strategy\Issue\EditStrategy
         arguments:
             - @console.input.external_editor
-            - @console.input.format.active
+            - @console.input.active_format.issue
 
     console.input.issue_strategy.interactive:
         class: Qissues\Console\Input\Strategy\Issue\InteractiveStrategy
@@ -66,7 +68,7 @@ services:
         class: Qissues\Console\Input\Strategy\Issue\StdinStrategy
         arguments:
             - "php://stdin"
-            - @console.input.format.active
+            - @console.input.format.json
 
     console.input.issue_strategy.option:
         class: Qissues\Console\Input\Strategy\Issue\OptionStrategy
@@ -91,7 +93,7 @@ services:
         class: Qissues\Console\Input\Strategy\Transition\EditStrategy
         arguments:
             - @console.input.external_editor
-            - @console.input.format.yaml
+            - @console.input.active_format.details
 
     console.input.git_id:
         class: Qissues\Console\Input\GitId
@@ -117,10 +119,24 @@ services:
         arguments:
             - @container
 
-    console.input.format.active:
+    console.input.active_format.issue:
         class: Qissues\Console\Input\FileFormats\FileFormat
         factory_service: console.input.format.factory
         factory_method: getFormat
+        arguments: ['issue']
+
+    console.input.active_format.comment:
+        class: Qissues\Console\Input\FileFormats\FileFormat
+        factory_service: console.input.format.factory
+        factory_method: getFormat
+        arguments: ['comment']
+
+    console.input.active_format.details:
+        class: Qissues\Console\Input\FileFormats\FileFormat
+        factory_service: console.input.format.factory
+        factory_method: getFormat
+        arguments: ['details']
+
 
     console.input.format.yaml:
         class: Qissues\Console\Input\FileFormats\YmlFormat

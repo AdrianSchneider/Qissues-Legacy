@@ -20,7 +20,7 @@ services:
             - @tracker.github.repository
             - @tracker.github.mapping
             - @tracker.github.features
-            - @basic_workflow
+            - @tracker.github.workflow
 
     tracker.github.repository:
         class: Qissues\Trackers\GitHub\GitHubRepository
@@ -43,9 +43,13 @@ services:
                 statuses: [single]
                 labels: [multiple, dynamic]
 
+    tracker.github.workflow:
+        class: Qissues\Model\Workflow\BasicWorkflow
+        arguments:
+            - @tracker.github.repository
+
     tracker.github.features_builder:
         class: Qissues\Trackers\GitHub\GitHubSupport
-
 
     tracker.bitbucket:
         class: Qissues\Model\Tracker\IssueTracker
@@ -53,7 +57,7 @@ services:
             - @tracker.bitbucket.repository
             - @tracker.bitbucket.mapping
             - @tracker.bitbucket.features
-            - @basic_workflow
+            - @tracker.bitbucket.workflow
 
     tracker.bitbucket.repository:
         class: Qissues\Trackers\BitBucket\BitBucketRepository
@@ -81,13 +85,18 @@ services:
     tracker.bitbucket.features_builder:
         class: Qissues\Trackers\BitBucket\BitBucketSupport
 
+    tracker.bitbucket.workflow:
+        class: Qissues\Model\Workflow\BasicWorkflow
+        arguments:
+            - @tracker.bitbucket.repository
+
     tracker.trello:
         class: Qissues\Model\Tracker\IssueTracker
         arguments:
             - @tracker.trello.repository
             - @tracker.trello.mapping
             - @tracker.trello.features
-            - @basic_workflow
+            - @tracker.trello.workflow
 
     tracker.trello.repository:
         class: Qissues\Trackers\Trello\TrelloRepository
@@ -116,6 +125,11 @@ services:
                 statuses: [single]
                 labels: [multiple, dynamic]
                 metadata: [dynamic]
+
+    tracker.trello.workflow:
+        class: Qissues\Model\Workflow\BasicWorkflow
+        arguments:
+            - @tracker.trello.repository
 
     tracker.jira:
         class: Qissues\Model\Tracker\IssueTracker

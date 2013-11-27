@@ -2,25 +2,38 @@
 
 namespace Qissues\Model\Workflow;
 
+use Qissues\Model\Querying\Number;
+
 class BasicWorkflow implements Workflow
 {
     /**
-     * Basic workflow allow anything
-     *
-     * {@inheritDoc}
+     * @param BasicTransitioner $transitioner
      */
-    public function supports(Transition $transition)
+    public function __construct(BasicTransitioner $transitioner)
     {
-        return true;
+        $this->transitioner = $transitioner;
     }
 
     /**
-     * Basic workflow doesn't require anything
+     * Applies a transition using a basic transitioner
+     *
+     * {@inheritDoc}
+     */
+    public function apply(Transition $transition, TransitionDetails $details)
+    {
+        $this->transitioner->changeStatus(
+            new Number($transition->getIssue()->getId()),
+            $transition->getStatus()
+        );
+    }
+
+    /**
+     * Basic workflows don't have requirements
      *
      * {@inheritDoc}
      */
     public function getRequirements(Transition $transition)
     {
-        return array();
+        return new TransitionRequirements(array());
     }
 }

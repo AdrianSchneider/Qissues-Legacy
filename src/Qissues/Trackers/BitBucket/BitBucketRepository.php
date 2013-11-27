@@ -9,13 +9,14 @@ use Qissues\Model\Querying\Number;
 use Qissues\Model\Querying\SearchCriteria;
 use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
+use Qissues\Model\Workflow\BasicTransitioner;
 use Qissues\Model\Tracker\IssueRepository;
 use Qissues\Model\Tracker\FieldMapping;
 use Qissues\Model\Tracker\Metadata\NullMetadata;
 use Guzzle\Http\Client;
 use Guzzle\Http\QueryAggregator\DuplicateAggregator;
 
-class BitBucketRepository implements IssueRepository
+class BitBucketRepository implements IssueRepository, BasicTransitioner
 {
     protected $repository;
     protected $username;

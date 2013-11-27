@@ -26,7 +26,8 @@ class StdinStrategyTest extends \PHPUnit_Framework_TestCase
         $tracker = new IssueTracker(
             $repository = $this->getMock('Qissues\Model\Tracker\IssueRepository'),
             $mapping    = $this->getMock('Qissues\Model\Tracker\FieldMapping'),
-            $features   = $this->getMock('Qissues\Model\Tracker\Support\FeatureSet')
+            $features   = $this->getMock('Qissues\Model\Tracker\Support\FeatureSet'),
+            $workflow   = $this->getMock('Qissues\Model\Workflow\Workflow')
         );
 
         $mapping
@@ -63,7 +64,8 @@ class StdinStrategyTest extends \PHPUnit_Framework_TestCase
         $tracker = new IssueTracker(
             $repository = $this->getMock('Qissues\Model\Tracker\IssueRepository'),
             $mapping    = $this->getMock('Qissues\Model\Tracker\FieldMapping'),
-            $features   = $this->getMock('Qissues\Model\Tracker\Support\FeatureSet')
+            $features   = $this->getMock('Qissues\Model\Tracker\Support\FeatureSet'),
+            $workflow   = $this->getMock('Qissues\Model\Workflow\Workflow')
         );
 
         $mapping

@@ -7,6 +7,7 @@ use Qissues\Model\Meta\Status;
 use Qissues\Model\Meta\ClosedStatus;
 use Qissues\Model\Querying\Number;
 use Qissues\Model\Querying\SearchCriteria;
+use Qissues\Model\Workflow\BasicTransitioner;
 use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Tracker\IssueRepository;
@@ -14,7 +15,7 @@ use Qissues\Model\Tracker\FieldMapping;
 use Qissues\Model\Tracker\Metadata\Metadata;
 use Guzzle\Http\Client;
 
-class TrelloRepository implements IssueRepository
+class TrelloRepository implements IssueRepository, BasicTransitioner
 {
     protected $boardName;
     protected $query;

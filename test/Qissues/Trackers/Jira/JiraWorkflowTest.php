@@ -19,7 +19,10 @@ class JiraWorkflowTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('lookupTransitions')
             ->with($this->isInstanceOf('Qissues\Model\Querying\Number'))
-            ->will($this->returnValue(array()))
+            ->will($this->returnValue(array(
+                array('id' => 1, 'to' => array('id' => 1, 'name' => 'dupe')),
+                array('id' => 2, 'to' => array('id' => 1, 'name' => 'nonsensical'))
+            )))
         ;
 
         $transition = new Transition(
@@ -27,7 +30,7 @@ class JiraWorkflowTest extends \PHPUnit_Framework_TestCase
             new Status('closed')
         );
 
-        $this->setExpectedException('Qissues\Model\Workflow\UnsupportedTransitionException');
+        $this->setExpectedException('Qissues\Model\Workflow\UnsupportedTransitionException', "dupe, nonsensical");
 
         $workflow = new JiraWorkflow($repository);
         $workflow->apply($transition, new TransitionDetails(array()));
@@ -49,10 +52,7 @@ class JiraWorkflowTest extends \PHPUnit_Framework_TestCase
             ->method('lookupTransitions')
             ->with($this->isInstanceOf('Qissues\Model\Querying\Number'))
             ->will($this->returnValue(array(
-                array(
-                    'id' => 1,
-                    'to' => array('id' => 1, 'name' => 'closed')
-                )
+                array('id' => 1, 'to' => array('id' => 1, 'name' => 'closed'))
             )))
         ;
         $repository
@@ -92,6 +92,41 @@ class JiraWorkflowTest extends \PHPUnit_Framework_TestCase
         $requirements = $workflow->getRequirements($transition);
 
         $this->assertEquals(array('resolution'), $requirements->getFields());
+    }
+
+    public function testGetsOptionsForRequirements()
+    {
+        $repository = $this->getMockBuilder('Qissues\Trackers\Jira\JiraRepository')->disableOriginalConstructor()->getMock();
+        $repository
+            ->expects($this->once())
+            ->method('lookupTransitions')
+            ->with($this->isInstanceOf('Qissues\Model\Querying\Number'))
+            ->will($this->returnValue(array(
+                array(
+                    'to' => array('name' => 'closed'),
+                    'fields' => array(
+                        'resolution' => array(
+                            'required' => true,
+                            'allowedValues' => array(
+                                array('name' => 'fixed'),
+                                array('name' => 'done')
+                            )
+                        )
+                    )
+                )
+            )))
+        ;
+
+        $transition = new Transition(
+            $this->getIssue(5, new Status('open')),
+            new Status('closed')
+        );
+
+        $workflow = new JiraWorkflow($repository);
+        $requirements = $workflow->getRequirements($transition);
+        $fields = $requirements->getFields();
+
+        $this->assertEquals(array('fixed', 'done'), $fields[0]->getOptions());
     }
 
     protected function getIssue($id, $status)

@@ -26,9 +26,7 @@ class JiraWorkflow implements Workflow
      */
     public function apply(Transition $transition, TransitionDetails $details)
     {
-        if (!$info = $this->getJiraTransition($transition)) {
-            throw new UnsupportedTransitionException();
-        }
+        $info = $this->getJiraTransition($transition);
 
         $this->repository->changeStatus(
             new Number($transition->getIssue()->getId()),
@@ -45,9 +43,7 @@ class JiraWorkflow implements Workflow
      */
     public function getRequirements(Transition $transition)
     {
-        if (!$info = $this->getJiraTransition($transition)) {
-            throw new UnsupportedTransitionException();
-        }
+        $info = $this->getJiraTransition($transition);
 
         $fields = array();
         foreach ($info['fields'] as $fieldName => $info) {

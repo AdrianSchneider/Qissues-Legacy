@@ -8,7 +8,7 @@ use Qissues\Console\Input\Strategy\Transition\EditStrategy;
 
 class EditStrategyTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCreate()
+    public function testCreatesFromEditedContent()
     {
         $template = 'enter input here';
         $content = 'user input';
@@ -45,6 +45,48 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('QIssues\Model\Workflow\TransitionDetails', $details);
         $this->assertEquals('input', $rawDetails['user']);
+    }
+
+    public function testCreatesEmptyIfNoFields()
+    {
+        $issueFactory = new EditStrategy(
+            $this->getMockBuilder('Qissues\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock(),
+            $this->getMockBuilder('Qissues\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock()
+        );
+
+        $details = $issueFactory->create(new TransitionRequirements(array()));
+
+        $this->assertEmpty($details->getDetails());
+        $this->assertInstanceOf('QIssues\Model\Workflow\TransitionDetails', $details);
+    }
+
+    public function testCreatesEmptyIfNoContent()
+    {
+        $template = 'enter input here';
+        $content = '';
+        $fields = array('resolution' => 'fixed', 'comment' => '');
+
+        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
+        $fileFormat
+            ->expects($this->once())
+            ->method('seed')
+            ->with($fields)
+            ->will($this->returnValue($template))
+        ;
+
+        $editor = $this->getMockBuilder('Qissues\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
+        $editor
+            ->expects($this->once())
+            ->method('getEdited')
+            ->with($template)
+            ->will($this->returnValue($content))
+        ;
+
+        $issueFactory = new EditStrategy($editor, $fileFormat);
+        $details = $issueFactory->create(new TransitionRequirements($fields));
+
+        $this->assertEmpty($details->getDetails());
+        $this->assertInstanceOf('QIssues\Model\Workflow\TransitionDetails', $details);
     }
 
     public function testInit()

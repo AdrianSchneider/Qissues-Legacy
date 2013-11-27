@@ -8,16 +8,28 @@ use Symfony\Component\Yaml\Dumper;
 
 class YmlFormat implements FileFormat
 {
-    public function __construct(Parser $parser, Dumper $dumper)
+    protected $parser;
+    protected $dumper;
+    protected $depth;
+
+    /**
+     * @param Parser $parser yaml parser
+     * @param Dumper $dumper yaml dumper
+     */
+    public function __construct(Parser $parser, Dumper $dumper, $depth = 100)
     {
         $this->parser = $parser;
         $this->dumper = $dumper;
+        $this->depth = $depth;
     }
 
+    /**
+     * Use YML to seed the file
+     *
+     * {@inheritDoc}
+     */
     public function seed(array $fields)
     {
-        // XXX
-
         $out = '';
         foreach ($fields as $i => $field) {
             if ($field instanceof Field and $options = $field->getOptions()) {
@@ -27,11 +39,16 @@ class YmlFormat implements FileFormat
             }
         }
 
-        $out .=  str_replace("''\n", "\n", $this->dumper->dump($fields, 100));
+        $out .=  str_replace("''\n", "\n", $this->dumper->dump($fields, $this->depth));
 
         return $out;
     }
 
+    /**
+     * Use YLM to parse the file
+     *
+     * {@inheritDoc}
+     */
     public function parse($input)
     {
         return $this->parser->parse($input);

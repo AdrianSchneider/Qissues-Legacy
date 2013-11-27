@@ -59,6 +59,15 @@ class ReportManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($report);
     }
 
+    public function testUseNoReportWhenNoneConfigured()
+    {
+        $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
+        $manager = new ReportManager(array());
+        $report = $manager->findReport($input);
+
+        $this->assertNull($report);
+    }
+
     protected function getInput($returningValue)
     {
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');

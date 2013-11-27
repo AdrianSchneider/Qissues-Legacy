@@ -2,6 +2,7 @@
 
 namespace Qissues\Console\Input\FileFormats;
 
+use Qissues\Model\Meta\Field;
 use Qissues\Console\Input\FileFormats\YmlFormat;
 
 class YmlFormatTest extends \PHPUnit_Framework_TestCase
@@ -13,17 +14,46 @@ class YmlFormatTest extends \PHPUnit_Framework_TestCase
 
         $format = new YmlFormat(
             $this->getMockBuilder('Symfony\Component\Yaml\Parser')->disableOriginalConstructor()->getMock(),
-            $dumper = $this->getMockBuilder('Symfony\Component\Yaml\Dumper')->disableOriginalConstructor()->getMock()
+            $dumper = $this->getMockBuilder('Symfony\Component\Yaml\Dumper')->disableOriginalConstructor()->getMock(),
+            $depth = 500
         );
 
         $dumper
             ->expects($this->once())
-            ->method('dump')
+            ->method('dump', $depth)
             ->with($in)
             ->will($this->returnValue($out))
         ;
 
         $this->assertEquals($out, $format->seed($in));
+    }
+
+    public function testSeedIncludesHintsIfFieldObjects()
+    {
+        $in = array(
+            new Field('a', "def", array(1, 2, 3)),
+            new Field('b', 'asdf', array(2, 3, 4))
+        );
+
+        $out = "\na: def\nb: ";
+
+        $format = new YmlFormat(
+            $this->getMockBuilder('Symfony\Component\Yaml\Parser')->disableOriginalConstructor()->getMock(),
+            $dumper = $this->getMockBuilder('Symfony\Component\Yaml\Dumper')->disableOriginalConstructor()->getMock(),
+            $depth = 500
+        );
+
+        $dumper
+            ->expects($this->once())
+            ->method('dump', $depth)
+            ->with(array(
+                'a' => 'def',
+                'b' => 'asdf'
+            ))
+            ->will($this->returnValue($out))
+        ;
+
+        $this->assertEquals("# a: [1, 2, 3]\n# b: [2, 3, 4]\n$out", $format->seed($in));
     }
 
     public function testParse()

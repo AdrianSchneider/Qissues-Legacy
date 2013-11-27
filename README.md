@@ -11,10 +11,7 @@ Currently supported:
 - GitHub
 - Bitbucket Issues
 - Trello (Lists as Statuses)
-
-With immediate plans to support:
-
-- JIRA (WIP)
+- JIRA
 
 ## Features
 
@@ -22,6 +19,7 @@ With immediate plans to support:
 - **Reports** - Save common queries as reports so you can re-run them later. Ex: `qissues -r bugs`
 - **Views** - Supports alternate views (large table view, smaller list with metadata, and tiny list). Automatically detects, but can be overridden.
 - **Post/Edit Issues** - Submit and modify issues from comfort of your own terminal.
+- **Workflow Integration** - For systems that support it, workflows (in progress -> resolved, prompting for resolution)
 - **Git Integration** - Easily query active issue based on branch name. "feature-x", would allow `qissues view`, `qissues edit`, without remembering 'x'.
 
 ## Installation

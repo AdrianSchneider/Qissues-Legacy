@@ -3,12 +3,12 @@
 namespace Qissues\Trackers\InMemory;
 
 use Qissues\Domain\Model\Issue;
-use Qissues\Domain\Shared\User;
-use Qissues\Domain\Model\Request\NewIssue;
 use Qissues\Domain\Model\Message;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Domain\Model\IssueRepository;
+use Qissues\Domain\Model\Request\NewIssue;
+use Qissues\Domain\Shared\User;
 
 class InMemoryRepository implements IssueRepository
 {

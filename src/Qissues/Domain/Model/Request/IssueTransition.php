@@ -19,9 +19,9 @@ class IssueTransition
      * @param Number $issue
      * @param Status $status
      * @param IssueTransitionDetails|null $details
-     * @param NewComment|null $comment
+     * @param Message|null $comment
      */
-    public function __construct(Number $issue, Status $status, IssueTransitionDetails $details = null, NewComment $comment = null)
+    public function __construct(Number $issue, Status $status, IssueTransitionDetails $details = null, Message $comment = null)
     {
         $this->issue = $issue;
         $this->status = $status;

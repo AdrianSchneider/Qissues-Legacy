@@ -6,7 +6,7 @@ use Qissues\Interfaces\Console\Input\Strategy\Comment\OptionStrategy;
 
 class OptionStrategyTest extends \PHPUnit_Framework_TestCase
 {
-    public function testReturnsPopulatedNewComment()
+    public function testReturnsPopulatedMessage()
     {
         $strategy = new OptionStrategy();
         $strategy->init(
@@ -24,7 +24,7 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
 
         $comment = $strategy->createNew($this->getMockBuilder('Qissues\Trackers\Shared\IssueTracker')->disableOriginalConstructor()->getMock());
 
-        $this->assertInstanceOf('Qissues\Domain\Model\Request\NewComment', $comment);
+        $this->assertInstanceOf('Qissues\Domain\Model\Message', $comment);
         $this->assertEquals('hello world', $comment->getMessage());
     }
 

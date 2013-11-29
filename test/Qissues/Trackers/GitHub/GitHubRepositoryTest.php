@@ -5,7 +5,7 @@ namespace Qissues\Tests\Trackers\GitHub;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Status;
-use Qissues\Domain\Model\Request\NewComment;
+use Qissues\Domain\Model\Message;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Trackers\GitHub\GitHubRepository;
 use Guzzle\Http\Client;
@@ -176,7 +176,7 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->mock->addResponse(new Response(200, null, json_encode($payload)));
 
         $tracker = $this->getRepository();
-        $tracker->comment(new Number(5), new NewComment('sup'));
+        $tracker->comment(new Number(5), new Message('sup'));
 
         $this->assertRequestMethod('POST');
         $this->assertRequestUrl("/repos/adrian/peanuts/issues/5/comments");

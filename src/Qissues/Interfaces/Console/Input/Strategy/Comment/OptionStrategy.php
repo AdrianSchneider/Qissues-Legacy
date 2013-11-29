@@ -2,7 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Input\Strategy\Comment;
 
-use Qissues\Domain\Model\Request\NewComment;
+use Qissues\Domain\Model\Message;
 use Qissues\Trackers\Shared\IssueTracker;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,7 +26,7 @@ class OptionStrategy implements CommentStrategy
     function createNew(IssueTracker $tracker)
     {
         if ($message = $this->input->getOption('message')) {
-            return new NewComment($message);
+            return new Message($message);
         }
     }
 }

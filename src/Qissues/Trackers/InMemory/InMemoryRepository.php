@@ -5,7 +5,7 @@ namespace Qissues\Trackers\InMemory;
 use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Model\Request\NewIssue;
-use Qissues\Domain\Model\Request\NewComment;
+use Qissues\Domain\Model\Message;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Domain\Model\IssueRepository;
@@ -50,6 +50,7 @@ class InMemoryRepository implements IssueRepository
         $this->issues[$index]['status'] = 'new';
         $this->issues[$index]['created'] = date('Y-m-d');
         $this->issues[$index]['updated'] = date('Y-m-d');
+        $this->issues[$index]['comments'] = array();
 
         return new Number($index);
     }
@@ -111,15 +112,21 @@ class InMemoryRepository implements IssueRepository
      */
     function findComments(Number $issue)
     {
-
+        return array_map(
+            array($this->mapping, 'toComment'),
+            $this->issues[(string)$issue]['comments']
+        );
     }
 
     /**
      * {@inheritDoc}
      */
-    function comment(Number $issue, NewComment $comment)
+    function comment(Number $issue, Message $comment)
     {
-
+        $index = (string)$issue;
+        $this->issues[$index]['comments'][] = array(
+            'message' => (string)$comment
+        );
     }
 
     /**

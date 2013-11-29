@@ -43,7 +43,7 @@ class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testCreateNewCreatesNewCommentFromDialog()
+    public function testCreateNewCreatesMessageFromDialog()
     {
         $input = new ArrayInput(array());
         $input->setInteractive(true);
@@ -69,7 +69,7 @@ class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
 
         $comment = $strategy->createNew($tracker);
 
-        $this->assertInstanceOf('Qissues\Domain\Model\Request\NewComment', $comment);
+        $this->assertInstanceOf('Qissues\Domain\Model\Message', $comment);
         $this->assertEquals('hello world', $comment->getMessage());
     }
 

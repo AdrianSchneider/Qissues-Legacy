@@ -2,7 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Input\Strategy\Comment;
 
-use Qissues\Domain\Model\Request\NewComment;
+use Qissues\Domain\Model\Message;
 use Qissues\Trackers\Shared\IssueTracker;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,7 +28,7 @@ class StdinStrategy implements CommentStrategy
     function createNew(IssueTracker $tracker)
     {
         if ($input = trim(file_get_contents($this->inputStream))) {
-            return new NewComment($input);
+            return new Message($input);
         }
     }
 }

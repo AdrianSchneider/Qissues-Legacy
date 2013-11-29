@@ -4,7 +4,7 @@ namespace Qissues\Domain\Model;
 
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Model\Request\NewIssue;
-use Qissues\Domain\Model\Request\NewComment;
+use Qissues\Domain\Model\Message;
 
 interface IssueRepository
 {
@@ -71,9 +71,9 @@ interface IssueRepository
     /**
      * Comment on an Issue
      * @param Number $issue
-     * @param NewComment $comment
+     * @param Message $comment
      */
-    function comment(Number $issue, NewComment $comment);
+    function comment(Number $issue, Message $comment);
 
     /**
      * Retrieve the metadata required for mapping

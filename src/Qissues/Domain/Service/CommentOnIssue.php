@@ -2,7 +2,6 @@
 
 namespace Qissues\Domain\Service;
 
-use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\Request\NewComment;
 use Qissues\Domain\Model\IssueRepository;
 
@@ -18,11 +17,14 @@ class CommentOnIssue
     /**
      * Posts a comment to an issue
      *
-     * @param NewComment $comment
+     * @param Message $comment
      * @param Number $issue
      */
-    public function __invoke(NewComent $comment, Number $issue)
+    public function __invoke(NewComment $comment)
     {
-        $this->repository->comment($number, $comment);
+        $this->repository->comment(
+            $comment->getIssue(),
+            $comment->getMessage()
+        );
     }
 }

@@ -3,7 +3,7 @@
 namespace Qissues\Domain\Model\Request;
 
 use Qissues\Domain\Model\Number;
-use Qissues\Domain\Model\Request\NewComment;
+use Qissues\Domain\Model\Message;
 use Qissues\Domain\Shared\User;
 
 /**
@@ -18,9 +18,9 @@ class IssueAssignment
     /**
      * @param Number $number
      * @param User $assignee
-     * @param NewComment|null $comment
+     * @param Message|null $comment
      */
-    public function __construct(Number $issue, User $assignee, NewComment $comment = null)
+    public function __construct(Number $issue, User $assignee, Message $comment = null)
     {
         $this->issue = $issue;
         $this->assignee = $assignee;

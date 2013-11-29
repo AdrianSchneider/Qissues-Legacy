@@ -21,7 +21,7 @@ interface IssueStrategy
     /**
      * Creates a new NewIssue instance
      * @param IssueTracker $tracker
-     * @return NewIssue|NewComment
+     * @return NewIssue|Message
      */
     function createNew(IssueTracker $tracker);
 
@@ -29,7 +29,7 @@ interface IssueStrategy
      * Creates a new NewIssue instance for changes
      * @param IssueTracker Tracker
      * @param Issue $issue
-     * @return NewIssue|NewComment
+     * @return NewIssue|Message
      */
     function updateExisting(IssueTracker $tracker, Issue $existing);
 }

@@ -2,7 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Input\Strategy\Comment;
 
-use Qissues\Domain\Model\Request\NewComment;
+use Qissues\Domain\Model\Message;
 use Qissues\Trackers\Shared\IssueTracker;
 use Qissues\Interfaces\Console\Input\ExternalFileEditor;
 use Symfony\Component\Console\Application;
@@ -29,7 +29,7 @@ class EditStrategy implements CommentStrategy
     public function createNew(IssueTracker $tracker)
     {
         if ($content = $this->editor->getEdited('')) {
-            return new NewComment($content);
+            return new Message($content);
         }
     }
 }

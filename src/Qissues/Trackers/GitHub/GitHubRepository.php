@@ -8,7 +8,7 @@ use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Domain\Workflow\BasicTransitioner;
 use Qissues\Domain\Model\Request\NewIssue;
-use Qissues\Domain\Model\Request\NewComment;
+use Qissues\Domain\Model\Message;
 use Qissues\Domain\Model\IssueRepository;
 use Qissues\Trackers\Shared\FieldMapping;
 use Qissues\Trackers\Shared\Metadata\NullMetadata;
@@ -112,7 +112,7 @@ class GitHubRepository implements IssueRepository, BasicTransitioner
     /**
      * {@inheritDoc}
      */
-    public function comment(Number $issue, NewComment $comment)
+    public function comment(Number $issue, Message $comment)
     {
         $request = $this->request('POST', $this->getIssueUrl($issue, '/comments'));
         $request->setBody(json_encode(array('body' => $comment->getMessage())), 'application/json');

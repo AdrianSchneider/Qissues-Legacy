@@ -4,7 +4,7 @@ namespace Qissues\Trackers\BitBucket;
 
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\Request\NewIssue;
-use Qissues\Domain\Model\Request\NewComment;
+use Qissues\Domain\Model\Message;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Domain\Model\IssueRepository;
 use Qissues\Domain\Shared\User;
@@ -113,7 +113,7 @@ class BitBucketRepository implements IssueRepository, BasicTransitioner
     /**
      * {@inheritDoc}
      */
-    public function comment(Number $issue, NewComment $comment)
+    public function comment(Number $issue, Message $comment)
     {
         $request = $this->request('POST', $this->getIssueUrl($issue, '/comments'));
         $request->setBody(array('content' => $comment->getMessage()));

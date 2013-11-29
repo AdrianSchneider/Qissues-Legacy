@@ -106,11 +106,11 @@ class Command extends BaseCommand
     }
 
     /**
-     * Gets a populated NewComment from the selected strategy
+     * Gets a populated Message from the selected strategy
      *
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return NewComment|null
+     * @return Message|null
      */
     protected function getComment(InputInterface $input, OutputInterface $output)
     {

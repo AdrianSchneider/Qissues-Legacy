@@ -9,7 +9,7 @@ use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\Label;
 use Qissues\Domain\Model\Request\NewIssue;
-use Qissues\Domain\Model\Request\NewComment;
+use Qissues\Domain\Model\Message;
 use Qissues\Trackers\Shared\FieldMapping;
 use Qissues\Domain\Model\SearchCriteria;
 
@@ -45,7 +45,7 @@ class InMemoryMapping implements FieldMapping
             !empty($issue['labels']) ? array_map(function($label) {
                 return new Label($label['name']);
             }, $issue['labels']) : array(),
-            !empty($issue['comments']) ? intval($issue['comments']) : 0
+            count($issue['comments'])
         );
     }
 

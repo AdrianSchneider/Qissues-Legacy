@@ -9,7 +9,7 @@ use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Domain\Workflow\BasicTransitioner;
 use Qissues\Domain\Model\Request\NewIssue;
-use Qissues\Domain\Model\Request\NewComment;
+use Qissues\Domain\Model\Message;
 use Qissues\Domain\Model\IssueRepository;
 use Qissues\Trackers\Shared\FieldMapping;
 use Qissues\Trackers\Shared\Metadata\Metadata;
@@ -141,7 +141,7 @@ class TrelloRepository implements IssueRepository, BasicTransitioner
     /**
      * {@inheritDoc}
      */
-    public function comment(Number $issue, NewComment $comment)
+    public function comment(Number $issue, Message $comment)
     {
         $request = $this->request('POST', sprintf("/cards/%s/actions/comments", $this->lookupId($issue)));
         $request->setBody(json_encode(array('text' => $comment->getMessage())), 'application/json');

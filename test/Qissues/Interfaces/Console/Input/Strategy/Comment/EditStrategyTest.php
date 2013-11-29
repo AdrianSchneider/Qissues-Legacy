@@ -6,7 +6,7 @@ use Qissues\Interfaces\Console\Input\Strategy\Comment\EditStrategy;
 
 class EditStrategyTest extends \PHPUnit_Framework_TestCase
 {
-    public function testReturnsPopulatedNewComment()
+    public function testReturnsPopulatedMessage()
     {
         $editor = $this->getMockBuilder('Qissues\Interfaces\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
         $editor
@@ -19,7 +19,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         $strategy = new EditStrategy($editor);
         $comment = $strategy->createNew($this->getMockBuilder('Qissues\Trackers\Shared\IssueTracker')->disableOriginalConstructor()->getMock());
 
-        $this->assertInstanceOf('Qissues\Domain\Model\Request\NewComment', $comment);
+        $this->assertInstanceOf('Qissues\Domain\Model\Message', $comment);
         $this->assertEquals('content', $comment->getMessage());
     }
 

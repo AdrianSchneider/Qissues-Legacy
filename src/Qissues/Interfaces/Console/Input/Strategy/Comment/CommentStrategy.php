@@ -19,10 +19,10 @@ interface CommentStrategy
     function init(InputInterface $input, OutputInterface $output, Application $application);
 
     /**
-     * Creates a NewComment instance
+     * Creates a Message instance
      *
      * @param IssueTracker $tracker
-     * @return NewComment|null
+     * @return Message|null
      */
     function createNew(IssueTracker $tracker);
 }

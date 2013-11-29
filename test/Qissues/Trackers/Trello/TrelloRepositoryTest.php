@@ -6,7 +6,7 @@ use Qissues\Domain\Model\Number;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\ClosedStatus;
-use Qissues\Domain\Model\Request\NewComment;
+use Qissues\Domain\Model\Message;
 use Qissues\Trackers\Trello\TrelloRepository;
 use Qissues\Trackers\Trello\TrelloMetadata;
 use Qissues\Trackers\Shared\Metadata\NullMetadata;
@@ -241,7 +241,7 @@ class TrelloRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $payload = array();
         $number = new Number(12);
-        $comment = new NewComment('sup');
+        $comment = new Message('sup');
 
         $this->mock->addResponse(new Response(200, null, json_encode(array('id' => 'asdf'))));
         $this->mock->addResponse(new Response(200, null, json_encode($payload)));

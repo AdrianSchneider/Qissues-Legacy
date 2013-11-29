@@ -9,7 +9,7 @@ use Qissues\Domain\Shared\Label;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Priority;
-use Qissues\Domain\Model\Request\NewComment;
+use Qissues\Domain\Model\Message;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Trackers\BitBucket\BitBucketRepository;
 use Guzzle\Http\Client;
@@ -161,7 +161,7 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testComment()
     {
-        $comment = new NewComment('hello world');
+        $comment = new Message('hello world');
         $this->mock->addResponse(new Response(200));
 
         $repository = $this->getRepository();

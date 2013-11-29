@@ -6,6 +6,7 @@ use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Model\Request\NewIssue;
+use Qissues\Domain\Model\Message;
 use Qissues\Domain\Model\Request\NewComment;
 use Qissues\Domain\Model\Request\IssueAssignment;
 use Qissues\Domain\Model\Request\IssueChanges;
@@ -148,6 +149,29 @@ class FeatureContext extends BehatContext
         assertEquals(
             $assignee,
             $this->getIssue($num)->getAssignee()->getAccount()
+        );
+    }
+
+    /**
+     * @When /^I leave the comment "([^"]*)" on issue number "([^"]*)"$/
+     */
+    public function iLeaveTheCommentOnIssueNumber($message, $number)
+    {
+        $service = new \Qissues\Domain\Service\CommentOnIssue($this->repository);
+        $this->lastResponse = $service(new NewComment(
+            new Number($number),
+            new Message($message)
+        ));
+    }
+
+    /**
+     * @Then /^issue number "([^"]*)" should have "([^"]*)" comments$/
+     */
+    public function issueNumberShouldHaveComments($number, $comments)
+    {
+        assertEquals(
+            $comments,
+            $this->getIssue($number)->getCommentCount()
         );
     }
 

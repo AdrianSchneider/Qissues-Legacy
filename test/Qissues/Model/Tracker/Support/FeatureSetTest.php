@@ -2,9 +2,9 @@
 
 namespace Qissues\Tests\Model\Tracker\Support;
 
-use Qissues\Domain\Tracker\Support\Feature;
-use Qissues\Domain\Tracker\Support\FeatureSet;
-use Qissues\Domain\Tracker\Support\SupportLevel;
+use Qissues\Application\Tracker\Support\Feature;
+use Qissues\Application\Tracker\Support\FeatureSet;
+use Qissues\Application\Tracker\Support\SupportLevel;
 
 class FeatureSetTest extends \PHPUnit_Framework_TestCase
 {

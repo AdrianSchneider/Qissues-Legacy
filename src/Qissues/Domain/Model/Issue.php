@@ -7,9 +7,8 @@ use Qissues\Domain\Shared\Priority;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Label;
-use Qissues\System\DataType\ReadOnlyArrayAccess;
 
-class Issue extends ReadOnlyArrayAccess
+class Issue
 {
     protected $id;
     protected $title;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Domain\Meta;
+namespace Qissues\Application\Input;
 
 class Field
 {

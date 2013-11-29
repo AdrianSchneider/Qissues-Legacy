@@ -2,7 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Command;
 
-use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Workflow\Transition;
 use Qissues\Domain\Workflow\TransitionDetails;

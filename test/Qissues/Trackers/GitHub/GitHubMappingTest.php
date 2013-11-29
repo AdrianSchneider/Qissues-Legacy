@@ -4,11 +4,11 @@ namespace Qissues\Tests\Trackers\GitHub;
 
 use Qissues\Domain\Model\NewIssue;
 use Qissues\Trackers\GitHub\GitHubMapping;
-use Qissues\Domain\Meta\User;
-use Qissues\Domain\Meta\Status;
-use Qissues\Domain\Meta\Type;
-use Qissues\Domain\Meta\Label;
-use Qissues\Domain\Meta\Priority;
+use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\Status;
+use Qissues\Domain\Shared\Type;
+use Qissues\Domain\Shared\Label;
+use Qissues\Domain\Shared\Priority;
 use Qissues\Domain\Model\SearchCriteria;
 
 class GitHubMappingTest extends \PHPUnit_Framework_TestCase

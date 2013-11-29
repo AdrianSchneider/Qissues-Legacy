@@ -43,7 +43,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         $details = $issueFactory->create($requirements);
         $rawDetails = $details->getDetails();
 
-        $this->assertInstanceOf('QIssues\Model\Workflow\TransitionDetails', $details);
+        $this->assertInstanceOf('Qissues\Model\Workflow\TransitionDetails', $details);
         $this->assertEquals('input', $rawDetails['user']);
     }
 
@@ -57,7 +57,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         $details = $issueFactory->create(new TransitionRequirements(array()));
 
         $this->assertEmpty($details->getDetails());
-        $this->assertInstanceOf('QIssues\Model\Workflow\TransitionDetails', $details);
+        $this->assertInstanceOf('Qissues\Model\Workflow\TransitionDetails', $details);
     }
 
     public function testCreatesEmptyIfNoContent()
@@ -86,7 +86,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         $details = $issueFactory->create(new TransitionRequirements($fields));
 
         $this->assertEmpty($details->getDetails());
-        $this->assertInstanceOf('QIssues\Model\Workflow\TransitionDetails', $details);
+        $this->assertInstanceOf('Qissues\Model\Workflow\TransitionDetails', $details);
     }
 
     public function testInit()

@@ -3,7 +3,7 @@
 namespace Qissues\Interfaces\Console\Command;
 
 use Qissues\Domain\Model\Number;
-use Qissues\Domain\Meta\User;
+use Qissues\Domain\Shared\User;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;

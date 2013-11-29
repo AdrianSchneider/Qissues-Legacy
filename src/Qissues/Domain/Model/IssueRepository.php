@@ -1,13 +1,8 @@
 <?php
 
-namespace Qissues\Domain\Tracker;
+namespace Qissues\Domain\Model;
 
-use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Shared\User;
-use Qissues\Domain\Model\NewIssue;
-use Qissues\Domain\Model\NewComment;
-use Qissues\Domain\Model\Number;
-use Qissues\Domain\Model\SearchCriteria;
 
 interface IssueRepository
 {

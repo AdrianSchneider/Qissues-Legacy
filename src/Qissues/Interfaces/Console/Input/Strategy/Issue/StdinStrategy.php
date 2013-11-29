@@ -3,7 +3,7 @@
 namespace Qissues\Interfaces\Console\Input\Strategy\Issue;
 
 use Qissues\Domain\Model\Issue;
-use Qissues\Domain\Tracker\IssueTracker;
+use Qissues\Application\Tracker\IssueTracker;
 use Qissues\Interfaces\Console\Input\FileFormats\FileFormat;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;

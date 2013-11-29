@@ -3,7 +3,7 @@
 namespace Qissues\Interfaces\Console\Output\IssuesList;
 
 use Qissues\Interfaces\Console\Output\TableRenderer;
-use Qissues\Domain\Tracker\Support\FeatureSet;
+use Qissues\Application\Tracker\Support\FeatureSet;
 
 class BasicView
 {

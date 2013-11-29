@@ -3,7 +3,7 @@
 namespace Qissues\Domain\Workflow;
 
 use Qissues\Domain\Model\Issue;
-use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Workflow\Transition;
 
 class TransitionTest extends \PHPUnit_Framework_TestCase

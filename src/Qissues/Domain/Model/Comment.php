@@ -3,9 +3,8 @@
 namespace Qissues\Domain\Model;
 
 use Qissues\Domain\Shared\User;
-use Qissues\System\DataType\ReadOnlyArrayAccess;
 
-class Comment extends ReadOnlyArrayAccess
+class Comment
 {
     protected $message;
     protected $author;

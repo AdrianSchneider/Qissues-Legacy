@@ -3,8 +3,8 @@
 namespace Qissues\Tests\Trackers\GitHub;
 
 use Qissues\Domain\Model\Number;
-use Qissues\Domain\Meta\User;
-use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Model\NewComment;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Trackers\GitHub\GitHubRepository;
@@ -35,7 +35,7 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
             $this->config['repository'],
             $this->config['username'],
             $this->config['password'],
-            $mapping ?: $this->getMockBuilder('Qissues\Domain\Tracker\FieldMapping')->disableOriginalConstructor()->getMock(),
+            $mapping ?: $this->getMockBuilder('Qissues\Application\Tracker\FieldMapping')->disableOriginalConstructor()->getMock(),
             $this->client
         );
     }
@@ -50,7 +50,7 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $payload = array('issue_datas' => 'yup');
 
-        $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Application\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('toIssue')
@@ -79,7 +79,7 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
         $query = array('keyword' => 'meh');
         $payload = array(array('issue'));
 
-        $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Application\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('buildSearchQuery')
@@ -106,7 +106,7 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $payload = array(array('comment'));
 
-        $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Application\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('toComment')
@@ -129,7 +129,7 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
         $payload = array('number' => 5);
         $mapped = array('a' => 'b');
 
-        $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Application\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('issueToArray')
@@ -152,7 +152,7 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
         $mapped = array('a' => 'b');
         $payload = array();
 
-        $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Application\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('issueToArray')

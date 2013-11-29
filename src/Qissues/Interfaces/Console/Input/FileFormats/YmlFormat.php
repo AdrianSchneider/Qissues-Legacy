@@ -2,7 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Input\FileFormats;
 
-use Qissues\Domain\Meta\Field;
+use Qissues\Application\Input\Field;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Dumper;
 

@@ -4,7 +4,7 @@ namespace Qissues\Trackers\Jira;
 
 use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Model\Number;
-use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Shared\Status;
 use Qissues\Trackers\Jira\JiraWorkflow;
 use Qissues\Domain\Workflow\Transition;
 use Qissues\Domain\Workflow\TransitionDetails;

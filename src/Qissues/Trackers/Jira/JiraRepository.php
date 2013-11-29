@@ -2,14 +2,14 @@
 
 namespace Qissues\Trackers\Jira;
 
-use Qissues\Domain\Meta\User;
-use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Domain\Model\NewIssue;
 use Qissues\Domain\Model\NewComment;
 use Qissues\Domain\Model\IssueRepository;
-use Qissues\Domain\Tracker\FieldMapping;
+use Qissues\Application\Tracker\FieldMapping;
 use Qissues\Domain\Workflow\Transition;
 use Guzzle\Http\Client;
 

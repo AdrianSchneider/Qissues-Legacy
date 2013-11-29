@@ -2,7 +2,7 @@
 
 namespace Qissues\Domain\Workflow;
 
-use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Model\Number;
 
 interface BasicTransitioner

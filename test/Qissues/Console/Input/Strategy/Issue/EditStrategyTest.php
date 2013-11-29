@@ -3,8 +3,8 @@
 namespace Qissues\Tests\Console\Input\Strategy\Issue;
 
 use Qissues\Domain\Model\Issue;
-use Qissues\Domain\Meta\Status;
-use Qissues\Domain\Tracker\IssueTracker;
+use Qissues\Domain\Shared\Status;
+use Qissues\Application\Tracker\IssueTracker;
 use Qissues\Interfaces\Console\Input\Strategy\Issue\EditStrategy;
 
 class EditStrategyTest extends \PHPUnit_Framework_TestCase
@@ -40,8 +40,8 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
 
         $tracker = new IssueTracker(
             $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
-            $mapping    = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
-            $features   = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $mapping    = $this->getMock('Qissues\Application\Tracker\FieldMapping'),
+            $features   = $this->getMock('Qissues\Application\Tracker\Support\FeatureSet'),
             $workflow   = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 
@@ -88,8 +88,8 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
 
         $tracker = new IssueTracker(
             $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
-            $mapping    = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
-            $features   = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $mapping    = $this->getMock('Qissues\Application\Tracker\FieldMapping'),
+            $features   = $this->getMock('Qissues\Application\Tracker\Support\FeatureSet'),
             $workflow   = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 
@@ -138,8 +138,8 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
 
         $tracker = new IssueTracker(
             $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
-            $mapping    = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
-            $features   = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $mapping    = $this->getMock('Qissues\Application\Tracker\FieldMapping'),
+            $features   = $this->getMock('Qissues\Application\Tracker\Support\FeatureSet'),
             $workflow   = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 
@@ -188,8 +188,8 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
 
         $tracker = new IssueTracker(
             $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
-            $mapping    = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
-            $features   = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $mapping    = $this->getMock('Qissues\Application\Tracker\FieldMapping'),
+            $features   = $this->getMock('Qissues\Application\Tracker\Support\FeatureSet'),
             $workflow   = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 

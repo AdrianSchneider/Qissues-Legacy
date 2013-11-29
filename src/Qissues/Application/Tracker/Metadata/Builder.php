@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Domain\Tracker\Metadata;
+namespace Qissues\Application\Tracker\Metadata;
 
 class Builder
 {

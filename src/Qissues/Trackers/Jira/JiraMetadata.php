@@ -2,7 +2,7 @@
 
 namespace Qissues\Trackers\Jira;
 
-use Qissues\Domain\Tracker\Metadata\Metadata;
+use Qissues\Application\Tracker\Metadata\Metadata;
 
 class JiraMetadata implements Metadata
 {

@@ -1,15 +1,14 @@
 <?php
 
-namespace Qissues\Domain\Posting;
+namespace Qissues\Domain\Model;
 
-use Qissues\Domain\Meta\User;
-use Qissues\Domain\Meta\Label;
-use Qissues\Domain\Meta\Type;
-use Qissues\Domain\Meta\Priority;
-use Qissues\Domain\Meta\Status;
-use Qissues\System\DataType\ReadOnlyArrayAccess;
+use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\Label;
+use Qissues\Domain\Shared\Type;
+use Qissues\Domain\Shared\Priority;
+use Qissues\Domain\Shared\Status;
 
-class NewIssue extends ReadOnlyArrayAccess
+class NewIssue
 {
     protected $title;
     protected $description;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Qissues\Domain\Serializer;
+namespace Qissues\Interfaces\Console\Output\Serializer;
 
-use Qissues\Domain\Comment;
+use Qissues\Domain\Model\Comment;
 
 class CommentSerializer
 {

@@ -10,7 +10,7 @@ use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\Label;
 use Qissues\Domain\Model\NewIssue;
 use Qissues\Domain\Model\NewComment;
-use Qissues\Domain\Tracker\FieldMapping;
+use Qissues\Application\Tracker\FieldMapping;
 use Qissues\Domain\Model\SearchCriteria;
 
 class InMemoryMapping implements FieldMapping

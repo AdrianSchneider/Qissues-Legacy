@@ -2,7 +2,7 @@
 
 namespace Qissues\Tests\Console\Input\Strategy\Comment;
 
-use Qissues\Domain\Tracker\IssueTracker;
+use Qissues\Application\Tracker\IssueTracker;
 use Qissues\Interfaces\Console\Input\Strategy\Comment\InteractiveStrategy;
 use Symfony\Component\Console\Input\ArrayInput;
 
@@ -62,8 +62,8 @@ class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
 
         $tracker = new IssueTracker(
             $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
-            $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
-            $features = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $mapping = $this->getMock('Qissues\Application\Tracker\FieldMapping'),
+            $features = $this->getMock('Qissues\Application\Tracker\Support\FeatureSet'),
             $workflow = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 
@@ -92,8 +92,8 @@ class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
 
         $tracker = new IssueTracker(
             $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
-            $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
-            $features = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $mapping = $this->getMock('Qissues\Application\Tracker\FieldMapping'),
+            $features = $this->getMock('Qissues\Application\Tracker\Support\FeatureSet'),
             $workflow = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 

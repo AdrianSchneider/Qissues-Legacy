@@ -3,13 +3,13 @@
 namespace Qissues\Trackers\Trello;
 
 use Qissues\Domain\Model\Number;
-use Qissues\Domain\Meta\User;
-use Qissues\Domain\Meta\Status;
-use Qissues\Domain\Meta\ClosedStatus;
+use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\Status;
+use Qissues\Domain\Shared\ClosedStatus;
 use Qissues\Domain\Model\NewComment;
 use Qissues\Trackers\Trello\TrelloRepository;
 use Qissues\Trackers\Trello\TrelloMetadata;
-use Qissues\Domain\Tracker\Metadata\NullMetadata;
+use Qissues\Application\Tracker\Metadata\NullMetadata;
 use Qissues\Domain\Model\SearchCriteria;
 use Guzzle\Http\Client;
 use Guzzle\Http\Message\Response;
@@ -38,7 +38,7 @@ class TrelloRepositoryTest extends \PHPUnit_Framework_TestCase
             $this->config['board'],
             $this->config['key'],
             $this->config['token'],
-            $mapping ?: $this->getMockBuilder('Qissues\Domain\Tracker\FieldMapping')->disableOriginalConstructor()->getMock(),
+            $mapping ?: $this->getMockBuilder('Qissues\Application\Tracker\FieldMapping')->disableOriginalConstructor()->getMock(),
             $metadata ? new TrelloMetadata($metadata) : new NullMetadata(),
             $this->client
         );
@@ -54,7 +54,7 @@ class TrelloRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $payload = array('issue_datas' => 'yup');
 
-        $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Application\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('toIssue')

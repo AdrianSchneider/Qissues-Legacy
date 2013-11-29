@@ -2,17 +2,17 @@
 
 namespace Qissues\Trackers\BitBucket;
 
-use Qissues\Domain\Meta\User;
-use Qissues\Domain\Meta\Status;
-use Qissues\Domain\Meta\ClosedStatus;
+use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\Status;
+use Qissues\Domain\Shared\ClosedStatus;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Domain\Model\NewIssue;
 use Qissues\Domain\Model\NewComment;
 use Qissues\Domain\Workflow\BasicTransitioner;
 use Qissues\Domain\Model\IssueRepository;
-use Qissues\Domain\Tracker\FieldMapping;
-use Qissues\Domain\Tracker\Metadata\NullMetadata;
+use Qissues\Application\Tracker\FieldMapping;
+use Qissues\Application\Tracker\Metadata\NullMetadata;
 use Guzzle\Http\Client;
 use Guzzle\Http\QueryAggregator\DuplicateAggregator;
 

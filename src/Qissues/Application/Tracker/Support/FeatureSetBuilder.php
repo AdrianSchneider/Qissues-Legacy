@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Domain\Tracker\Support;
+namespace Qissues\Application\Tracker\Support;
 
 interface FeatureSetBuilder
 {

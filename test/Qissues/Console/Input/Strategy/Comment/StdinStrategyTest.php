@@ -9,7 +9,7 @@ class StdinStrategyTest extends \PHPUnit_Framework_TestCase
     public function testCreatesCommentFromStream()
     {
         $strategy = new StdinStrategy('data://text/plain,hello-world');
-        $tracker = $this->getMockBuilder('Qissues\Domain\Tracker\IssueTracker')->disableOriginalConstructor()->getMock();
+        $tracker = $this->getMockBuilder('Qissues\Application\Tracker\IssueTracker')->disableOriginalConstructor()->getMock();
         $comment = $strategy->createNew($tracker);
 
         $this->assertInstanceOf('Qissues\Domain\Model\NewComment', $comment);
@@ -19,7 +19,7 @@ class StdinStrategyTest extends \PHPUnit_Framework_TestCase
     public function testIgnoresEmptyStreams()
     {
         $strategy = new StdinStrategy('data://text/plain,');
-        $tracker = $this->getMockBuilder('Qissues\Domain\Tracker\IssueTracker')->disableOriginalConstructor()->getMock();
+        $tracker = $this->getMockBuilder('Qissues\Application\Tracker\IssueTracker')->disableOriginalConstructor()->getMock();
         $comment = $strategy->createNew($tracker);
 
         $this->assertNull($comment);

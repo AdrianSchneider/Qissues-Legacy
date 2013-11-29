@@ -2,7 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Input\FileFormats;
 
-use Qissues\Domain\Meta\Field;
+use Qissues\Application\Input\Field;
 use Qissues\Interfaces\Console\Input\FileFormats\YmlFormat;
 
 class YmlFormatTest extends \PHPUnit_Framework_TestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Domain\Serializer;
+namespace Qissues\Interfaces\Console\Output\Serializer;
 
 use Qissues\Domain\Model\Issue;
 

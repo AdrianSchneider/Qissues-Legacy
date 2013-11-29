@@ -68,7 +68,7 @@ class CriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $assignees = $criteria->getAssignees();
 
         $this->assertCount(1, $assignees);
-        $this->assertInstanceOf('Qissues\Domain\Meta\CurrentUser', $assignees[0]);
+        $this->assertInstanceOf('Qissues\Domain\Shared\CurrentUser', $assignees[0]);
     }
 
     public function testHandleStatuses()
@@ -89,7 +89,7 @@ class CriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $criteria = $this->builder->build($input);
         $priorities = $criteria->getPriorities();
 
-        $this->assertInstanceOf('Qissues\Domain\Meta\Priority', $priorities[0]);
+        $this->assertInstanceOf('Qissues\Domain\Shared\Priority', $priorities[0]);
         $this->assertEquals(0, $priorities[0]->getPriority());
         $this->assertEquals('urgent', $priorities[0]->getName());
     }
@@ -101,7 +101,7 @@ class CriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $criteria = $this->builder->build($input);
         $priorities = $criteria->getPriorities();
 
-        $this->assertInstanceOf('Qissues\Domain\Meta\Priority', $priorities[0]);
+        $this->assertInstanceOf('Qissues\Domain\Shared\Priority', $priorities[0]);
         $this->assertEquals(5, $priorities[0]->getPriority());
         $this->assertEquals('', $priorities[0]->getName());
     }
@@ -114,7 +114,7 @@ class CriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $assignees = $criteria->getAssignees();
 
         $this->assertCount(1, $assignees);
-        $this->assertInstanceOf('Qissues\Domain\Meta\User', $assignees[0]);
+        $this->assertInstanceOf('Qissues\Domain\Shared\User', $assignees[0]);
         $this->assertEquals('adrian', (string)$assignees[0]);
     }
 
@@ -126,7 +126,7 @@ class CriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $types = $criteria->getTypes();
 
         $this->assertCount(1, $types);
-        $this->assertInstanceOf('Qissues\Domain\Meta\Type', $types[0]);
+        $this->assertInstanceOf('Qissues\Domain\Shared\Type', $types[0]);
         $this->assertEquals('bug', (string)$types[0]);
     }
 
@@ -138,7 +138,7 @@ class CriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $labels = $criteria->getLabels();
 
         $this->assertCount(1, $labels);
-        $this->assertInstanceOf('Qissues\Domain\Meta\Label', $labels[0]);
+        $this->assertInstanceOf('Qissues\Domain\Shared\Label', $labels[0]);
         $this->assertEquals('lame', (string)$labels[0]);
     }
 

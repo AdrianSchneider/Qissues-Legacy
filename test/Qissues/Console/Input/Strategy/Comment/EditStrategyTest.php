@@ -17,7 +17,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         ;
 
         $strategy = new EditStrategy($editor);
-        $comment = $strategy->createNew($this->getMockBuilder('Qissues\Domain\Tracker\IssueTracker')->disableOriginalConstructor()->getMock());
+        $comment = $strategy->createNew($this->getMockBuilder('Qissues\Application\Tracker\IssueTracker')->disableOriginalConstructor()->getMock());
 
         $this->assertInstanceOf('Qissues\Domain\Model\NewComment', $comment);
         $this->assertEquals('content', $comment->getMessage());
@@ -34,7 +34,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         ;
 
         $strategy = new EditStrategy($editor);
-        $comment = $strategy->createNew($this->getMockBuilder('Qissues\Domain\Tracker\IssueTracker')->disableOriginalConstructor()->getMock());
+        $comment = $strategy->createNew($this->getMockBuilder('Qissues\Application\Tracker\IssueTracker')->disableOriginalConstructor()->getMock());
 
         $this->assertNull($comment);
     }

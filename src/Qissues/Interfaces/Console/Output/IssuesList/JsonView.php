@@ -2,8 +2,8 @@
 
 namespace Qissues\Interfaces\Console\Output\IssuesList;
 
-use Qissues\Domain\Tracker\Support\FeatureSet;
-use Qissues\Domain\Serializer\IssueSerializer;
+use Qissues\Application\Tracker\Support\FeatureSet;
+use Qissues\Interfaces\Console\Output\Serializer\IssueSerializer;
 
 class JsonView
 {

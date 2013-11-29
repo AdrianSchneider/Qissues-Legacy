@@ -2,9 +2,9 @@
 
 namespace Qissues\Trackers\Jira;
 
-use Qissues\Domain\Meta\User;
-use Qissues\Domain\Meta\Type;
-use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\Type;
+use Qissues\Domain\Shared\Status;
 use Qissues\Trackers\Jira\JqlQueryBuilder;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\SearchCriteria;

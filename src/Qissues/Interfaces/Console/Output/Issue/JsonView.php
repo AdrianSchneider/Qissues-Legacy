@@ -3,9 +3,9 @@
 namespace Qissues\Interfaces\Console\Output\Issue;
 
 use Qissues\Domain\Model\Issue;
-use Qissues\Domain\Comment;
-use Qissues\Domain\Serializer\IssueSerializer;
-use Qissues\Domain\Serializer\CommentSerializer;
+use Qissues\Domain\Model\Comment;
+use Qissues\Interfaces\Console\Output\Serializer\IssueSerializer;
+use Qissues\Interfaces\Console\Output\Serializer\CommentSerializer;
 
 class JsonView
 {

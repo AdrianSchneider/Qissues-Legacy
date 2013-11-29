@@ -3,12 +3,12 @@
 namespace Qissues\Tests\Model\Serializer;
 
 use Qissues\Domain\Model\Issue;
-use Qissues\Domain\Meta\Status;
-use Qissues\Domain\Meta\Type;
-use Qissues\Domain\Meta\User;
-use Qissues\Domain\Meta\Label;
-use Qissues\Domain\Meta\Priority;
-use Qissues\Domain\Serializer\IssueSerializer;
+use Qissues\Domain\Shared\Status;
+use Qissues\Domain\Shared\Type;
+use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\Label;
+use Qissues\Domain\Shared\Priority;
+use Qissues\Interfaces\Console\Output\Serializer\IssueSerializer;
 
 class IssueSerializerTest extends \PHPUnit_Framework_TestCase
 {

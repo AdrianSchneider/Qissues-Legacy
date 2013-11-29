@@ -19,9 +19,8 @@ class LocalStorage implements Storage
      */
     public function __construct(Filesystem $filesystem, $filename)
     {
-        if (function_exists('posix_getuid') && strpos($filename, '~') !== false) {
-            $info = posix_getpwuid(posix_getuid());
-            $filename = str_replace('~', $info['dir'], $filename);
+        if (strpos($filename, '~') !== false and $home = getenv('HOME')) {
+            $filename = str_replace('~', $home, $filename);
         }
 
         $this->filesystem = $filesystem;

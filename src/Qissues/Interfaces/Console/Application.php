@@ -47,9 +47,8 @@ class Application extends BaseApplication
         $parser = new Parser();
 
         // Load Configuration
-        $me = posix_getpwuid(getmyuid());
-        if (file_exists("$me[dir]/.qissues")) {
-            $this->config = $this->mergeConfig($this->config, $parser->parse(file_get_contents("$me[dir]/.qissues")));
+        if ($home = getenv('HOME') and file_exists("$home/.qissues")) {
+            $this->config = $this->mergeConfig($this->config, $parser->parse(file_get_contents("$home/.qissues")));
         }
         if (file_exists('./.qissues')) {
             $this->config = $this->mergeConfig($this->config, $parser->parse(file_get_contents('./.qissues')));

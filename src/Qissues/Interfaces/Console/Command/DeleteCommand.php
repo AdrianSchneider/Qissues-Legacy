@@ -3,6 +3,7 @@
 namespace Qissues\Interfaces\Console\Command;
 
 use Qissues\Domain\Model\Number;
+use Qissues\Domain\Service\DeleteIssue;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -32,12 +33,14 @@ class DeleteCommand extends Command
         $repository = $tracker->getRepository();
 
         $number = new Number($this->get('console.input.git_id')->getId($input));
+
         if (!$issue = $repository->lookup($number)) {
             $output->writeln('<error>Issue not found.</error>');
             return 1;
         }
 
-        $repository->delete($number);
+        $deleteIssue = new DeleteIssue($repository);
+        $deleteIssue($number);
         $output->writeln("Issue <info>#$number</info> has been deleted.");
     }
 }

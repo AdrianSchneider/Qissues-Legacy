@@ -2,6 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Command;
 
+use Qissues\Domain\Service\AssignIssue;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Shared\User;
 use Symfony\Component\Console\Input\InputInterface;
@@ -50,7 +51,9 @@ class AssignCommand extends Command
             $repository->comment($number, $comment);
         }
 
-        $repository->assign($number, new User($assignee));
-        $output->writeln("Issue <info>#$issue[id]</info> has been assigned to <info>$assignee</info>");
+        $assignIssue = new AssignIssue($repository);
+        $assignIssue(new User($assignee), $number);
+
+        $output->writeln("Issue <info>#$number</info> has been assigned to <info>$assignee</info>");
     }
 }

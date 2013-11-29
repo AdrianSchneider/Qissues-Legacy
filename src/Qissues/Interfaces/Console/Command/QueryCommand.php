@@ -2,6 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Command;
 
+use Qissues\Domain\Service\QueryIssues;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -60,7 +61,8 @@ class QueryCommand extends Command
             $criteria = $this->get('console.input.criteria_builder')->build($input);
         }
 
-        if (!$issues = $repository->query($criteria)) {
+        $queryIssues = new QueryIssues($repository);
+        if (!$issues = $queryIssues($criteria)) {
             $output->writeln("<info>No issues found!</info>");
             return 0;
         }

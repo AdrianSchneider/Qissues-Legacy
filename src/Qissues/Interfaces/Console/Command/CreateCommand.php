@@ -2,8 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Command;
 
-use Qissues\Connector\Connector;
-use Qissues\Input\TemplatedInput;
+use Qissues\Domain\Service\CreateIssue;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -28,7 +27,6 @@ class CreateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tracker = $this->getApplication()->getTracker();
-        $repository = $tracker->getRepository();
 
         if (!$strategy = $this->getIssueStrategy($input, $output)) {
             $output->writeln("<error>Invalid issue creation strategy specified</error>");
@@ -40,7 +38,9 @@ class CreateCommand extends Command
             return 1;
         }
 
-        $number = $repository->persist($issue);
+        $createIssue = new CreateIssue($tracker->getRepository());
+        $number = $createIssue($issue);
+
         $output->writeln("Issue <info>#$number</info> has been created");
     }
 }

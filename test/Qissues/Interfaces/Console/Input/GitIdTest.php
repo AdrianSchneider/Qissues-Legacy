@@ -16,13 +16,13 @@ class GitIdTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(5))
         ;
 
-        $plugin = new GitId($this->getMock('Qissues\Interfaces\Console\Shell\Shell'));
+        $plugin = new GitId($this->getMock('Qissues\System\Shell\Shell'));
         $this->assertEquals(5, $plugin->getId($input));
     }
 
     public function testGetIdFromBranch()
     {
-        $shell = $this->getMock('Qissues\Interfaces\Console\Shell\Shell');
+        $shell = $this->getMock('Qissues\System\Shell\Shell');
         $shell
             ->expects($this->once())
             ->method('run')
@@ -43,7 +43,7 @@ class GitIdTest extends \PHPUnit_Framework_TestCase
 
     public function testIgnoresWhenNoBranch()
     {
-        $shell = $this->getMock('Qissues\Interfaces\Console\Shell\Shell');
+        $shell = $this->getMock('Qissues\System\Shell\Shell');
         $shell
             ->expects($this->once())
             ->method('run')

@@ -48,7 +48,7 @@ services:
             - %system.storage.filename%
 
     console.shell:
-        class: Qissues\Interfaces\Console\Shell\BasicShell
+        class: Qissues\System\Shell\BasicShell
 
     console.input.report_manager:
         class: Qissues\Interfaces\Console\Input\ReportManager

@@ -2,7 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Input;
 
-use Qissues\Interfaces\Console\Shell\Shell;
+use Qissues\System\Shell\Shell;
 use Qissues\System\Filesystem;
 
 class ExternalFileEditor

@@ -2,7 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Output;
 
-use Qissues\Interfaces\Console\Shell\Shell;
+use Qissues\System\Shell\Shell;
 
 class WebBrowser
 {

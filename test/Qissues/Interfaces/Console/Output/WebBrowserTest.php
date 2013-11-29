@@ -35,7 +35,7 @@ class WebBrowserTest extends \PHPUnit_Framework_TestCase
     protected function getShellAsserting($command = null, $uname = null)
     {
         $index = 0;
-        $shell = $this->getMock('Qissues\Interfaces\Console\Shell\Shell');
+        $shell = $this->getMock('Qissues\System\Shell\Shell');
 
         if ($uname) {
             $shell

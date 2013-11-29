@@ -2,7 +2,7 @@
 
 namespace Qissues\Tests\Console\Shell;
 
-use Qissues\Interfaces\Console\Shell\BasicShell;
+use Qissues\System\Shell\BasicShell;
 
 class BasicShellTest extends \PHPUnit_Framework_TestCase
 {

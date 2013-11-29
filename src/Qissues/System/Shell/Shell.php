@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Interfaces\Console\Shell;
+namespace Qissues\System\Shell;
 
 interface Shell
 {

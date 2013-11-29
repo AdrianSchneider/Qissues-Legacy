@@ -2,7 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Input;
 
-use Qissues\Interfaces\Console\Shell\Shell;
+use Qissues\System\Shell\Shell;
 use Symfony\Component\Console\Input\InputInterface;
 
 class GitId

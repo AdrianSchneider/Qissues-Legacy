@@ -22,6 +22,10 @@
     <filter>
         <whitelist>
             <directory>src</directory>
+            <exclude>
+                <directory>src/Qissues/Interfaces/Behat</directory>
+                <directory>src/Qissues/Interfaces/Console/Output/View</directory>
+            </exclude>
         </whitelist>
     </filter>
 </phpunit>

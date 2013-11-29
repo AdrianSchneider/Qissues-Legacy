@@ -26,11 +26,11 @@ class DetailedView
                 'Title'        => strlen($title) > $width * 0.4
                     ? (substr($title, 0, $width * 0.4) . '...')
                     : $title,
-                'Status'       => $issue['status'],
-                'Type'         => $issue['type'],
-                'Labels'       => $issue['labels'],
-                'Priority'     => $issue['priority'],
-                'Assignee'     => $issue['assignee'],
+                'Status'       => $issue->getStatus(),
+                'Type'         => $issue->getType(),
+                'Labels'       => $issue->getLabels(),
+                'Priority'     => $issue->getPriority(),
+                'Assignee'     => $issue->getAssignee(),
                 'Date Created' => $issue->getDateCreated()->format('Y-m-d g:ia'),
                 'Date updated' => $issue->getDateUpdated()->format('Y-m-d g:ia'),
                 'Comments'     => $issue->getCommentCount()

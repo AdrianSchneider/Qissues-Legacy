@@ -19,12 +19,12 @@ class BasicView
         $renderIssues = array();
         foreach ($issues as $issue) {
             $renderIssues[] = array(
-                'Id'           => $issue['id'],
-                'Title'        => strlen($issue['title']) > $width * 0.4
-                    ? (substr($issue['title'], 0, $width * 0.4) . '...')
-                    : $issue['title'],
-                'Status'       => $issue['status'],
-                'Date updated' => $issue['dateUpdated']->format('Y-m-d g:ia')
+                'Id'           => $issue->getId(),
+                'Title'        => strlen($issue->getTitle()) > $width * 0.4
+                    ? (substr($issue->getTitle(), 0, $width * 0.4) . '...')
+                    : $issue->getTitle(),
+                'Status'       => $issue->getStatus(),
+                'Date updated' => $issue->getDateUpdated()->format('Y-m-d g:ia')
             );
         }
 

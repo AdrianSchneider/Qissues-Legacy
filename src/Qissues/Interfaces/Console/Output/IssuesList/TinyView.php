@@ -23,8 +23,8 @@ class TinyView
     {
         $maxLength = 0;
         foreach ($issues as $issue) {
-            if (strlen($issue['id']) > $maxLength) {
-                $maxLength = strlen($issue['id']);
+            if (strlen($issue->getId()) > $maxLength) {
+                $maxLength = strlen($issue->getId());
             }
         }
 
@@ -39,9 +39,9 @@ class TinyView
                 $this->getPriority($issue, $features),
                 $this->getIcons($issue, $features),
                 strval($issue->getId()),
-                strlen($issue['title']) > $allowedSize
-                    ? (substr($issue['title'], 0, $allowedSize - 3) . '...')
-                    : $issue['title']
+                strlen($issue->getTitle()) > $allowedSize
+                    ? (substr($issue->getTitle(), 0, $allowedSize - 3) . '...')
+                    : $issue->getTitle()
             ));
         }
 

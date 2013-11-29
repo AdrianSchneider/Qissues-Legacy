@@ -30,10 +30,10 @@ parameters:
 
 services:
     model.issue_serializer:
-        class: Qissues\Domain\Serializer\IssueSerializer
+        class: Qissues\Interfaces\Console\Output\Serializer\IssueSerializer
 
     model.comment_serializer:
-        class: Qissues\Domain\Serializer\CommentSerializer
+        class: Qissues\Interfaces\Console\Output\Serializer\CommentSerializer
 
     system.initializer:
         class: Qissues\System\Initializer

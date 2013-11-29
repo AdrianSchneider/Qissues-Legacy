@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Qissues\System\Storage;
+namespace Tests\Qissues\Application\Storage;
 
-use Qissues\System\Storage\LocalStorage;
+use Qissues\Application\Storage\LocalStorage;
 
 class LocalStorageTest extends \PHPUnit_Framework_TestCase
 {

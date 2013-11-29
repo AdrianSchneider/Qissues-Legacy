@@ -42,7 +42,7 @@ services:
             - @filesystem
 
     system.storage:
-        class: Qissues\System\Storage\LocalStorage
+        class: Qissues\Application\Storage\LocalStorage
         arguments:
             - @filesystem
             - %system.storage.filename%

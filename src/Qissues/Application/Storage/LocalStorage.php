@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\System\Storage;
+namespace Qissues\Application\Storage;
 
 use Qissues\Trackers\Shared\Metadata\Storage;
 use Qissues\System\Filesystem;

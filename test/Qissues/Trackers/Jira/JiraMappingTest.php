@@ -4,7 +4,7 @@ namespace Qissues\Trackers\Jira;
 
 use Qissues\Trackers\Jira\JiraMapping;
 use Qissues\Trackers\Jira\JiraMetadata;
-use Qissues\Domain\Model\NewIssue;
+use Qissues\Domain\Model\Request\NewIssue;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Priority;

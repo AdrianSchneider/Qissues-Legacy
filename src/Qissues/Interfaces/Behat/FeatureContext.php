@@ -5,8 +5,10 @@ use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Type;
-use Qissues\Domain\Model\NewIssue;
-use Qissues\Domain\Model\NewComment;
+use Qissues\Domain\Model\Request\NewIssue;
+use Qissues\Domain\Model\Request\NewComment;
+use Qissues\Domain\Model\Request\IssueAssignment;
+use Qissues\Domain\Model\Request\IssueChanges;
 use Qissues\Trackers\InMemory\InMemoryRepository;
 use Behat\Behat\Context\ClosuredContextInterface;
 use Behat\Behat\Context\TranslatedContextInterface;
@@ -43,12 +45,28 @@ class FeatureContext extends BehatContext
     }
 
     /**
-     * @When /^I assign issue "([^"]*)" to "([^"]*)"$/
+     * @When /^I update issue number "([^"]*)" with:$/
+     */
+    public function iUpdateIssueNumberWith($number, TableNode $changes)
+    {
+        $changes = $changes->getHash();
+        $service = new \Qissues\Domain\Service\EditIssue($this->repository);
+        $service(new IssueChanges(
+            new Number($number),
+            $this->repository->getMapping()->toNewIssue($changes[0])
+        ));
+    }
+
+    /**
+     * @When /^I assign issue number "([^"]*)" to "([^"]*)"$/
      */
     public function iAssignIssueTo($num, $assignee)
     {
         $service = new \Qissues\Domain\Service\AssignIssue($this->repository);
-        $this->lastResponse = $service(new User($assignee), new Number($num));
+        $this->lastResponse = $service(new IssueAssignment(
+            new Number($num),
+            new User($assignee)
+        ));
     }
 
     /**
@@ -120,15 +138,6 @@ class FeatureContext extends BehatContext
     public function issueShouldBeDeleted($num)
     {
         assertNull($this->getIssue($num));
-    }
-
-    /**
-     * @When /^I assume issue number "([^"]*)" to "([^"]*)"$/
-     */
-    public function iAssumeIssueNumberTo($num, $assignee)
-    {
-        $service = new \Qissues\Domain\Service\AssignIssue($this->repository);
-        $this->lastResponse = $service(new User($assignee), new Number($num));
     }
 
     /**

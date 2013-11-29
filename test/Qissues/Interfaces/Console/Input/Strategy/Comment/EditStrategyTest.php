@@ -19,7 +19,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         $strategy = new EditStrategy($editor);
         $comment = $strategy->createNew($this->getMockBuilder('Qissues\Trackers\Shared\IssueTracker')->disableOriginalConstructor()->getMock());
 
-        $this->assertInstanceOf('Qissues\Domain\Model\NewComment', $comment);
+        $this->assertInstanceOf('Qissues\Domain\Model\Request\NewComment', $comment);
         $this->assertEquals('content', $comment->getMessage());
     }
 

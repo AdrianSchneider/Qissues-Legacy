@@ -8,7 +8,7 @@ use Qissues\Domain\Shared\Label;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Priority;
-use Qissues\Domain\Model\NewComment;
+use Qissues\Domain\Model\Request\NewComment;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Trackers\Jira\JiraRepository;
 use Guzzle\Http\Client;
@@ -126,7 +126,7 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
     public function testPersist()
     {
         $payload = array('key' => 'PRE-12');
-        $issue = $this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock();
+        $issue = $this->getMockBuilder('Qissues\Domain\Model\Request\NewIssue')->disableOriginalConstructor()->getMock();
         $serializedIssue = array('issue');
         $this->mock->addResponse(new Response(200, null, json_encode($payload)));
 
@@ -171,7 +171,7 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testUpdate()
     {
-        $issue = $this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock();
+        $issue = $this->getMockBuilder('Qissues\Domain\Model\Request\NewIssue')->disableOriginalConstructor()->getMock();
         $mapped = array('a' => 'b');
         $this->mock->addResponse(new Response(200));
 

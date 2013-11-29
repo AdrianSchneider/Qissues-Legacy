@@ -2,7 +2,7 @@
 
 namespace Qissues\Domain\Service;
 
-use Qissues\Domain\Model\NewIssue;
+use Qissues\Domain\Model\Request\NewIssue;
 use Qissues\Domain\Model\IssueRepository;
 
 class CreateIssue

@@ -8,8 +8,8 @@ use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\Label;
-use Qissues\Domain\Model\NewIssue;
-use Qissues\Domain\Model\NewComment;
+use Qissues\Domain\Model\Request\NewIssue;
+use Qissues\Domain\Model\Request\NewComment;
 use Qissues\Trackers\Shared\FieldMapping;
 use Qissues\Domain\Model\SearchCriteria;
 

@@ -72,11 +72,11 @@ class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('toNewIssue')
             ->with(array('a' => 'c'))
-            ->will($this->returnValue($this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock()))
+            ->will($this->returnValue($this->getMockBuilder('Qissues\Domain\Model\Request\NewIssue')->disableOriginalConstructor()->getMock()))
         ;
 
         $issue = $strategy->createNew($tracker);
-        $this->assertInstanceOf('Qissues\Domain\Model\NewIssue', $issue);
+        $this->assertInstanceOf('Qissues\Domain\Model\Request\NewIssue', $issue);
     }
 
     public function testUpdateExisting()
@@ -118,11 +118,11 @@ class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('toNewIssue')
             ->with(array('a' => 'c'))
-            ->will($this->returnValue($this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock()))
+            ->will($this->returnValue($this->getMockBuilder('Qissues\Domain\Model\Request\NewIssue')->disableOriginalConstructor()->getMock()))
         ;
 
         $issue = $strategy->updateExisting($tracker, $issue);
-        $this->assertInstanceOf('Qissues\Domain\Model\NewIssue', $issue);
+        $this->assertInstanceOf('Qissues\Domain\Model\Request\NewIssue', $issue);
     }
 
     protected function getApplication($dialog = null)

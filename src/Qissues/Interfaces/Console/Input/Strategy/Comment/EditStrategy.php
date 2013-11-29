@@ -2,7 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Input\Strategy\Comment;
 
-use Qissues\Domain\Model\NewComment;
+use Qissues\Domain\Model\Request\NewComment;
 use Qissues\Trackers\Shared\IssueTracker;
 use Qissues\Interfaces\Console\Input\ExternalFileEditor;
 use Symfony\Component\Console\Application;

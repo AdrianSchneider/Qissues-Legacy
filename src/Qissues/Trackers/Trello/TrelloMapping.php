@@ -4,8 +4,8 @@ namespace Qissues\Trackers\Trello;
 
 use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Model\Comment;
-use Qissues\Domain\Model\NewIssue;
-use Qissues\Domain\Model\NewComment;
+use Qissues\Domain\Model\Request\NewIssue;
+use Qissues\Domain\Model\Request\NewComment;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Priority;

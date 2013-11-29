@@ -5,7 +5,7 @@ namespace Qissues\Tests\Trackers\GitHub;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Status;
-use Qissues\Domain\Model\NewComment;
+use Qissues\Domain\Model\Request\NewComment;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Trackers\GitHub\GitHubRepository;
 use Guzzle\Http\Client;
@@ -125,7 +125,7 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testPersist()
     {
-        $issue = $this->getMockBuilder('Qissues\Domain\Model\Newissue')->disableOriginalConstructor()->getMock();
+        $issue = $this->getMockBuilder('Qissues\Domain\Model\Request\Newissue')->disableOriginalConstructor()->getMock();
         $payload = array('number' => 5);
         $mapped = array('a' => 'b');
 
@@ -148,7 +148,7 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
     public function testUpdate()
     {
         $number = new Number(5);
-        $issue = $this->getMockBuilder('Qissues\Domain\Model\Newissue')->disableOriginalConstructor()->getMock();
+        $issue = $this->getMockBuilder('Qissues\Domain\Model\Request\Newissue')->disableOriginalConstructor()->getMock();
         $mapped = array('a' => 'b');
         $payload = array();
 

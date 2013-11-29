@@ -3,6 +3,8 @@
 namespace Qissues\Domain\Model;
 
 use Qissues\Domain\Shared\User;
+use Qissues\Domain\Model\Request\NewIssue;
+use Qissues\Domain\Model\Request\NewComment;
 
 interface IssueRepository
 {

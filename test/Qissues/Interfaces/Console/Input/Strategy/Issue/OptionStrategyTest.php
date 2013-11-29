@@ -42,7 +42,7 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
                 'title' => 'Hello',
                 'description' => 'World'
             ))
-            ->will($this->returnValue($this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock()))
+            ->will($this->returnValue($this->getMockBuilder('Qissues\Domain\Model\Request\NewIssue')->disableOriginalConstructor()->getMock()))
         ;
 
         $issue = $strategy->createNew($tracker);
@@ -83,7 +83,7 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
                 'title' => 'Hello',
                 'description' => 'World'
             ))
-            ->will($this->returnValue($this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock()))
+            ->will($this->returnValue($this->getMockBuilder('Qissues\Domain\Model\Request\NewIssue')->disableOriginalConstructor()->getMock()))
         ;
 
         $issue = $strategy->updateExisting($tracker, $this->getMockBuilder('Qissues\Domain\Model\Issue')->disableOriginalConstructor()->getMock());

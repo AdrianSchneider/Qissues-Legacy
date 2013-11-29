@@ -24,7 +24,7 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
 
         $comment = $strategy->createNew($this->getMockBuilder('Qissues\Trackers\Shared\IssueTracker')->disableOriginalConstructor()->getMock());
 
-        $this->assertInstanceOf('Qissues\Domain\Model\NewComment', $comment);
+        $this->assertInstanceOf('Qissues\Domain\Model\Request\NewComment', $comment);
         $this->assertEquals('hello world', $comment->getMessage());
     }
 

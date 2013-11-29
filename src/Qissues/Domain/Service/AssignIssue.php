@@ -2,9 +2,8 @@
 
 namespace Qissues\Domain\Service;
 
-use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\IssueRepository;
-use Qissues\Domain\Shared\User;
+use Qissues\Domain\Model\Request\IssueAssignment;
 
 class AssignIssue
 {
@@ -16,13 +15,19 @@ class AssignIssue
     }
 
     /**
-     * Posts a comment to an issue
+     * Assign a user to an issue, optionally commenting
      *
-     * @param User $user
-     * @param Number $issue
+     * @param IssueAssignment
      */
-    public function __invoke(User $user, Number $number)
+    public function __invoke(IssueAssignment $assignment)
     {
-        $this->repository->assign($number, $user);
+        $this->repository->assign(
+            $assignment->getIssue(),
+            $assignment->getAssignee()
+        );
+
+        if ($comment = $assignment->getComment()) {
+            $this->repository->coment($comment);
+        }
     }
 }

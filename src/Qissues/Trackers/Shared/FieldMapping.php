@@ -3,8 +3,8 @@
 namespace Qissues\Trackers\Shared;
 
 use Qissues\Domain\Model\Issue;
-use Qissues\Domain\Model\NewIssue;
-use Qissues\Domain\Model\NewComment;
+use Qissues\Domain\Model\Request\NewIssue;
+use Qissues\Domain\Model\Request\NewComment;
 use Qissues\Domain\Model\SearchCriteria;
 
 interface FieldMapping

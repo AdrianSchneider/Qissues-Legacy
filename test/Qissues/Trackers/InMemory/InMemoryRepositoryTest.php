@@ -5,8 +5,8 @@ namespace Qissues\Trackers\InMemory;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Model\Number;
-use Qissues\Domain\Model\NewIssue;
-use Qissues\Domain\Model\NewComment;
+use Qissues\Domain\Model\Request\NewIssue;
+use Qissues\Domain\Model\Request\NewComment;
 use Qissues\Trackers\InMemory\InMemoryRepository;
 
 class InMemoryRepositoryTest extends \PHPUnit_Framework_TestCase

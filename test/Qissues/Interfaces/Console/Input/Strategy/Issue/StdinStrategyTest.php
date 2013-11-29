@@ -35,14 +35,14 @@ class StdinStrategyTest extends \PHPUnit_Framework_TestCase
             ->method('toNewIssue')
             ->with($parsed)
             ->will($this->returnValue(
-                $this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock())
+                $this->getMockBuilder('Qissues\Domain\Model\Request\NewIssue')->disableOriginalConstructor()->getMock())
             )
         ;
 
         $issueFactory = new StdinStrategy($stream, $fileFormat);
         $issue = $issueFactory->createNew($tracker);
 
-        $this->assertInstanceOf('Qissues\Domain\Model\NewIssue', $issue);
+        $this->assertInstanceOf('Qissues\Domain\Model\Request\NewIssue', $issue);
     }
 
     public function testUpdateExistingCallsCreateNew()
@@ -73,14 +73,14 @@ class StdinStrategyTest extends \PHPUnit_Framework_TestCase
             ->method('toNewIssue')
             ->with($parsed)
             ->will($this->returnValue(
-                $this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock())
+                $this->getMockBuilder('Qissues\Domain\Model\Request\NewIssue')->disableOriginalConstructor()->getMock())
             )
         ;
 
         $issueFactory = new StdinStrategy($stream, $fileFormat);
         $issue = $issueFactory->updateExisting($tracker, $this->getMockBuilder('Qissues\Domain\Model\Issue')->disableOriginalConstructor()->getMock());
 
-        $this->assertInstanceOf('Qissues\Domain\Model\NewIssue', $issue);
+        $this->assertInstanceOf('Qissues\Domain\Model\Request\NewIssue', $issue);
     }
 
     public function testInitIsIgnored()

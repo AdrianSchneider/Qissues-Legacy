@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Domain\Model;
+namespace Qissues\Domain\Model\Request;
 
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Label;

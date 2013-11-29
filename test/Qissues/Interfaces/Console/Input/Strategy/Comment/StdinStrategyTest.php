@@ -12,7 +12,7 @@ class StdinStrategyTest extends \PHPUnit_Framework_TestCase
         $tracker = $this->getMockBuilder('Qissues\Trackers\Shared\IssueTracker')->disableOriginalConstructor()->getMock();
         $comment = $strategy->createNew($tracker);
 
-        $this->assertInstanceOf('Qissues\Domain\Model\NewComment', $comment);
+        $this->assertInstanceOf('Qissues\Domain\Model\Request\NewComment', $comment);
         $this->assertEquals('hello-world', $comment->getMessage());
     }
 

@@ -3,7 +3,7 @@
 namespace Qissues\Domain\Service;
 
 use Qissues\Domain\Model\Number;
-use Qissues\Domain\Model\NewComment;
+use Qissues\Domain\Model\Request\NewComment;
 use Qissues\Domain\Model\IssueRepository;
 
 class CommentOnIssue

@@ -3,6 +3,7 @@
 namespace Qissues\Interfaces\Console\Command;
 
 use Qissues\Domain\Service\AssignIssue;
+use Qissues\Domain\Request\IssueAssignment;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Shared\User;
 use Symfony\Component\Console\Input\InputInterface;
@@ -47,12 +48,13 @@ class AssignCommand extends Command
             $output->writeln("<error>Invalid commenting strategy specified</error>");
             return 1;
         }
-        if ($comment = $strategy->createNew($tracker)) {
-            $repository->comment($number, $comment);
-        }
 
         $assignIssue = new AssignIssue($repository);
-        $assignIssue(new User($assignee), $number);
+        $assignIssue(new IssueAssignment(
+            $number,
+            new User($assignee),
+            $strategy->createNew($tracker)
+        ));
 
         $output->writeln("Issue <info>#$number</info> has been assigned to <info>$assignee</info>");
     }

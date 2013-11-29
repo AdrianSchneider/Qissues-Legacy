@@ -69,7 +69,7 @@ class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
 
         $comment = $strategy->createNew($tracker);
 
-        $this->assertInstanceOf('Qissues\Domain\Model\NewComment', $comment);
+        $this->assertInstanceOf('Qissues\Domain\Model\Request\NewComment', $comment);
         $this->assertEquals('hello world', $comment->getMessage());
     }
 

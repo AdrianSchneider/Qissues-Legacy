@@ -2,7 +2,7 @@
 
 namespace Qissues\Tests\Trackers\GitHub;
 
-use Qissues\Domain\Model\NewIssue;
+use Qissues\Domain\Model\Request\NewIssue;
 use Qissues\Trackers\GitHub\GitHubMapping;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Status;
@@ -41,7 +41,7 @@ class GitHubMappingTest extends \PHPUnit_Framework_TestCase
             'description' => 'Oh snap'
         ));
 
-        $this->assertInstanceOf('Qissues\Domain\Model\NewIssue', $issue);
+        $this->assertInstanceOf('Qissues\Domain\Model\Request\NewIssue', $issue);
         $this->assertEquals('Hello World', $issue->getTitle());
         $this->assertEquals('Oh snap', $issue->getDescription());
     }

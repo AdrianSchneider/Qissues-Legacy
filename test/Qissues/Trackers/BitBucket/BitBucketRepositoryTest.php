@@ -9,7 +9,7 @@ use Qissues\Domain\Shared\Label;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Priority;
-use Qissues\Domain\Model\NewComment;
+use Qissues\Domain\Model\Request\NewComment;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Trackers\BitBucket\BitBucketRepository;
 use Guzzle\Http\Client;
@@ -115,7 +115,7 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testPersist()
     {
-        $newIssue = $this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock();
+        $newIssue = $this->getMockBuilder('Qissues\Domain\Model\Request\NewIssue')->disableOriginalConstructor()->getMock();
         $issue = 'real issue';
 
         $this->mock->addResponse(new Response(200, null, json_encode($payload = array(
@@ -141,7 +141,7 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $number = new Number(4);
         $issue = 'saved';
-        $newIssue = $this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock();
+        $newIssue = $this->getMockBuilder('Qissues\Domain\Model\Request\NewIssue')->disableOriginalConstructor()->getMock();
 
         $this->mock->addResponse(new Response(200));
 

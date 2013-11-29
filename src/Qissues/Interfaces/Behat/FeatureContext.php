@@ -123,6 +123,26 @@ class FeatureContext extends BehatContext
     }
 
     /**
+     * @When /^I assume issue number "([^"]*)" to "([^"]*)"$/
+     */
+    public function iAssumeIssueNumberTo($num, $assignee)
+    {
+        $service = new \Qissues\Domain\Service\AssignIssue($this->repository);
+        $this->lastResponse = $service(new User($assignee), new Number($num));
+    }
+
+    /**
+     * @Then /^issue number "([^"]*)" should be assigned to "([^"]*)"$/
+     */
+    public function issueNumberShouldBeAssignedTo2($num, $assignee)
+    {
+        assertEquals(
+            $assignee,
+            $this->getIssue($num)->getAssignee()->getAccount()
+        );
+    }
+
+    /**
      * Shortcut to grab an issue
      *
      * @param integer $num

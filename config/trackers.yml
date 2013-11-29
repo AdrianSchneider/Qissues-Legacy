@@ -15,7 +15,7 @@ parameters:
 
 services:
     tracker.github:
-        class: Qissues\Model\Tracker\IssueTracker
+        class: Qissues\Trackers\Shared\IssueTracker
         arguments:
             - @tracker.github.repository
             - @tracker.github.mapping
@@ -34,7 +34,7 @@ services:
         class: Qissues\Trackers\GitHub\GitHubMapping
 
     tracker.github.features:
-        class: Qissues\Model\Tracker\Support\FeatureSet
+        class: Qissues\Trackers\Shared\Support\FeatureSet
         factory_service: support.featureset_builder
         factory_method: build
         arguments:
@@ -44,7 +44,7 @@ services:
                 labels: [multiple, dynamic]
 
     tracker.github.workflow:
-        class: Qissues\Model\Workflow\BasicWorkflow
+        class: Qissues\Domain\Workflow\BasicWorkflow
         arguments:
             - @tracker.github.repository
 
@@ -52,7 +52,7 @@ services:
         class: Qissues\Trackers\GitHub\GitHubSupport
 
     tracker.bitbucket:
-        class: Qissues\Model\Tracker\IssueTracker
+        class: Qissues\Trackers\Shared\IssueTracker
         arguments:
             - @tracker.bitbucket.repository
             - @tracker.bitbucket.mapping
@@ -71,7 +71,7 @@ services:
         class: Qissues\Trackers\BitBucket\BitBucketMapping
 
     tracker.bitbucket.features:
-        class: Qissues\Model\Tracker\Support\FeatureSet
+        class: Qissues\Trackers\Shared\Support\FeatureSet
         factory_service: support.featureset_builder
         factory_method: build
         arguments:
@@ -86,12 +86,12 @@ services:
         class: Qissues\Trackers\BitBucket\BitBucketSupport
 
     tracker.bitbucket.workflow:
-        class: Qissues\Model\Workflow\BasicWorkflow
+        class: Qissues\Domain\Workflow\BasicWorkflow
         arguments:
             - @tracker.bitbucket.repository
 
     tracker.trello:
-        class: Qissues\Model\Tracker\IssueTracker
+        class: Qissues\Trackers\Shared\IssueTracker
         arguments:
             - @tracker.trello.repository
             - @tracker.trello.mapping
@@ -116,7 +116,7 @@ services:
         class: Qissues\Trackers\Trello\TrelloMetadata
 
     tracker.trello.features:
-        class: Qissues\Model\Tracker\Support\FeatureSet
+        class: Qissues\Trackers\Shared\Support\FeatureSet
         factory_service: support.featureset_builder
         factory_method: build
         arguments:
@@ -127,12 +127,12 @@ services:
                 metadata: [dynamic]
 
     tracker.trello.workflow:
-        class: Qissues\Model\Workflow\BasicWorkflow
+        class: Qissues\Domain\Workflow\BasicWorkflow
         arguments:
             - @tracker.trello.repository
 
     tracker.jira:
-        class: Qissues\Model\Tracker\IssueTracker
+        class: Qissues\Trackers\Shared\IssueTracker
         arguments:
             - @tracker.jira.repository
             - @tracker.jira.mapping
@@ -163,7 +163,7 @@ services:
             - @metadata
 
     tracker.jira.features:
-        class: Qissues\Model\Tracker\Support\FeatureSet
+        class: Qissues\Trackers\Shared\Support\FeatureSet
         factory_service: support.featureset_builder
         factory_method: build
         arguments:

@@ -143,7 +143,7 @@ class Application extends BaseApplication
             ->in(__DIR__.'/Command');
         
         foreach ($finder as $file) {
-            $class = "Qissues\\Console\\Command\\" . basename($file, ".php");
+            $class = "Qissues\\Interfaces\\Console\\Command\\" . basename($file, ".php");
             $this->add(new $class());
         }
     }

@@ -30,10 +30,10 @@ parameters:
 
 services:
     model.issue_serializer:
-        class: Qissues\Model\Serializer\IssueSerializer
+        class: Qissues\Domain\Serializer\IssueSerializer
 
     model.comment_serializer:
-        class: Qissues\Model\Serializer\CommentSerializer
+        class: Qissues\Domain\Serializer\CommentSerializer
 
     system.initializer:
         class: Qissues\System\Initializer
@@ -48,66 +48,66 @@ services:
             - %system.storage.filename%
 
     console.shell:
-        class: Qissues\Console\Shell\BasicShell
+        class: Qissues\Interfaces\Console\Shell\BasicShell
 
     console.input.report_manager:
-        class: Qissues\Console\Input\ReportManager
+        class: Qissues\Interfaces\Console\Input\ReportManager
         arguments:
             - %reports%
 
     console.input.issue_strategy.edit:
-        class: Qissues\Console\Input\Strategy\Issue\EditStrategy
+        class: Qissues\Interfaces\Console\Input\Strategy\Issue\EditStrategy
         arguments:
             - @console.input.external_editor
             - @console.input.active_format.issue
 
     console.input.issue_strategy.interactive:
-        class: Qissues\Console\Input\Strategy\Issue\InteractiveStrategy
+        class: Qissues\Interfaces\Console\Input\Strategy\Issue\InteractiveStrategy
 
     console.input.issue_strategy.stdin:
-        class: Qissues\Console\Input\Strategy\Issue\StdinStrategy
+        class: Qissues\Interfaces\Console\Input\Strategy\Issue\StdinStrategy
         arguments:
             - "php://stdin"
             - @console.input.format.json
 
     console.input.issue_strategy.option:
-        class: Qissues\Console\Input\Strategy\Issue\OptionStrategy
+        class: Qissues\Interfaces\Console\Input\Strategy\Issue\OptionStrategy
 
     console.input.comment_strategy.option:
-        class: Qissues\Console\Input\Strategy\Comment\OptionStrategy
+        class: Qissues\Interfaces\Console\Input\Strategy\Comment\OptionStrategy
 
     console.input.comment_strategy.edit:
-        class: Qissues\Console\Input\Strategy\Comment\EditStrategy
+        class: Qissues\Interfaces\Console\Input\Strategy\Comment\EditStrategy
         arguments:
             - @console.input.external_editor
 
     console.input.comment_strategy.stdin:
-        class: Qissues\Console\Input\Strategy\Comment\StdinStrategy
+        class: Qissues\Interfaces\Console\Input\Strategy\Comment\StdinStrategy
         arguments:
             - "php://stdin"
 
     console.input.comment_strategy.interactive:
-        class: Qissues\Console\Input\Strategy\Comment\InteractiveStrategy
+        class: Qissues\Interfaces\Console\Input\Strategy\Comment\InteractiveStrategy
 
     console.input.details_strategy.edit:
-        class: Qissues\Console\Input\Strategy\Transition\EditStrategy
+        class: Qissues\Interfaces\Console\Input\Strategy\Transition\EditStrategy
         arguments:
             - @console.input.external_editor
             - @console.input.active_format.details
 
     console.input.git_id:
-        class: Qissues\Console\Input\GitId
+        class: Qissues\Interfaces\Console\Input\GitId
         arguments:
             - @console.shell
 
     console.input.criteria_builder:
-        class: Qissues\Console\Input\CriteriaBuilder
+        class: Qissues\Interfaces\Console\Input\CriteriaBuilder
 
     console.input.report_criteria_builder:
-        class: Qissues\Console\Input\ReportCriteriaBuilder
+        class: Qissues\Interfaces\Console\Input\ReportCriteriaBuilder
 
     console.input.external_editor:
-        class: Qissues\Console\Input\ExternalFileEditor
+        class: Qissues\Interfaces\Console\Input\ExternalFileEditor
         arguments:
             - @console.shell
             - @filesystem
@@ -120,88 +120,88 @@ services:
             - @container
 
     console.input.active_format.issue:
-        class: Qissues\Console\Input\FileFormats\FileFormat
+        class: Qissues\Interfaces\Console\Input\FileFormats\FileFormat
         factory_service: console.input.format.factory
         factory_method: getFormat
         arguments: ['issue']
 
     console.input.active_format.comment:
-        class: Qissues\Console\Input\FileFormats\FileFormat
+        class: Qissues\Interfaces\Console\Input\FileFormats\FileFormat
         factory_service: console.input.format.factory
         factory_method: getFormat
         arguments: ['comment']
 
     console.input.active_format.details:
-        class: Qissues\Console\Input\FileFormats\FileFormat
+        class: Qissues\Interfaces\Console\Input\FileFormats\FileFormat
         factory_service: console.input.format.factory
         factory_method: getFormat
         arguments: ['details']
 
 
     console.input.format.yaml:
-        class: Qissues\Console\Input\FileFormats\YmlFormat
+        class: Qissues\Interfaces\Console\Input\FileFormats\YmlFormat
         arguments:
             - @yaml_parser
             - @yaml_builder
 
     console.input.format.frontmatter:
-        class: Qissues\Console\Input\FileFormats\FrontMatterFormat
+        class: Qissues\Interfaces\Console\Input\FileFormats\FrontMatterFormat
         arguments:
             - @frontmatter_parser
 
     console.input.format.json:
-        class: Qissues\Console\Input\FileFormats\JsonFormat
+        class: Qissues\Interfaces\Console\Input\FileFormats\JsonFormat
 
     console.output.table_renderer:
-        class: Qissues\Console\Output\TableRenderer
+        class: Qissues\Interfaces\Console\Output\TableRenderer
 
     console.output.issue_views.standard:
-        class: Qissues\Console\Output\Issue\StandardView
+        class: Qissues\Interfaces\Console\Output\Issue\StandardView
 
     console.output.issue_views.json:
-        class: Qissues\Console\Output\Issue\JsonView
+        class: Qissues\Interfaces\Console\Output\Issue\JsonView
         arguments:
             - @model.issue_serializer
             - @model.comment_serializer
 
     console.output.issues_views.detailed:
-        class: Qissues\Console\Output\IssuesList\DetailedView
+        class: Qissues\Interfaces\Console\Output\IssuesList\DetailedView
         arguments:
             - @console.output.table_renderer
 
     console.output.issues_views.basic:
-        class: Qissues\Console\Output\IssuesList\BasicView
+        class: Qissues\Interfaces\Console\Output\IssuesList\BasicView
         arguments:
             - @console.output.table_renderer
 
     console.output.issues_views.tiny:
-        class: Qissues\Console\Output\IssuesList\TinyView
+        class: Qissues\Interfaces\Console\Output\IssuesList\TinyView
         arguments:
             - @console.output.spaced_table_renderer
             - %console.output.tinyview_priorities%
             - %console.output.tinyview_colors%
 
     console.output.issues_views.json:
-        class: Qissues\Console\Output\IssuesList\JsonView
+        class: Qissues\Interfaces\Console\Output\IssuesList\JsonView
         arguments:
             - @model.issue_serializer
 
     console.output.spaced_table_renderer:
-        class: Qissues\Console\Output\SpacedTableRenderer
+        class: Qissues\Interfaces\Console\Output\SpacedTableRenderer
 
     console.output.browser:
-        class: Qissues\Console\Output\WebBrowser
+        class: Qissues\Interfaces\Console\Output\WebBrowser
         arguments:
              - @console.shell
              - %console.browser.command%
 
     support.catalog_builder:
-        class: Qissues\Model\Tracker\Support\FeatureCatalogBuilder
+        class: Qissues\Trackers\Shared\Support\FeatureCatalogBuilder
         arguments:
             - %features%
 
     support.catalog:
-        class: Qissues\Model\Tracker\Support\FeatureCatalog
+        class: Qissues\Trackers\Shared\Support\FeatureCatalog
         factory_service: support.catalog_builder
         factory_method: "build"
 
@@ -223,17 +223,17 @@ services:
         class: Qissues\System\Filesystem
 
     metadata.builder:
-        class: Qissues\Model\Tracker\Metadata\Builder
+        class: Qissues\Trackers\Shared\Metadata\Builder
         arguments:
             - @system.storage
             - %tracker%
             - %mapping_class%
 
     metadata:
-        class: Qissues\Model\Tracker\Metadata\Metadata
+        class: Qissues\Trackers\Shared\Metadata\Metadata
         factory_service: metadata.builder
         factory_method: build
 
     basic_workflow:
-        class: Qissues\Model\Workflow\BasicWorkflow
+        class: Qissues\Domain\Workflow\BasicWorkflow
         

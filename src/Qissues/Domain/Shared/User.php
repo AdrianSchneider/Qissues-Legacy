@@ -2,9 +2,7 @@
 
 namespace Qissues\Domain\Shared;
 
-use Qissues\System\DataType\ReadOnlyArrayAccess;
-
-class User extends ReadOnlyArrayAccess
+class User
 {
     protected $account;
     protected $id;

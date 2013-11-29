@@ -16,7 +16,7 @@ class IssueAssignment
     protected $comment;
 
     /**
-     * @param Number $number
+     * @param Number $issue
      * @param User $assignee
      * @param Message|null $comment
      */

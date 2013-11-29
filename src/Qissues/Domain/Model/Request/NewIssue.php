@@ -8,6 +8,9 @@ use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\Priority;
 use Qissues\Domain\Shared\Status;
 
+/**
+ * Represents a new issue being created
+ */
 class NewIssue
 {
     protected $title;
@@ -18,6 +21,15 @@ class NewIssue
     protected $labels;
     protected $status;
 
+    /**
+     * @param  string        $title
+     * @param  string        $description
+     * @param  User|null     $assignee
+     * @param  Priority|null $priority
+     * @param  Type|null     $priority
+     * @param  Label[]|null  $labels
+     * @param  Status|null   $statuses
+     */
     public function __construct($title, $description, User $assignee = null, Priority $priority = null, Type $type = null, $labels = null, Status $status = null)
     {
         $this->title = $title;

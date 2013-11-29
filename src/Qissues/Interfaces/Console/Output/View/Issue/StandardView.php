@@ -11,12 +11,12 @@ class StandardView
         $out = '';
         $out = str_repeat('-', $width) . "\n";
 
-        $title = wordwrap($issue['title'], min($width - 4, 100), "\n", true);
+        $title = wordwrap($issue->getTitle(), min($width - 4, 100), "\n", true);
 
-        $out .= "<comment>$issue[id] - $title</comment>\n";
+        $out .= sprintf("<comment>%d - %s</comment>\n", $issue->getId(), $title);
         $out .= $this->prepareMeta($issue) . "\n\n";
 
-        $description = wordwrap($issue['description'], min($width - 4, 100), "\n", true);
+        $description = wordwrap($issue->getDescription(), min($width - 4, 100), "\n", true);
         foreach (explode("\n", $description) as $row) {
             $out .= "    $row\n";
         }
@@ -25,22 +25,22 @@ class StandardView
 
         if ($comments) {
 
-            $out .= "<comment>$issue[id] - Comments</comment>\n\n";
+            $out .= sprintf("<comment>%d - Comments</comment>\n\n", $issue->getId());
 
             $multiLine = false;
             foreach ($comments as $comment) {
-                if (strpos(trim(wordwrap($comment['message'], $width - 4)), "\n") !== false) {
+                if (strpos(trim(wordwrap($comment->getMessage(), $width - 4)), "\n") !== false) {
                     $multiLine = true;
                 }
             }
 
             foreach ($comments as $comment) {
-                $date = $comment['date']->format('Y-m-d g:ia');
+                $date = $comment->getDate()->format('Y-m-d g:ia');
                 if ($multiLine) {
-                    $out .= "[$date] <info>$comment[author]</info>:\n";
-                    $out .= $this->indent($comment['message'], $width) . "\n";
+                    $out .= sprintf("[%s] <info>%s</info>:\n", $date, $comment->getAuthor());
+                    $out .= $this->indent($comment->getMessage(), $width) . "\n";
                 } else {
-                    $out .= "[$date] <info>$comment[author]</info>: " . trim($comment['message']) . "\n";
+                    $out .= sprintf("[%s] <info>%s</info>: %s\n", $date, $comment->getAuthor(), trim($comment->getMessage()));
                 }
             }
         }

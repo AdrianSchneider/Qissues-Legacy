@@ -1,10 +1,10 @@
 <?php
 
-namespace Qissues\Interfaces\Console\Output\IssuesList;
+namespace Qissues\Interfaces\Console\Output\View\IssuesList;
 
 use Qissues\Domain\Model\Issue;
 use Qissues\Trackers\Shared\Support\FeatureSet;
-use Qissues\Interfaces\Console\Output\SpacedTableRenderer;
+use Qissues\Interfaces\Console\Output\Renderer\SpacedTableRenderer;
 
 class TinyView
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Interfaces\Console\Output\Issue;
+namespace Qissues\Interfaces\Console\Output\View\Issue;
 
 use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Model\Comment;

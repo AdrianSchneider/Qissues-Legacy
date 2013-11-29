@@ -1,11 +1,11 @@
 <?php
 
-namespace Qissues\Interfaces\Console\Output\IssuesList;
+namespace Qissues\Interfaces\Console\Output\View\IssuesList;
 
 use Qissues\Trackers\Shared\Support\Feature;
 use Qissues\Trackers\Shared\Support\FeatureSet;
 use Qissues\Trackers\Shared\Support\SupportLevel;
-use Qissues\Interfaces\Console\Output\TableRenderer;
+use Qissues\Interfaces\Console\Output\Renderer\TableRenderer;
 
 class DetailedView
 {

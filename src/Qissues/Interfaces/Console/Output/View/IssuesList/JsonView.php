@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Interfaces\Console\Output\IssuesList;
+namespace Qissues\Interfaces\Console\Output\View\IssuesList;
 
 use Qissues\Trackers\Shared\Support\FeatureSet;
 use Qissues\Interfaces\Console\Output\Serializer\IssueSerializer;

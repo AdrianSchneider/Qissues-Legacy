@@ -1,8 +1,8 @@
 <?php
 
-namespace Qissues\Tests\Console\Output;
+namespace Qissues\Tests\Interfaces\Console\Output\Renderer;
 
-use Qissues\Interfaces\Console\Output\SpacedTableRenderer;
+use Qissues\Interfaces\Console\Output\Renderer\SpacedTableRenderer;
 
 class SpacedTableRendererTest extends \PHPUnit_Framework_TestCase
 {

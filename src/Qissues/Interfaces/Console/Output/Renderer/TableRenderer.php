@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Interfaces\Console\Output;
+namespace Qissues\Interfaces\Console\Output\Renderer;
 
 class TableRenderer
 {

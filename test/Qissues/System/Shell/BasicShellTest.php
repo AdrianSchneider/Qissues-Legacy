@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Tests\Console\Shell;
+namespace Qissues\Tests\System\Shell;
 
 use Qissues\System\Shell\BasicShell;
 

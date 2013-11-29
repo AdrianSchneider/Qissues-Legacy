@@ -36,7 +36,7 @@ services:
         class: Qissues\Interfaces\Console\Output\Serializer\CommentSerializer
 
     system.initializer:
-        class: Qissues\System\Initializer
+        class: Qissues\Application\Initializer
         arguments:
             - @container
             - @filesystem

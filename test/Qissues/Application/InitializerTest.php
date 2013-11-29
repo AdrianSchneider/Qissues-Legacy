@@ -2,7 +2,7 @@
 
 namespace Qissues\Tests\System;
 
-use Qissues\System\Initializer;
+use Qissues\Application\Initializer;
 
 class InitializerTest extends \PHPUnit_Framework_TestCase
 {

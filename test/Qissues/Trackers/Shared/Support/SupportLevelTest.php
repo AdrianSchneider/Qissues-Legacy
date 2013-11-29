@@ -2,7 +2,7 @@
 
 namespace Qissues\Tests\Model\Tracker\Support;
 
-use Qissues\Application\Tracker\Support\SupportLevel;
+use Qissues\Trackers\Shared\Support\SupportLevel;
 
 class SupportLevelTest extends \PHPUnit_Framework_TestCase
 {

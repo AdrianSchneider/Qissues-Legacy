@@ -38,7 +38,7 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $payload = array('issue' => 'yup');
 
-        $mapping = $this->getMock('Qissues\Application\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Trackers\Shared\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('toIssue')
@@ -69,7 +69,7 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
         $query = array('keyword' => 'meh');
         $payload = array('issues' => array(array('issue')));
 
-        $mapping = $this->getMock('Qissues\Application\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Trackers\Shared\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('buildSearchQuery')
@@ -96,7 +96,7 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $payload = array(array('comment'));
 
-        $mapping = $this->getMock('Qissues\Application\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Trackers\Shared\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('toComment')
@@ -122,7 +122,7 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
             'local_id' => 5
         ))));
 
-        $mapping = $this->getMock('Qissues\Application\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Trackers\Shared\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('issueToArray')
@@ -145,7 +145,7 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $this->mock->addResponse(new Response(200));
 
-        $mapping = $this->getMock('Qissues\Application\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Trackers\Shared\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('issueToArray')
@@ -216,7 +216,7 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
 
     protected function getRepository($mapping = null)
     {
-        $mapping = $mapping ?: $this->getMock('Qissues\Application\Tracker\FieldMapping');
+        $mapping = $mapping ?: $this->getMock('Qissues\Trackers\Shared\FieldMapping');
 
         return new BitBucketRepository(
             'repo/sitory',

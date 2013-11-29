@@ -38,7 +38,7 @@ class ContainerFactory
                 ))->getClass()
             );
         } catch (\Exception $e) {
-            $container->setParameter('mapping_class', 'Qissues\Application\Tracker\Metadata\NullMetadata');
+            $container->setParameter('mapping_class', 'Qissues\Trackers\Shared\Metadata\NullMetadata');
         }
 
         $container->compile();

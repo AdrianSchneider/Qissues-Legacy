@@ -10,7 +10,7 @@ use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\Label;
-use Qissues\Application\Tracker\FieldMapping;
+use Qissues\Trackers\Shared\FieldMapping;
 use Qissues\Domain\Model\SearchCriteria;
 
 class GitHubMapping implements FieldMapping

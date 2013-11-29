@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Application\Tracker;
+namespace Qissues\Trackers\Shared;
 
 use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Model\NewIssue;

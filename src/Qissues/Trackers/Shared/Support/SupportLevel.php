@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Application\Tracker\Support;
+namespace Qissues\Trackers\Shared\Support;
 
 class SupportLevel
 {

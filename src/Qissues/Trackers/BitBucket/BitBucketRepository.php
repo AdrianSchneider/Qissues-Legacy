@@ -11,8 +11,8 @@ use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\ClosedStatus;
 use Qissues\Domain\Workflow\BasicTransitioner;
-use Qissues\Application\Tracker\FieldMapping;
-use Qissues\Application\Tracker\Metadata\NullMetadata;
+use Qissues\Trackers\Shared\FieldMapping;
+use Qissues\Trackers\Shared\Metadata\NullMetadata;
 use Guzzle\Http\Client;
 use Guzzle\Http\QueryAggregator\DuplicateAggregator;
 

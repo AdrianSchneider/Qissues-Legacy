@@ -3,7 +3,7 @@
 namespace Qissues\Interfaces\Console\Input\Strategy\Issue;
 
 use Qissues\Domain\Model\Issue;
-use Qissues\Application\Tracker\IssueTracker;
+use Qissues\Trackers\Shared\IssueTracker;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

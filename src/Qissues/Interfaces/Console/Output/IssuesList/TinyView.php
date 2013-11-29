@@ -3,7 +3,7 @@
 namespace Qissues\Interfaces\Console\Output\IssuesList;
 
 use Qissues\Domain\Model\Issue;
-use Qissues\Application\Tracker\Support\FeatureSet;
+use Qissues\Trackers\Shared\Support\FeatureSet;
 use Qissues\Interfaces\Console\Output\SpacedTableRenderer;
 
 class TinyView

@@ -10,8 +10,8 @@ use Qissues\Domain\Workflow\BasicTransitioner;
 use Qissues\Domain\Model\NewIssue;
 use Qissues\Domain\Model\NewComment;
 use Qissues\Domain\Model\IssueRepository;
-use Qissues\Application\Tracker\FieldMapping;
-use Qissues\Application\Tracker\Metadata\NullMetadata;
+use Qissues\Trackers\Shared\FieldMapping;
+use Qissues\Trackers\Shared\Metadata\NullMetadata;
 use Guzzle\Http\Client;
 
 class GitHubRepository implements IssueRepository, BasicTransitioner

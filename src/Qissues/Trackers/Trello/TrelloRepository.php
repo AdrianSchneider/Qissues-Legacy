@@ -11,8 +11,8 @@ use Qissues\Domain\Workflow\BasicTransitioner;
 use Qissues\Domain\Model\NewIssue;
 use Qissues\Domain\Model\NewComment;
 use Qissues\Domain\Model\IssueRepository;
-use Qissues\Application\Tracker\FieldMapping;
-use Qissues\Application\Tracker\Metadata\Metadata;
+use Qissues\Trackers\Shared\FieldMapping;
+use Qissues\Trackers\Shared\Metadata\Metadata;
 use Guzzle\Http\Client;
 
 class TrelloRepository implements IssueRepository, BasicTransitioner

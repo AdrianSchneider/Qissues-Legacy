@@ -1,8 +1,8 @@
 <?php
 
-namespace Qissues\Application\Tracker\Metadata;
+namespace Qissues\Trackers\Shared\Metadata;
 
-use Qissues\Application\Tracker\Metadata\Builder;
+use Qissues\Trackers\Shared\Metadata\Builder;
 
 class BuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -11,7 +11,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $stored = array('a' => 'b');
         $key = 'trello-' . getcwd();
 
-        $storage = $this->getMock('Qissues\Application\Tracker\Metadata\Storage');
+        $storage = $this->getMock('Qissues\Trackers\Shared\Metadata\Storage');
         $storage
             ->expects($this->once())
             ->method('exists')
@@ -36,7 +36,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     {
         $key = 'trello-' . getcwd();
 
-        $storage = $this->getMock('Qissues\Application\Tracker\Metadata\Storage');
+        $storage = $this->getMock('Qissues\Trackers\Shared\Metadata\Storage');
         $storage
             ->expects($this->once())
             ->method('exists')
@@ -47,7 +47,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $builder = new Builder($storage, 'trello', 'anything');
         $metadata = $builder->build();
 
-        $this->assertInstanceOf('Qissues\Application\Tracker\Metadata\NullMetadata', $metadata);
+        $this->assertInstanceOf('Qissues\Trackers\Shared\Metadata\NullMetadata', $metadata);
     }
 }
 

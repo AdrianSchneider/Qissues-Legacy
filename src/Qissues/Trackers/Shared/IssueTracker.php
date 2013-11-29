@@ -1,11 +1,11 @@
 <?php
 
-namespace Qissues\Application\Tracker;
+namespace Qissues\Trackers\Shared;
 
 use Qissues\Domain\Workflow\Workflow;
 use Qissues\Domain\Model\IssueRepository;
-use Qissues\Application\Tracker\Support\Feature;
-use Qissues\Application\Tracker\Support\FeatureSet;
+use Qissues\Trackers\Shared\Support\Feature;
+use Qissues\Trackers\Shared\Support\FeatureSet;
 
 class IssueTracker
 {

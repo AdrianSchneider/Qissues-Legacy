@@ -1,14 +1,14 @@
 <?php
 
-namespace Qissues\Application\Tracker\Metadata;
+namespace Qissues\Trackers\Shared\Metadata;
 
-use Qissues\Application\Tracker\Metadata\NullMetadata;
+use Qissues\Trackers\Shared\Metadata\NullMetadata;
 
 class NullMetadataTest extends \PHPUnit_Framework_TestCase
 {
     public function testThrowsExceptionIfAnyMethodsAreCalled()
     {
-        $this->setExpectedException('Qissues\Application\Tracker\Metadata\NullMetadataException');
+        $this->setExpectedException('Qissues\Trackers\Shared\Metadata\NullMetadataException');
         $metadata = new NullMetadata();
         $metadata->showmethemoney();
     }

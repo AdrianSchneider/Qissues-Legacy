@@ -2,11 +2,11 @@
 
 namespace Qissues\System\Builders;
 
-use Qissues\Application\Tracker\Support\Feature;
-use Qissues\Application\Tracker\Support\FeatureSet;
-use Qissues\Application\Tracker\Support\FeatureSetBuilder;
-use Qissues\Application\Tracker\Support\FeatureCatalog;
-use Qissues\Application\Tracker\Support\SupportLevel;
+use Qissues\Trackers\Shared\Support\Feature;
+use Qissues\Trackers\Shared\Support\FeatureSet;
+use Qissues\Trackers\Shared\Support\FeatureSetBuilder;
+use Qissues\Trackers\Shared\Support\FeatureCatalog;
+use Qissues\Trackers\Shared\Support\SupportLevel;
 
 class ArrayFeatureSetBuilder
 {

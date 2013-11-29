@@ -9,7 +9,7 @@ use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Domain\Model\NewIssue;
 use Qissues\Domain\Model\NewComment;
 use Qissues\Domain\Model\IssueRepository;
-use Qissues\Application\Tracker\FieldMapping;
+use Qissues\Trackers\Shared\FieldMapping;
 use Qissues\Domain\Workflow\Transition;
 use Guzzle\Http\Client;
 

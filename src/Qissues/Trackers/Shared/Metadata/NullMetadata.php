@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Application\Tracker\Metadata;
+namespace Qissues\Trackers\Shared\Metadata;
 
 class NullMetadata implements Metadata
 {

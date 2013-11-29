@@ -2,7 +2,7 @@
 
 namespace Qissues\System\Builders;
 
-use Qissues\Application\Tracker\Support\FeatureCatalogBuilder;
+use Qissues\Trackers\Shared\Support\FeatureCatalogBuilder;
 use Qissues\System\Builders\ArrayFeatureSetBuilder;
 
 class ArrayFeatureSetBuilderTest extends \PHPUnit_Framework_TestCase
@@ -16,7 +16,7 @@ class ArrayFeatureSetBuilderTest extends \PHPUnit_Framework_TestCase
             'main' => array('multiple', 'dynamic'),
             'secondary' => array()
         ));
-        $this->assertInstanceOf('Qissues\Application\Tracker\Support\FeatureSet', $features);
+        $this->assertInstanceOf('Qissues\Trackers\Shared\Support\FeatureSet', $features);
     }
 
     protected function getCatalog(array $features)

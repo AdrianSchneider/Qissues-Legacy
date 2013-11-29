@@ -2,11 +2,11 @@
 
 namespace Qissues\Trackers\Trello;
 
-use Qissues\Model\Issue;
-use Qissues\Model\Meta\Status;
-use Qissues\Model\Meta\Label;
-use Qissues\Model\Meta\Priority;
-use Qissues\Model\Querying\SearchCriteria;
+use Qissues\Domain\Model\Issue;
+use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Meta\Label;
+use Qissues\Domain\Meta\Priority;
+use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Trackers\Trello\TrelloMapping;
 
 class TrelloMappingTest extends \PHPUnit_Framework_TestCase

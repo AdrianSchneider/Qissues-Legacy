@@ -2,10 +2,10 @@
 
 namespace Qissues\Tests\Console\Input\Strategy\Issue;
 
-use Qissues\Model\Issue;
-use Qissues\Model\Meta\Status;
-use Qissues\Model\Tracker\IssueTracker;
-use Qissues\Console\Input\Strategy\Issue\EditStrategy;
+use Qissues\Domain\Model\Issue;
+use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Tracker\IssueTracker;
+use Qissues\Interfaces\Console\Input\Strategy\Issue\EditStrategy;
 
 class EditStrategyTest extends \PHPUnit_Framework_TestCase
 {
@@ -16,7 +16,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         $parsed = array('user input');
         $fields = array('title' => 'hello');
 
-        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
+        $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
         $fileFormat
             ->expects($this->once())
             ->method('seed')
@@ -30,7 +30,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($parsed))
         ;
 
-        $editor = $this->getMockBuilder('Qissues\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
+        $editor = $this->getMockBuilder('Qissues\Interfaces\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
         $editor
             ->expects($this->once())
             ->method('getEdited')
@@ -39,10 +39,10 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         ;
 
         $tracker = new IssueTracker(
-            $repository = $this->getMock('Qissues\Model\Tracker\IssueRepository'),
-            $mapping    = $this->getMock('Qissues\Model\Tracker\FieldMapping'),
-            $features   = $this->getMock('Qissues\Model\Tracker\Support\FeatureSet'),
-            $workflow   = $this->getMock('Qissues\Model\Workflow\Workflow')
+            $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
+            $mapping    = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
+            $features   = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $workflow   = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 
         $mapping
@@ -55,14 +55,14 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
             ->method('toNewIssue')
             ->with($parsed)
             ->will($this->returnValue(
-                $this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock())
+                $this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock())
             )
         ;
 
         $issueFactory = new EditStrategy($editor, $fileFormat);
         $issue = $issueFactory->createNew($tracker);
 
-        $this->assertInstanceOf('Qissues\Model\Posting\NewIssue', $issue);
+        $this->assertInstanceOf('Qissues\Domain\Model\NewIssue', $issue);
     }
 
     public function testCreateNewReturnsNullIfNoContent()
@@ -70,7 +70,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         $template = 'enter input here';
         $fields = array('title' => 'hello');
 
-        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
+        $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
         $fileFormat
             ->expects($this->once())
             ->method('seed')
@@ -78,7 +78,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($template))
         ;
 
-        $editor = $this->getMockBuilder('Qissues\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
+        $editor = $this->getMockBuilder('Qissues\Interfaces\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
         $editor
             ->expects($this->once())
             ->method('getEdited')
@@ -87,10 +87,10 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         ;
 
         $tracker = new IssueTracker(
-            $repository = $this->getMock('Qissues\Model\Tracker\IssueRepository'),
-            $mapping    = $this->getMock('Qissues\Model\Tracker\FieldMapping'),
-            $features   = $this->getMock('Qissues\Model\Tracker\Support\FeatureSet'),
-            $workflow   = $this->getMock('Qissues\Model\Workflow\Workflow')
+            $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
+            $mapping    = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
+            $features   = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $workflow   = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 
         $mapping
@@ -114,7 +114,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
 
         $issue = new Issue(1, 'title', 'desc', new Status('open'), new \DateTime, new \DateTime);
 
-        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
+        $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
         $fileFormat
             ->expects($this->once())
             ->method('seed')
@@ -128,7 +128,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($parsed))
         ;
 
-        $editor = $this->getMockBuilder('Qissues\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
+        $editor = $this->getMockBuilder('Qissues\Interfaces\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
         $editor
             ->expects($this->once())
             ->method('getEdited')
@@ -137,10 +137,10 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         ;
 
         $tracker = new IssueTracker(
-            $repository = $this->getMock('Qissues\Model\Tracker\IssueRepository'),
-            $mapping    = $this->getMock('Qissues\Model\Tracker\FieldMapping'),
-            $features   = $this->getMock('Qissues\Model\Tracker\Support\FeatureSet'),
-            $workflow   = $this->getMock('Qissues\Model\Workflow\Workflow')
+            $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
+            $mapping    = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
+            $features   = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $workflow   = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 
         $mapping
@@ -153,14 +153,14 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
             ->method('toNewIssue')
             ->with($parsed)
             ->will($this->returnValue(
-                $this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock())
+                $this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock())
             )
         ;
 
         $issueFactory = new EditStrategy($editor, $fileFormat);
         $issue = $issueFactory->updateExisting($tracker, $issue);
 
-        $this->assertInstanceOf('Qissues\Model\Posting\NewIssue', $issue);
+        $this->assertInstanceOf('Qissues\Domain\Model\NewIssue', $issue);
     }
 
     public function testUpdateExistingReturnsNullIfNoContent()
@@ -170,7 +170,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
 
         $issue = new Issue(1, 'title', 'desc', new Status('open'), new \DateTime, new \DateTime);
 
-        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
+        $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
         $fileFormat
             ->expects($this->once())
             ->method('seed')
@@ -178,7 +178,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($template))
         ;
 
-        $editor = $this->getMockBuilder('Qissues\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
+        $editor = $this->getMockBuilder('Qissues\Interfaces\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
         $editor
             ->expects($this->once())
             ->method('getEdited')
@@ -187,10 +187,10 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         ;
 
         $tracker = new IssueTracker(
-            $repository = $this->getMock('Qissues\Model\Tracker\IssueRepository'),
-            $mapping    = $this->getMock('Qissues\Model\Tracker\FieldMapping'),
-            $features   = $this->getMock('Qissues\Model\Tracker\Support\FeatureSet'),
-            $workflow   = $this->getMock('Qissues\Model\Workflow\Workflow')
+            $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
+            $mapping    = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
+            $features   = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $workflow   = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 
         $mapping
@@ -207,8 +207,8 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
 
     public function testInit()
     {
-        $editor = $this->getMockBuilder('Qissues\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
-        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
+        $editor = $this->getMockBuilder('Qissues\Interfaces\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
+        $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
 
         $strategy = new EditStrategy($editor, $fileFormat);
         $strategy->init(

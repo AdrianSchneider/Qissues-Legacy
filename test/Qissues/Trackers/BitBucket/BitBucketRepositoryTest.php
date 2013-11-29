@@ -2,15 +2,15 @@
 
 namespace Qissues\Tests\Trackers\BitBucket;
 
-use Qissues\Model\Querying\Number;
-use Qissues\Model\Meta\Status;
-use Qissues\Model\Meta\ClosedStatus;
-use Qissues\Model\Meta\Label;
-use Qissues\Model\Meta\Type;
-use Qissues\Model\Meta\User;
-use Qissues\Model\Meta\Priority;
-use Qissues\Model\Posting\NewComment;
-use Qissues\Model\Querying\SearchCriteria;
+use Qissues\Domain\Model\Number;
+use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Meta\ClosedStatus;
+use Qissues\Domain\Meta\Label;
+use Qissues\Domain\Meta\Type;
+use Qissues\Domain\Meta\User;
+use Qissues\Domain\Meta\Priority;
+use Qissues\Domain\Model\NewComment;
+use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Trackers\BitBucket\BitBucketRepository;
 use Guzzle\Http\Client;
 use Guzzle\Http\Message\Response;
@@ -38,7 +38,7 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $payload = array('issue' => 'yup');
 
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('toIssue')
@@ -69,7 +69,7 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
         $query = array('keyword' => 'meh');
         $payload = array('issues' => array(array('issue')));
 
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('buildSearchQuery')
@@ -96,7 +96,7 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $payload = array(array('comment'));
 
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('toComment')
@@ -115,14 +115,14 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testPersist()
     {
-        $newIssue = $this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock();
+        $newIssue = $this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock();
         $issue = 'real issue';
 
         $this->mock->addResponse(new Response(200, null, json_encode($payload = array(
             'local_id' => 5
         ))));
 
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('issueToArray')
@@ -141,11 +141,11 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $number = new Number(4);
         $issue = 'saved';
-        $newIssue = $this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock();
+        $newIssue = $this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock();
 
         $this->mock->addResponse(new Response(200));
 
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('issueToArray')
@@ -216,7 +216,7 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
 
     protected function getRepository($mapping = null)
     {
-        $mapping = $mapping ?: $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping = $mapping ?: $this->getMock('Qissues\Domain\Tracker\FieldMapping');
 
         return new BitBucketRepository(
             'repo/sitory',

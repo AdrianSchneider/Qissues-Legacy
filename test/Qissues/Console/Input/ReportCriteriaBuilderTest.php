@@ -2,7 +2,7 @@
 
 namespace Qissues\Tests\Console\Input;
 
-use Qissues\Console\Input\ReportCriteriaBuilder;
+use Qissues\Interfaces\Console\Input\ReportCriteriaBuilder;
 
 class ReportCriteriaBuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -11,7 +11,7 @@ class ReportCriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $builder = new ReportCriteriaBuilder();
         $criteria = $builder->build(array());
 
-        $this->assertInstanceOf('Qissues\Model\Querying\SearchCriteria', $criteria);
+        $this->assertInstanceOf('Qissues\Domain\Model\SearchCriteria', $criteria);
     }
 
     public function testHandlesKeywords()

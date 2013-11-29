@@ -1,9 +1,9 @@
 <?php
 
-namespace Qissues\Console\Input\FileFormats;
+namespace Qissues\Interfaces\Console\Input\FileFormats;
 
-use Qissues\Model\Meta\Field;
-use Qissues\Console\Input\FileFormats\YmlFormat;
+use Qissues\Domain\Meta\Field;
+use Qissues\Interfaces\Console\Input\FileFormats\YmlFormat;
 
 class YmlFormatTest extends \PHPUnit_Framework_TestCase
 {

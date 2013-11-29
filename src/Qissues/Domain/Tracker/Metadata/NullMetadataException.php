@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Model\Tracker\Metadata;
+namespace Qissues\Domain\Tracker\Metadata;
 
 class NullMetadataException extends \LogicException
 {

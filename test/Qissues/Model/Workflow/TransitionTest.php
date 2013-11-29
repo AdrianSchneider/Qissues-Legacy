@@ -1,17 +1,17 @@
 <?php
 
-namespace Qissues\Model\Workflow;
+namespace Qissues\Domain\Workflow;
 
-use Qissues\Model\Issue;
-use Qissues\Model\Meta\Status;
-use Qissues\Model\Workflow\Transition;
+use Qissues\Domain\Model\Issue;
+use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Workflow\Transition;
 
 class TransitionTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstruct()
     {
         $transition = new Transition(
-            $issue = $this->getMockBuilder('Qissues\Model\Issue')->disableOriginalConstructor()->getMock(),
+            $issue = $this->getMockBuilder('Qissues\Domain\Model\Issue')->disableOriginalConstructor()->getMock(),
             $status = new Status('status')
         );
 
@@ -23,7 +23,7 @@ class TransitionTest extends \PHPUnit_Framework_TestCase
     public function testSetFields()
     {
         $transition = new Transition(
-            $issue = $this->getMockBuilder('Qissues\Model\Issue')->disableOriginalConstructor()->getMock(),
+            $issue = $this->getMockBuilder('Qissues\Domain\Model\Issue')->disableOriginalConstructor()->getMock(),
             $status = new Status('status')
         );
 
@@ -36,7 +36,7 @@ class TransitionTest extends \PHPUnit_Framework_TestCase
     public function testSetFieldsTwiceThrowsException()
     {
         $transition = new Transition(
-            $issue = $this->getMockBuilder('Qissues\Model\Issue')->disableOriginalConstructor()->getMock(),
+            $issue = $this->getMockBuilder('Qissues\Domain\Model\Issue')->disableOriginalConstructor()->getMock(),
             $status = new Status('status')
         );
 

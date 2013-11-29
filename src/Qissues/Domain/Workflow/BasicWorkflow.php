@@ -1,8 +1,8 @@
 <?php
 
-namespace Qissues\Model\Workflow;
+namespace Qissues\Domain\Workflow;
 
-use Qissues\Model\Querying\Number;
+use Qissues\Domain\Model\Number;
 
 class BasicWorkflow implements Workflow
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Model\Tracker;
+namespace Qissues\Domain\Tracker;
 
 interface MetadataStorage
 {

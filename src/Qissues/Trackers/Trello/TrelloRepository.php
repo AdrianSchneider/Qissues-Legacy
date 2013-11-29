@@ -2,17 +2,17 @@
 
 namespace Qissues\Trackers\Trello;
 
-use Qissues\Model\Meta\User;
-use Qissues\Model\Meta\Status;
-use Qissues\Model\Meta\ClosedStatus;
-use Qissues\Model\Querying\Number;
-use Qissues\Model\Querying\SearchCriteria;
-use Qissues\Model\Workflow\BasicTransitioner;
-use Qissues\Model\Posting\NewIssue;
-use Qissues\Model\Posting\NewComment;
-use Qissues\Model\Tracker\IssueRepository;
-use Qissues\Model\Tracker\FieldMapping;
-use Qissues\Model\Tracker\Metadata\Metadata;
+use Qissues\Domain\Meta\User;
+use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Meta\ClosedStatus;
+use Qissues\Domain\Model\Number;
+use Qissues\Domain\Model\SearchCriteria;
+use Qissues\Domain\Workflow\BasicTransitioner;
+use Qissues\Domain\Model\NewIssue;
+use Qissues\Domain\Model\NewComment;
+use Qissues\Domain\Model\IssueRepository;
+use Qissues\Domain\Tracker\FieldMapping;
+use Qissues\Domain\Tracker\Metadata\Metadata;
 use Guzzle\Http\Client;
 
 class TrelloRepository implements IssueRepository, BasicTransitioner

@@ -2,8 +2,8 @@
 
 namespace Qissues\Tests\Console\Input\Strategy\Issue;
 
-use Qissues\Model\Tracker\IssueTracker;
-use Qissues\Console\Input\Strategy\Issue\StdinStrategy;
+use Qissues\Domain\Tracker\IssueTracker;
+use Qissues\Interfaces\Console\Input\Strategy\Issue\StdinStrategy;
 
 class StdinStrategyTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,7 +15,7 @@ class StdinStrategyTest extends \PHPUnit_Framework_TestCase
         $fields = array('title' => 'hello');
         $stream = 'data://text/plain,hello';
 
-        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
+        $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
         $fileFormat
             ->expects($this->once())
             ->method('parse')
@@ -24,10 +24,10 @@ class StdinStrategyTest extends \PHPUnit_Framework_TestCase
         ;
 
         $tracker = new IssueTracker(
-            $repository = $this->getMock('Qissues\Model\Tracker\IssueRepository'),
-            $mapping    = $this->getMock('Qissues\Model\Tracker\FieldMapping'),
-            $features   = $this->getMock('Qissues\Model\Tracker\Support\FeatureSet'),
-            $workflow   = $this->getMock('Qissues\Model\Workflow\Workflow')
+            $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
+            $mapping    = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
+            $features   = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $workflow   = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 
         $mapping
@@ -35,14 +35,14 @@ class StdinStrategyTest extends \PHPUnit_Framework_TestCase
             ->method('toNewIssue')
             ->with($parsed)
             ->will($this->returnValue(
-                $this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock())
+                $this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock())
             )
         ;
 
         $issueFactory = new StdinStrategy($stream, $fileFormat);
         $issue = $issueFactory->createNew($tracker);
 
-        $this->assertInstanceOf('Qissues\Model\Posting\NewIssue', $issue);
+        $this->assertInstanceOf('Qissues\Domain\Model\NewIssue', $issue);
     }
 
     public function testUpdateExistingCallsCreateNew()
@@ -53,7 +53,7 @@ class StdinStrategyTest extends \PHPUnit_Framework_TestCase
         $fields = array('title' => 'hello');
         $stream = 'data://text/plain,hello';
 
-        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
+        $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
         $fileFormat
             ->expects($this->once())
             ->method('parse')
@@ -62,10 +62,10 @@ class StdinStrategyTest extends \PHPUnit_Framework_TestCase
         ;
 
         $tracker = new IssueTracker(
-            $repository = $this->getMock('Qissues\Model\Tracker\IssueRepository'),
-            $mapping    = $this->getMock('Qissues\Model\Tracker\FieldMapping'),
-            $features   = $this->getMock('Qissues\Model\Tracker\Support\FeatureSet'),
-            $workflow   = $this->getMock('Qissues\Model\Workflow\Workflow')
+            $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
+            $mapping    = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
+            $features   = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $workflow   = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 
         $mapping
@@ -73,19 +73,19 @@ class StdinStrategyTest extends \PHPUnit_Framework_TestCase
             ->method('toNewIssue')
             ->with($parsed)
             ->will($this->returnValue(
-                $this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock())
+                $this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock())
             )
         ;
 
         $issueFactory = new StdinStrategy($stream, $fileFormat);
-        $issue = $issueFactory->updateExisting($tracker, $this->getMockBuilder('Qissues\Model\Issue')->disableOriginalConstructor()->getMock());
+        $issue = $issueFactory->updateExisting($tracker, $this->getMockBuilder('Qissues\Domain\Model\Issue')->disableOriginalConstructor()->getMock());
 
-        $this->assertInstanceOf('Qissues\Model\Posting\NewIssue', $issue);
+        $this->assertInstanceOf('Qissues\Domain\Model\NewIssue', $issue);
     }
 
     public function testInitIsIgnored()
     {
-        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
+        $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
         $strategy = new StdinStrategy('', $fileFormat);
         $strategy->init(
             $this->getMock('Symfony\Component\Console\Input\InputInterface'),

@@ -2,14 +2,14 @@
 
 namespace Qissues\Trackers\Jira;
 
-use Qissues\Model\Querying\Number;
-use Qissues\Model\Meta\Status;
-use Qissues\Model\Meta\Label;
-use Qissues\Model\Meta\Type;
-use Qissues\Model\Meta\User;
-use Qissues\Model\Meta\Priority;
-use Qissues\Model\Posting\NewComment;
-use Qissues\Model\Querying\SearchCriteria;
+use Qissues\Domain\Model\Number;
+use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Meta\Label;
+use Qissues\Domain\Meta\Type;
+use Qissues\Domain\Meta\User;
+use Qissues\Domain\Meta\Priority;
+use Qissues\Domain\Model\NewComment;
+use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Trackers\Jira\JiraRepository;
 use Guzzle\Http\Client;
 use Guzzle\Http\Message\Response;
@@ -45,7 +45,7 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $payload = array('issue' => 'yup');
 
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('toIssue')
@@ -67,7 +67,7 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
         $query = array('keyword' => 'meh', 'paging' => array('limit' => 5));
         $payload = array('issues' => array(array('issue')));
 
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('buildSearchQuery')
@@ -94,7 +94,7 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $payload = array('comments' => array(array('comment')));
 
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('toComment')
@@ -126,11 +126,11 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
     public function testPersist()
     {
         $payload = array('key' => 'PRE-12');
-        $issue = $this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock();
+        $issue = $this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock();
         $serializedIssue = array('issue');
         $this->mock->addResponse(new Response(200, null, json_encode($payload)));
 
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('issueToArray')
@@ -171,11 +171,11 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testUpdate()
     {
-        $issue = $this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock();
+        $issue = $this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock();
         $mapped = array('a' => 'b');
         $this->mock->addResponse(new Response(200));
 
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('issueToArray')
@@ -308,7 +308,7 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
             'PRE',
             'username',
             'password',
-            $mapping ?: $this->getMock('Qissues\Model\Tracker\FieldMapping'),
+            $mapping ?: $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
             $this->client
         );
     }

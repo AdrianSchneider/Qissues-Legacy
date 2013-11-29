@@ -1,11 +1,11 @@
 <?php
 
-namespace Qissues\Model\Tracker;
+namespace Qissues\Domain\Tracker;
 
-use Qissues\Model\Core\Issue;
-use Qissues\Model\Posting\NewIssue;
-use Qissues\Model\Posting\NewComment;
-use Qissues\Model\Querying\SearchCriteria;
+use Qissues\Domain\Model\Issue;
+use Qissues\Domain\Model\NewIssue;
+use Qissues\Domain\Model\NewComment;
+use Qissues\Domain\Model\SearchCriteria;
 
 interface FieldMapping
 {

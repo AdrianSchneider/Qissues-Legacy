@@ -2,13 +2,13 @@
 
 namespace Qissues\Tests\Console\Input\Strategy\Comment;
 
-use Qissues\Console\Input\Strategy\Comment\EditStrategy;
+use Qissues\Interfaces\Console\Input\Strategy\Comment\EditStrategy;
 
 class EditStrategyTest extends \PHPUnit_Framework_TestCase
 {
     public function testReturnsPopulatedNewComment()
     {
-        $editor = $this->getMockBuilder('Qissues\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
+        $editor = $this->getMockBuilder('Qissues\Interfaces\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
         $editor
             ->expects($this->once())
             ->method('getEdited')
@@ -17,15 +17,15 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         ;
 
         $strategy = new EditStrategy($editor);
-        $comment = $strategy->createNew($this->getMockBuilder('Qissues\Model\Tracker\IssueTracker')->disableOriginalConstructor()->getMock());
+        $comment = $strategy->createNew($this->getMockBuilder('Qissues\Domain\Tracker\IssueTracker')->disableOriginalConstructor()->getMock());
 
-        $this->assertInstanceOf('Qissues\Model\Posting\NewComment', $comment);
+        $this->assertInstanceOf('Qissues\Domain\Model\NewComment', $comment);
         $this->assertEquals('content', $comment->getMessage());
     }
 
     public function testReturnsNullWhenEmpty()
     {
-        $editor = $this->getMockBuilder('Qissues\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
+        $editor = $this->getMockBuilder('Qissues\Interfaces\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
         $editor
             ->expects($this->once())
             ->method('getEdited')
@@ -34,14 +34,14 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         ;
 
         $strategy = new EditStrategy($editor);
-        $comment = $strategy->createNew($this->getMockBuilder('Qissues\Model\Tracker\IssueTracker')->disableOriginalConstructor()->getMock());
+        $comment = $strategy->createNew($this->getMockBuilder('Qissues\Domain\Tracker\IssueTracker')->disableOriginalConstructor()->getMock());
 
         $this->assertNull($comment);
     }
 
     public function testInit()
     {
-        $editor = $this->getMockBuilder('Qissues\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
+        $editor = $this->getMockBuilder('Qissues\Interfaces\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
         $strategy = new EditStrategy($editor);
         $strategy->init(
             $this->getMock('Symfony\Component\Console\Input\InputInterface'),

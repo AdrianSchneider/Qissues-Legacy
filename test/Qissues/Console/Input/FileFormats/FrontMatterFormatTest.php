@@ -2,7 +2,7 @@
 
 namespace Qissues\Tests\Console\Input\FileFormats;
 
-use Qissues\Console\Input\FileFormats\FrontMatterFormat;
+use Qissues\Interfaces\Console\Input\FileFormats\FrontMatterFormat;
 
 class FrontMatterFormatTest extends \PHPUnit_Framework_TestCase
 {

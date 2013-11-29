@@ -2,24 +2,24 @@
 
 namespace Qissues\Tests\Console\Input\Strategy\Comment;
 
-use Qissues\Console\Input\Strategy\Comment\StdinStrategy;
+use Qissues\Interfaces\Console\Input\Strategy\Comment\StdinStrategy;
 
 class StdinStrategyTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreatesCommentFromStream()
     {
         $strategy = new StdinStrategy('data://text/plain,hello-world');
-        $tracker = $this->getMockBuilder('Qissues\Model\Tracker\IssueTracker')->disableOriginalConstructor()->getMock();
+        $tracker = $this->getMockBuilder('Qissues\Domain\Tracker\IssueTracker')->disableOriginalConstructor()->getMock();
         $comment = $strategy->createNew($tracker);
 
-        $this->assertInstanceOf('Qissues\Model\Posting\NewComment', $comment);
+        $this->assertInstanceOf('Qissues\Domain\Model\NewComment', $comment);
         $this->assertEquals('hello-world', $comment->getMessage());
     }
 
     public function testIgnoresEmptyStreams()
     {
         $strategy = new StdinStrategy('data://text/plain,');
-        $tracker = $this->getMockBuilder('Qissues\Model\Tracker\IssueTracker')->disableOriginalConstructor()->getMock();
+        $tracker = $this->getMockBuilder('Qissues\Domain\Tracker\IssueTracker')->disableOriginalConstructor()->getMock();
         $comment = $strategy->createNew($tracker);
 
         $this->assertNull($comment);

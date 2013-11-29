@@ -2,18 +2,18 @@
 
 namespace Qissues\Trackers\Trello;
 
-use Qissues\Model\Issue;
-use Qissues\Model\Comment;
-use Qissues\Model\Posting\NewIssue;
-use Qissues\Model\Posting\NewComment;
-use Qissues\Model\Meta\User;
-use Qissues\Model\Meta\Status;
-use Qissues\Model\Meta\Priority;
-use Qissues\Model\Meta\Type;
-use Qissues\Model\Meta\Label;
-use Qissues\Model\Tracker\FieldMapping;
-use Qissues\Model\Tracker\Metadata\Metadata;
-use Qissues\Model\Querying\SearchCriteria;
+use Qissues\Domain\Model\Issue;
+use Qissues\Domain\Comment;
+use Qissues\Domain\Model\NewIssue;
+use Qissues\Domain\Model\NewComment;
+use Qissues\Domain\Meta\User;
+use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Meta\Priority;
+use Qissues\Domain\Meta\Type;
+use Qissues\Domain\Meta\Label;
+use Qissues\Domain\Tracker\FieldMapping;
+use Qissues\Domain\Tracker\Metadata\Metadata;
+use Qissues\Domain\Model\SearchCriteria;
 use Qissues\System\Util\LocalTime;
 
 class TrelloMapping implements FieldMapping

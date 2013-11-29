@@ -4,13 +4,13 @@ namespace Qissues\Trackers\Jira;
 
 use Qissues\Trackers\Jira\JiraMapping;
 use Qissues\Trackers\Jira\JiraMetadata;
-use Qissues\Model\Posting\NewIssue;
-use Qissues\Model\Meta\User;
-use Qissues\Model\Meta\Status;
-use Qissues\Model\Meta\Priority;
-use Qissues\Model\Meta\Type;
-use Qissues\Model\Meta\Label;
-use Qissues\Model\Querying\SearchCriteria;
+use Qissues\Domain\Model\NewIssue;
+use Qissues\Domain\Meta\User;
+use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Meta\Priority;
+use Qissues\Domain\Meta\Type;
+use Qissues\Domain\Meta\Label;
+use Qissues\Domain\Model\SearchCriteria;
 
 class JiraMappingTest extends \PHPUnit_Framework_TestCase
 {

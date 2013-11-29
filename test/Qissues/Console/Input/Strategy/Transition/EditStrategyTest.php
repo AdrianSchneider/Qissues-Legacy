@@ -1,10 +1,10 @@
 <?php
 
-namespace Qissues\Console\Input\Strategy\Transition;
+namespace Qissues\Interfaces\Console\Input\Strategy\Transition;
 
-use Qissues\Model\Workflow\TransitionDetails;
-use Qissues\Model\Workflow\TransitionRequirements;
-use Qissues\Console\Input\Strategy\Transition\EditStrategy;
+use Qissues\Domain\Workflow\TransitionDetails;
+use Qissues\Domain\Workflow\TransitionRequirements;
+use Qissues\Interfaces\Console\Input\Strategy\Transition\EditStrategy;
 
 class EditStrategyTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,7 +15,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         $parsed = array('user' => 'input');
         $fields = array('resolution' => 'fixed', 'comment' => '');
 
-        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
+        $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
         $fileFormat
             ->expects($this->once())
             ->method('seed')
@@ -29,7 +29,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($parsed))
         ;
 
-        $editor = $this->getMockBuilder('Qissues\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
+        $editor = $this->getMockBuilder('Qissues\Interfaces\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
         $editor
             ->expects($this->once())
             ->method('getEdited')
@@ -50,8 +50,8 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
     public function testCreatesEmptyIfNoFields()
     {
         $issueFactory = new EditStrategy(
-            $this->getMockBuilder('Qissues\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock(),
-            $this->getMockBuilder('Qissues\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock()
+            $this->getMockBuilder('Qissues\Interfaces\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock(),
+            $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock()
         );
 
         $details = $issueFactory->create(new TransitionRequirements(array()));
@@ -66,7 +66,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         $content = '';
         $fields = array('resolution' => 'fixed', 'comment' => '');
 
-        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
+        $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
         $fileFormat
             ->expects($this->once())
             ->method('seed')
@@ -74,7 +74,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($template))
         ;
 
-        $editor = $this->getMockBuilder('Qissues\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
+        $editor = $this->getMockBuilder('Qissues\Interfaces\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
         $editor
             ->expects($this->once())
             ->method('getEdited')
@@ -91,8 +91,8 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
 
     public function testInit()
     {
-        $editor = $this->getMockBuilder('Qissues\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
-        $fileFormat = $this->getMockBuilder('Qissues\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
+        $editor = $this->getMockBuilder('Qissues\Interfaces\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
+        $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
 
         $strategy = new EditStrategy($editor, $fileFormat);
         $strategy->init(

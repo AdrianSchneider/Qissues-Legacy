@@ -2,11 +2,11 @@
 
 namespace Qissues\Trackers\InMemory;
 
-use Qissues\Model\Core\Meta\User;
-use Qissues\Model\Core\Meta\Status;
-use Qissues\Model\Querying\Number;
-use Qissues\Model\Posting\NewIssue;
-use Qissues\Model\Posting\NewComment;
+use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\Status;
+use Qissues\Domain\Model\Number;
+use Qissues\Domain\Model\NewIssue;
+use Qissues\Domain\Model\NewComment;
 use Qissues\Trackers\InMemory\InMemoryRepository;
 
 class InMemoryRepositoryTest extends \PHPUnit_Framework_TestCase
@@ -79,7 +79,7 @@ class InMemoryRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $issue = $repo->lookup(new Number(1));
 
-        $this->assertInstanceOf('Qissues\Model\Core\Issue', $issue);
+        $this->assertInstanceOf('Qissues\Domain\Model\Issue', $issue);
         $this->assertEquals('a', $issue->getTitle());
         $this->assertEquals('b', $issue->getDescription());
     }

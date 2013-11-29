@@ -8,7 +8,7 @@ class FormatFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testSpecific()
     {
-        $format = $this->getMock('Qissues\Console\Input\FileFormats\FileFormat');
+        $format = $this->getMock('Qissues\Interfaces\Console\Input\FileFormats\FileFormat');
 
         $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
         $container
@@ -30,7 +30,7 @@ class FormatFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testFallback()
     {
-        $format = $this->getMock('Qissues\Console\Input\FileFormats\FileFormat');
+        $format = $this->getMock('Qissues\Interfaces\Console\Input\FileFormats\FileFormat');
 
         $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
         $container

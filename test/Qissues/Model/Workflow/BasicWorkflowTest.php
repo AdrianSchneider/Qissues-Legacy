@@ -1,12 +1,12 @@
 <?php
 
-namespace Qissues\Model\Workflow;
+namespace Qissues\Domain\Workflow;
 
-use Qissues\Model\Issue;
-use Qissues\Model\Meta\Status;
-use Qissues\Model\Querying\Number;
-use Qissues\Model\Workflow\BasicWorkflow;
-use Qissues\Model\Workflow\TransitionDetails;
+use Qissues\Domain\Model\Issue;
+use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Model\Number;
+use Qissues\Domain\Workflow\BasicWorkflow;
+use Qissues\Domain\Workflow\TransitionDetails;
 
 class BasicWorkflowTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,7 +17,7 @@ class BasicWorkflowTest extends \PHPUnit_Framework_TestCase
             new Status('closed')
         );
 
-        $transitioner = $this->getMock('Qissues\Model\Workflow\BasicTransitioner');
+        $transitioner = $this->getMock('Qissues\Domain\Workflow\BasicTransitioner');
         $transitioner
             ->expects($this->once())
             ->method('changeStatus')
@@ -37,7 +37,7 @@ class BasicWorkflowTest extends \PHPUnit_Framework_TestCase
 
     public function testHasNoRequirements()
     {
-        $transitioner = $this->getMock('Qissues\Model\Workflow\BasicTransitioner');
+        $transitioner = $this->getMock('Qissues\Domain\Workflow\BasicTransitioner');
 
         $transition = new Transition(
             new Issue(1, 'title', 'desc', new Status('open'), new \DateTime, new \DateTime),

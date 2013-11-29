@@ -2,9 +2,9 @@
 
 namespace Qissues\Tests\Model\Serializer;
 
-use Qissues\Model\Comment;
-use Qissues\Model\Meta\User;
-use Qissues\Model\Serializer\CommentSerializer;
+use Qissues\Domain\Comment;
+use Qissues\Domain\Meta\User;
+use Qissues\Domain\Serializer\CommentSerializer;
 
 class CommentSerializerTest extends \PHPUnit_Framework_TestCase
 {

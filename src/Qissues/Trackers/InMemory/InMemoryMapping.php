@@ -2,16 +2,16 @@
 
 namespace Qissues\Trackers\InMemory;
 
-use Qissues\Model\Core\Issue;
-use Qissues\Model\Core\Comment;
-use Qissues\Model\Core\Meta\User;
-use Qissues\Model\Core\Meta\Status;
-use Qissues\Model\Core\Meta\Type;
-use Qissues\Model\Core\Meta\Label;
-use Qissues\Model\Posting\NewIssue;
-use Qissues\Model\Posting\NewComment;
-use Qissues\Model\Tracker\FieldMapping;
-use Qissues\Model\Querying\SearchCriteria;
+use Qissues\Domain\Model\Issue;
+use Qissues\Domain\Model\Comment;
+use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\Status;
+use Qissues\Domain\Shared\Type;
+use Qissues\Domain\Shared\Label;
+use Qissues\Domain\Model\NewIssue;
+use Qissues\Domain\Model\NewComment;
+use Qissues\Domain\Tracker\FieldMapping;
+use Qissues\Domain\Model\SearchCriteria;
 
 class InMemoryMapping implements FieldMapping
 {

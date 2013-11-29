@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Model\Workflow;
+namespace Qissues\Domain\Workflow;
 
 class TransitionDetails
 {

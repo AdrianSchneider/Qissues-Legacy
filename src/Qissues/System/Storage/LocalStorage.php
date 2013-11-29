@@ -2,7 +2,7 @@
 
 namespace Qissues\System\Storage;
 
-use Qissues\Model\Tracker\Metadata\Storage;
+use Qissues\Domain\Tracker\Metadata\Storage;
 use Qissues\System\Filesystem;
 
 class LocalStorage implements Storage

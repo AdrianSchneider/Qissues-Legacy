@@ -2,15 +2,15 @@
 
 namespace Qissues\Trackers\Trello;
 
-use Qissues\Model\Querying\Number;
-use Qissues\Model\Meta\User;
-use Qissues\Model\Meta\Status;
-use Qissues\Model\Meta\ClosedStatus;
-use Qissues\Model\Posting\NewComment;
+use Qissues\Domain\Model\Number;
+use Qissues\Domain\Meta\User;
+use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Meta\ClosedStatus;
+use Qissues\Domain\Model\NewComment;
 use Qissues\Trackers\Trello\TrelloRepository;
 use Qissues\Trackers\Trello\TrelloMetadata;
-use Qissues\Model\Tracker\Metadata\NullMetadata;
-use Qissues\Model\Querying\SearchCriteria;
+use Qissues\Domain\Tracker\Metadata\NullMetadata;
+use Qissues\Domain\Model\SearchCriteria;
 use Guzzle\Http\Client;
 use Guzzle\Http\Message\Response;
 use Guzzle\Plugin\Mock\MockPlugin;
@@ -38,7 +38,7 @@ class TrelloRepositoryTest extends \PHPUnit_Framework_TestCase
             $this->config['board'],
             $this->config['key'],
             $this->config['token'],
-            $mapping ?: $this->getMockBuilder('Qissues\Model\Tracker\FieldMapping')->disableOriginalConstructor()->getMock(),
+            $mapping ?: $this->getMockBuilder('Qissues\Domain\Tracker\FieldMapping')->disableOriginalConstructor()->getMock(),
             $metadata ? new TrelloMetadata($metadata) : new NullMetadata(),
             $this->client
         );
@@ -54,7 +54,7 @@ class TrelloRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $payload = array('issue_datas' => 'yup');
 
-        $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping');
+        $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('toIssue')
@@ -189,7 +189,7 @@ class TrelloRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testPersist()
     {
-        $issue = $this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock();
+        $issue = $this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock();
         $payload = array('idShort' => 500);
 
         $mapping = $this->getMockBuilder('Qissues\Trackers\Trello\TrelloMapping')->disableOriginalConstructor()->getMock();
@@ -216,7 +216,7 @@ class TrelloRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $payload = array();
         $number = new Number(12);
-        $issue = $this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock();
+        $issue = $this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock();
 
         $mapping = $this->getMockBuilder('Qissues\Trackers\Trello\TrelloMapping')->disableOriginalConstructor()->getMock();
         $mapping

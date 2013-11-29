@@ -2,7 +2,7 @@
 
 namespace Qissues\System;
 
-use Qissues\Console\Input\Exception;
+use Qissues\Interfaces\Console\Input\Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Initializer

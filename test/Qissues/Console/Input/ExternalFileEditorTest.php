@@ -2,14 +2,14 @@
 
 namespace Qissues\Tests\Console\Input;
 
-use Qissues\Console\Input\ExternalFileEditor;
+use Qissues\Interfaces\Console\Input\ExternalFileEditor;
 
 class ExternalFileEditorTest extends \PHPUnit_Framework_TestCase
 {
     public function testUseSelectedEditor()
     {
         $editor = new ExternalFileEditor(
-            $this->getMock('Qissues\Console\Shell\Shell'),
+            $this->getMock('Qissues\Interfaces\Console\Shell\Shell'),
             $this->getMockBuilder('Qissues\System\Filesystem')->disableOriginalConstructor()->getMock(),
             'vim'
         );
@@ -22,7 +22,7 @@ class ExternalFileEditorTest extends \PHPUnit_Framework_TestCase
         putenv('EDITOR=nano');
 
         $editor = new ExternalFileEditor(
-            $this->getMock('Qissues\Console\Shell\Shell'),
+            $this->getMock('Qissues\Interfaces\Console\Shell\Shell'),
             $this->getMockBuilder('Qissues\System\Filesystem')->disableOriginalConstructor()->getMock()
         );
 
@@ -35,7 +35,7 @@ class ExternalFileEditorTest extends \PHPUnit_Framework_TestCase
         putenv('EDITOR=vi');
 
         $editor = new ExternalFileEditor(
-            $this->getMock('Qissues\Console\Shell\Shell'),
+            $this->getMock('Qissues\Interfaces\Console\Shell\Shell'),
             $this->getMockBuilder('Qissues\System\Filesystem')->disableOriginalConstructor()->getMock()
         );
 
@@ -50,7 +50,7 @@ class ExternalFileEditorTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('BadMethodCallException');
 
         new ExternalFileEditor(
-            $this->getMock('Qissues\Console\Shell\Shell'),
+            $this->getMock('Qissues\Interfaces\Console\Shell\Shell'),
             $this->getMockBuilder('Qissues\System\Filesystem')->disableOriginalConstructor()->getMock()
         );
     }
@@ -61,7 +61,7 @@ class ExternalFileEditorTest extends \PHPUnit_Framework_TestCase
         $input = 'hello world';
 
         $editor = new ExternalFileEditor(
-            $shell = $this->getMock('Qissues\Console\Shell\Shell'),
+            $shell = $this->getMock('Qissues\Interfaces\Console\Shell\Shell'),
             $filesystem = $this->getMockBuilder('Qissues\System\Filesystem')->disableOriginalConstructor()->getMock(),
             '.vim',
             '.qissues'

@@ -2,7 +2,7 @@
 
 namespace Qissues\Tests\Console\Input\FileFormats;
 
-use Qissues\Console\Input\FileFormats\JsonFormat;
+use Qissues\Interfaces\Console\Input\FileFormats\JsonFormat;
 
 class JsonFormatTest extends \PHPUnit_Framework_TestCase
 {

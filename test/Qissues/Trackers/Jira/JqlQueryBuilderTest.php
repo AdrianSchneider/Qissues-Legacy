@@ -2,12 +2,12 @@
 
 namespace Qissues\Trackers\Jira;
 
-use Qissues\Model\Meta\User;
-use Qissues\Model\Meta\Type;
-use Qissues\Model\Meta\Status;
+use Qissues\Domain\Meta\User;
+use Qissues\Domain\Meta\Type;
+use Qissues\Domain\Meta\Status;
 use Qissues\Trackers\Jira\JqlQueryBuilder;
-use Qissues\Model\Querying\Number;
-use Qissues\Model\Querying\SearchCriteria;
+use Qissues\Domain\Model\Number;
+use Qissues\Domain\Model\SearchCriteria;
 
 class JqlQueryBuilderTest extends \PHPUnit_Framework_TestCase
 {

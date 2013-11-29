@@ -3,12 +3,12 @@
 namespace Qissues\Tests\Trackers\BitBucket;
 
 use Qissues\Trackers\BitBucket\BitBucketMapping;
-use Qissues\Model\Meta\User;
-use Qissues\Model\Meta\Status;
-use Qissues\Model\Meta\Priority;
-use Qissues\Model\Meta\Type;
-use Qissues\Model\Meta\Label;
-use Qissues\Model\Querying\SearchCriteria;
+use Qissues\Domain\Meta\User;
+use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Meta\Priority;
+use Qissues\Domain\Meta\Type;
+use Qissues\Domain\Meta\Label;
+use Qissues\Domain\Model\SearchCriteria;
 
 class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
 {

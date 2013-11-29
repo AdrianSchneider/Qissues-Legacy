@@ -2,8 +2,8 @@
 
 namespace Qissues\Tests\Model\Tracker\Support;
 
-use Qissues\Model\Tracker\Support\Feature;
-use Qissues\Model\Tracker\Support\FeatureCatalog;
+use Qissues\Domain\Tracker\Support\Feature;
+use Qissues\Domain\Tracker\Support\FeatureCatalog;
 
 class FeatureCatalogTest extends \PHPUnit_Framework_TestCase
 {

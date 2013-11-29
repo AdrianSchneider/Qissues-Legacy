@@ -2,7 +2,7 @@
 
 namespace Qissues\Trackers\Trello;
 
-use Qissues\Model\Tracker\Metadata\Metadata;
+use Qissues\Domain\Tracker\Metadata\Metadata;
 
 class TrelloMetadata implements Metadata
 {

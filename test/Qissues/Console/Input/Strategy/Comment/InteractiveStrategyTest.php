@@ -2,8 +2,8 @@
 
 namespace Qissues\Tests\Console\Input\Strategy\Comment;
 
-use Qissues\Model\Tracker\IssueTracker;
-use Qissues\Console\Input\Strategy\Comment\InteractiveStrategy;
+use Qissues\Domain\Tracker\IssueTracker;
+use Qissues\Interfaces\Console\Input\Strategy\Comment\InteractiveStrategy;
 use Symfony\Component\Console\Input\ArrayInput;
 
 class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
@@ -61,15 +61,15 @@ class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
         $strategy->init($input, $output, $this->getApplication($dialog));
 
         $tracker = new IssueTracker(
-            $repository = $this->getMock('Qissues\Model\Tracker\IssueRepository'),
-            $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping'),
-            $features = $this->getMock('Qissues\Model\Tracker\Support\FeatureSet'),
-            $workflow = $this->getMock('Qissues\Model\Workflow\Workflow')
+            $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
+            $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
+            $features = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $workflow = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 
         $comment = $strategy->createNew($tracker);
 
-        $this->assertInstanceOf('Qissues\Model\Posting\NewComment', $comment);
+        $this->assertInstanceOf('Qissues\Domain\Model\NewComment', $comment);
         $this->assertEquals('hello world', $comment->getMessage());
     }
 
@@ -91,10 +91,10 @@ class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
         $strategy->init($input, $output, $this->getApplication($dialog));
 
         $tracker = new IssueTracker(
-            $repository = $this->getMock('Qissues\Model\Tracker\IssueRepository'),
-            $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping'),
-            $features = $this->getMock('Qissues\Model\Tracker\Support\FeatureSet'),
-            $workflow = $this->getMock('Qissues\Model\Workflow\Workflow')
+            $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
+            $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
+            $features = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $workflow = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 
         $comment = $strategy->createNew($tracker);

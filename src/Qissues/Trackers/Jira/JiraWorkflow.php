@@ -2,13 +2,13 @@
 
 namespace Qissues\Trackers\Jira;
 
-use Qissues\Model\Meta\Field;
-use Qissues\Model\Querying\Number;
-use Qissues\Model\Workflow\Workflow;
-use Qissues\Model\Workflow\Transition;
-use Qissues\Model\Workflow\TransitionDetails;
-use Qissues\Model\Workflow\TransitionRequirements;
-use Qissues\Model\Workflow\UnsupportedTransitionException;
+use Qissues\Domain\Meta\Field;
+use Qissues\Domain\Model\Number;
+use Qissues\Domain\Workflow\Workflow;
+use Qissues\Domain\Workflow\Transition;
+use Qissues\Domain\Workflow\TransitionDetails;
+use Qissues\Domain\Workflow\TransitionRequirements;
+use Qissues\Domain\Workflow\UnsupportedTransitionException;
 
 class JiraWorkflow implements Workflow
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Model\Tracker\Support;
+namespace Qissues\Domain\Tracker\Support;
 
 class FeatureCatalog
 {

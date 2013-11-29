@@ -2,7 +2,7 @@
 
 namespace Qissues\Tests\Console\Output;
 
-use Qissues\Console\Output\SpacedTableRenderer;
+use Qissues\Interfaces\Console\Output\SpacedTableRenderer;
 
 class SpacedTableRendererTest extends \PHPUnit_Framework_TestCase
 {

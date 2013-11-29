@@ -2,7 +2,7 @@
 
 namespace Qissues\Tests\Console\Output;
 
-use Qissues\Console\Output\WebBrowser;
+use Qissues\Interfaces\Console\Output\WebBrowser;
 
 class WebBrowserTest extends \PHPUnit_Framework_TestCase
 {
@@ -35,7 +35,7 @@ class WebBrowserTest extends \PHPUnit_Framework_TestCase
     protected function getShellAsserting($command = null, $uname = null)
     {
         $index = 0;
-        $shell = $this->getMock('Qissues\Console\Shell\Shell');
+        $shell = $this->getMock('Qissues\Interfaces\Console\Shell\Shell');
 
         if ($uname) {
             $shell

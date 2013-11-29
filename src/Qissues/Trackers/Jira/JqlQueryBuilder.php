@@ -2,7 +2,7 @@
 
 namespace Qissues\Trackers\Jira;
 
-use Qissues\Model\Querying\SearchCriteria;
+use Qissues\Domain\Model\SearchCriteria;
 use QIssues\Model\Tracker\Metadata\Metadata;
 
 class JqlQueryBuilder

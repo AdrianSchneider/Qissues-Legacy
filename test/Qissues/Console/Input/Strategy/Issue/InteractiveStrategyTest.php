@@ -2,8 +2,8 @@
 
 namespace Qissues\Tests\Console\Input\Strategy\Issue;
 
-use Qissues\Model\Tracker\IssueTracker;
-use Qissues\Console\Input\Strategy\Issue\InteractiveStrategy;
+use Qissues\Domain\Tracker\IssueTracker;
+use Qissues\Interfaces\Console\Input\Strategy\Issue\InteractiveStrategy;
 use Symfony\Component\Console\Input\ArrayInput;
 
 class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
@@ -57,10 +57,10 @@ class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
         $strategy->init($input, $output, $application);
 
         $tracker = new IssueTracker(
-            $repository = $this->getMock('Qissues\Model\Tracker\IssueRepository'),
-            $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping'),
-            $features = $this->getMock('Qissues\Model\Tracker\Support\FeatureSet'),
-            $workflow = $this->getMock('Qissues\Model\Workflow\Workflow')
+            $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
+            $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
+            $features = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $workflow = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 
         $mapping
@@ -72,16 +72,16 @@ class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('toNewIssue')
             ->with(array('a' => 'c'))
-            ->will($this->returnValue($this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock()))
+            ->will($this->returnValue($this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock()))
         ;
 
         $issue = $strategy->createNew($tracker);
-        $this->assertInstanceOf('Qissues\Model\Posting\NewIssue', $issue);
+        $this->assertInstanceOf('Qissues\Domain\Model\NewIssue', $issue);
     }
 
     public function testUpdateExisting()
     {
-        $issue = $this->getMockBuilder('Qissues\Model\Issue')->disableOriginalConstructor()->getMock();
+        $issue = $this->getMockBuilder('Qissues\Domain\Model\Issue')->disableOriginalConstructor()->getMock();
         $fields = array('a' => 'b');
 
         $input = new ArrayInput(array());
@@ -102,10 +102,10 @@ class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
         $strategy->init($input, $output, $application);
 
         $tracker = new IssueTracker(
-            $repository = $this->getMock('Qissues\Model\Tracker\IssueRepository'),
-            $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping'),
-            $features = $this->getMock('Qissues\Model\Tracker\Support\FeatureSet'),
-            $workflow = $this->getMock('Qissues\Model\Workflow\Workflow')
+            $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
+            $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
+            $features = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $workflow = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 
         $mapping
@@ -118,11 +118,11 @@ class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('toNewIssue')
             ->with(array('a' => 'c'))
-            ->will($this->returnValue($this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock()))
+            ->will($this->returnValue($this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock()))
         ;
 
         $issue = $strategy->updateExisting($tracker, $issue);
-        $this->assertInstanceOf('Qissues\Model\Posting\NewIssue', $issue);
+        $this->assertInstanceOf('Qissues\Domain\Model\NewIssue', $issue);
     }
 
     protected function getApplication($dialog = null)

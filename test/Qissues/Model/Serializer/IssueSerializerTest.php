@@ -2,13 +2,13 @@
 
 namespace Qissues\Tests\Model\Serializer;
 
-use Qissues\Model\Issue;
-use Qissues\Model\Meta\Status;
-use Qissues\Model\Meta\Type;
-use Qissues\Model\Meta\User;
-use Qissues\Model\Meta\Label;
-use Qissues\Model\Meta\Priority;
-use Qissues\Model\Serializer\IssueSerializer;
+use Qissues\Domain\Model\Issue;
+use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Meta\Type;
+use Qissues\Domain\Meta\User;
+use Qissues\Domain\Meta\Label;
+use Qissues\Domain\Meta\Priority;
+use Qissues\Domain\Serializer\IssueSerializer;
 
 class IssueSerializerTest extends \PHPUnit_Framework_TestCase
 {

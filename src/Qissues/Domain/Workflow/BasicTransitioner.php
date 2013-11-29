@@ -1,9 +1,9 @@
 <?php
 
-namespace Qissues\Model\Workflow;
+namespace Qissues\Domain\Workflow;
 
-use Qissues\Model\Meta\Status;
-use Qissues\Model\Querying\Number;
+use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Model\Number;
 
 interface BasicTransitioner
 {

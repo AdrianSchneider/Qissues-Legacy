@@ -2,7 +2,7 @@
 
 namespace Qissues\Tests\Console\Input\Strategy\Comment;
 
-use Qissues\Console\Input\Strategy\Comment\OptionStrategy;
+use Qissues\Interfaces\Console\Input\Strategy\Comment\OptionStrategy;
 
 class OptionStrategyTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,9 +22,9 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($message = 'hello world'))
         ;
 
-        $comment = $strategy->createNew($this->getMockBuilder('Qissues\Model\Tracker\IssueTracker')->disableOriginalConstructor()->getMock());
+        $comment = $strategy->createNew($this->getMockBuilder('Qissues\Domain\Tracker\IssueTracker')->disableOriginalConstructor()->getMock());
 
-        $this->assertInstanceOf('Qissues\Model\Posting\NewComment', $comment);
+        $this->assertInstanceOf('Qissues\Domain\Model\NewComment', $comment);
         $this->assertEquals('hello world', $comment->getMessage());
     }
 
@@ -44,7 +44,7 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(''))
         ;
 
-        $comment = $strategy->createNew($this->getMockBuilder('Qissues\Model\Tracker\IssueTracker')->disableOriginalConstructor()->getMock());
+        $comment = $strategy->createNew($this->getMockBuilder('Qissues\Domain\Tracker\IssueTracker')->disableOriginalConstructor()->getMock());
 
         $this->assertNull($comment);
     }

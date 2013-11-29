@@ -2,14 +2,14 @@
 
 namespace Qissues\Tests\Trackers\GitHub;
 
-use Qissues\Model\Posting\NewIssue;
+use Qissues\Domain\Model\NewIssue;
 use Qissues\Trackers\GitHub\GitHubMapping;
-use Qissues\Model\Meta\User;
-use Qissues\Model\Meta\Status;
-use Qissues\Model\Meta\Type;
-use Qissues\Model\Meta\Label;
-use Qissues\Model\Meta\Priority;
-use Qissues\Model\Querying\SearchCriteria;
+use Qissues\Domain\Meta\User;
+use Qissues\Domain\Meta\Status;
+use Qissues\Domain\Meta\Type;
+use Qissues\Domain\Meta\Label;
+use Qissues\Domain\Meta\Priority;
+use Qissues\Domain\Model\SearchCriteria;
 
 class GitHubMappingTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,7 +27,7 @@ class GitHubMappingTest extends \PHPUnit_Framework_TestCase
             'labels' => ''
         ));
 
-        $this->assertInstanceOf('Qissues\Model\Issue', $issue);
+        $this->assertInstanceOf('Qissues\Domain\Model\Issue', $issue);
         $this->assertEquals(1, $issue->getId());
         $this->assertEquals('Hello World', $issue->getTitle());
         $this->assertEquals('Oh snap', $issue->getDescription());
@@ -41,7 +41,7 @@ class GitHubMappingTest extends \PHPUnit_Framework_TestCase
             'description' => 'Oh snap'
         ));
 
-        $this->assertInstanceOf('Qissues\Model\Posting\NewIssue', $issue);
+        $this->assertInstanceOf('Qissues\Domain\Model\NewIssue', $issue);
         $this->assertEquals('Hello World', $issue->getTitle());
         $this->assertEquals('Oh snap', $issue->getDescription());
     }

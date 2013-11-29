@@ -1,9 +1,9 @@
 <?php
 
-namespace Qissues\Model\Workflow;
+namespace Qissues\Domain\Workflow;
 
-use Qissues\Model\Issue;
-use Qissues\Model\Meta\Status;
+use Qissues\Domain\Model\Issue;
+use Qissues\Domain\Meta\Status;
 
 class Transition
 {

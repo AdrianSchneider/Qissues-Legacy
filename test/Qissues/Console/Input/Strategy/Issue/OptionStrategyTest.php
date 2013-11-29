@@ -2,8 +2,8 @@
 
 namespace Qissues\Tests\Console\Input\Strategy\Issue;
 
-use Qissues\Model\Tracker\IssueTracker;
-use Qissues\Console\Input\Strategy\Issue\OptionStrategy;
+use Qissues\Domain\Tracker\IssueTracker;
+use Qissues\Interfaces\Console\Input\Strategy\Issue\OptionStrategy;
 
 class OptionStrategyTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,10 +22,10 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
         );
 
         $tracker = new IssueTracker(
-            $repository = $this->getMock('Qissues\Model\Tracker\IssueRepository'),
-            $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping'),
-            $features = $this->getMock('Qissues\Model\Tracker\Support\FeatureSet'),
-            $workflow = $this->getMock('Qissues\Model\Workflow\Workflow')
+            $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
+            $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
+            $features = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $workflow = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 
         $input
@@ -42,7 +42,7 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
                 'title' => 'Hello',
                 'description' => 'World'
             ))
-            ->will($this->returnValue($this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock()))
+            ->will($this->returnValue($this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock()))
         ;
 
         $issue = $strategy->createNew($tracker);
@@ -63,10 +63,10 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
         );
 
         $tracker = new IssueTracker(
-            $repository = $this->getMock('Qissues\Model\Tracker\IssueRepository'),
-            $mapping = $this->getMock('Qissues\Model\Tracker\FieldMapping'),
-            $features = $this->getMock('Qissues\Model\Tracker\Support\FeatureSet'),
-            $workflow = $this->getMock('Qissues\Model\Workflow\Workflow')
+            $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
+            $mapping = $this->getMock('Qissues\Domain\Tracker\FieldMapping'),
+            $features = $this->getMock('Qissues\Domain\Tracker\Support\FeatureSet'),
+            $workflow = $this->getMock('Qissues\Domain\Workflow\Workflow')
         );
 
         $input
@@ -83,9 +83,9 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
                 'title' => 'Hello',
                 'description' => 'World'
             ))
-            ->will($this->returnValue($this->getMockBuilder('Qissues\Model\Posting\NewIssue')->disableOriginalConstructor()->getMock()))
+            ->will($this->returnValue($this->getMockBuilder('Qissues\Domain\Model\NewIssue')->disableOriginalConstructor()->getMock()))
         ;
 
-        $issue = $strategy->updateExisting($tracker, $this->getMockBuilder('Qissues\Model\Issue')->disableOriginalConstructor()->getMock());
+        $issue = $strategy->updateExisting($tracker, $this->getMockBuilder('Qissues\Domain\Model\Issue')->disableOriginalConstructor()->getMock());
     }
 }

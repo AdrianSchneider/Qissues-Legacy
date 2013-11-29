@@ -2,7 +2,7 @@
 
 namespace Qissues\Tests\Console\Input;
 
-use Qissues\Console\Input\ReportManager;
+use Qissues\Interfaces\Console\Input\ReportManager;
 
 class ReportManagerTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,7 +15,7 @@ class ReportManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testThrowsErrorWhenSpecifiedReportDoesNotExist()
     {
-        $this->setExpectedException('Qissues\Console\Input\Exception');
+        $this->setExpectedException('Qissues\Interfaces\Console\Input\Exception');
 
         $manager = new ReportManager(array());
         $manager->findReport($this->getInput('features'));

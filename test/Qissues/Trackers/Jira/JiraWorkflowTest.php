@@ -2,13 +2,13 @@
 
 namespace Qissues\Trackers\Jira;
 
-use Qissues\Model\Issue;
-use Qissues\Model\Querying\Number;
-use Qissues\Model\Meta\Status;
+use Qissues\Domain\Model\Issue;
+use Qissues\Domain\Model\Number;
+use Qissues\Domain\Meta\Status;
 use Qissues\Trackers\Jira\JiraWorkflow;
-use Qissues\Model\Workflow\Transition;
-use Qissues\Model\Workflow\TransitionDetails;
-use Qissues\Model\Workflow\TransitionRequirements;
+use Qissues\Domain\Workflow\Transition;
+use Qissues\Domain\Workflow\TransitionDetails;
+use Qissues\Domain\Workflow\TransitionRequirements;
 
 class JiraWorkflowTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,7 +18,7 @@ class JiraWorkflowTest extends \PHPUnit_Framework_TestCase
         $repository
             ->expects($this->once())
             ->method('lookupTransitions')
-            ->with($this->isInstanceOf('Qissues\Model\Querying\Number'))
+            ->with($this->isInstanceOf('Qissues\Domain\Model\Number'))
             ->will($this->returnValue(array(
                 array('id' => 1, 'to' => array('id' => 1, 'name' => 'dupe')),
                 array('id' => 2, 'to' => array('id' => 1, 'name' => 'nonsensical'))
@@ -30,7 +30,7 @@ class JiraWorkflowTest extends \PHPUnit_Framework_TestCase
             new Status('closed')
         );
 
-        $this->setExpectedException('Qissues\Model\Workflow\UnsupportedTransitionException', "dupe, nonsensical");
+        $this->setExpectedException('Qissues\Domain\Workflow\UnsupportedTransitionException', "dupe, nonsensical");
 
         $workflow = new JiraWorkflow($repository);
         $workflow->apply($transition, new TransitionDetails(array()));
@@ -50,7 +50,7 @@ class JiraWorkflowTest extends \PHPUnit_Framework_TestCase
         $repository
             ->expects($this->once())
             ->method('lookupTransitions')
-            ->with($this->isInstanceOf('Qissues\Model\Querying\Number'))
+            ->with($this->isInstanceOf('Qissues\Domain\Model\Number'))
             ->will($this->returnValue(array(
                 array('id' => 1, 'to' => array('id' => 1, 'name' => 'closed'))
             )))
@@ -71,7 +71,7 @@ class JiraWorkflowTest extends \PHPUnit_Framework_TestCase
         $repository
             ->expects($this->once())
             ->method('lookupTransitions')
-            ->with($this->isInstanceOf('Qissues\Model\Querying\Number'))
+            ->with($this->isInstanceOf('Qissues\Domain\Model\Number'))
             ->will($this->returnValue(array(
                 array(
                     'to' => array('name' => 'closed'),
@@ -100,7 +100,7 @@ class JiraWorkflowTest extends \PHPUnit_Framework_TestCase
         $repository
             ->expects($this->once())
             ->method('lookupTransitions')
-            ->with($this->isInstanceOf('Qissues\Model\Querying\Number'))
+            ->with($this->isInstanceOf('Qissues\Domain\Model\Number'))
             ->will($this->returnValue(array(
                 array(
                     'to' => array('name' => 'closed'),

@@ -2,7 +2,7 @@
 
 namespace Qissues\Model\Tracker;
 
-use Qissues\Model\Issue;
+use Qissues\Model\Core\Issue;
 use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
 use Qissues\Model\Querying\SearchCriteria;

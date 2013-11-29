@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Model\Meta;
+namespace Qissues\Model\Core\Meta;
 
 class ClosedStatus extends Status
 {

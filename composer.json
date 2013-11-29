@@ -9,10 +9,14 @@
         "guzzle/guzzle": "~3.1",
         "symfony/yaml": "*",
         "symfony/config": "2.1.*",
-        "symfony/filesystem": "*"
+        "symfony/filesystem": "*",
+        "behat/behat": "2.4.*@stable"
     },
     "config": {
         "bin-dir": "bin"
+    },
+    "autoload": {
+        "psr-0": {"Qissues\\": "src/"}
     },
     "minimum-stability": "dev"
 }

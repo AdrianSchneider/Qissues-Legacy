@@ -1,12 +1,12 @@
 <?php
 
-namespace Qissues\Model;
+namespace Qissues\Model\Core;
 
-use Qissues\Model\Meta\Status;
-use Qissues\Model\Meta\Priority;
-use Qissues\Model\Meta\Type;
-use Qissues\Model\Meta\User;
-use Qissues\Model\Meta\Label;
+use Qissues\Model\Core\Meta\Status;
+use Qissues\Model\Core\Meta\Priority;
+use Qissues\Model\Core\Meta\Type;
+use Qissues\Model\Core\Meta\User;
+use Qissues\Model\Core\Meta\Label;
 use Qissues\System\DataType\ReadOnlyArrayAccess;
 
 class Issue extends ReadOnlyArrayAccess

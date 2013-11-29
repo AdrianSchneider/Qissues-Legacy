@@ -2,11 +2,11 @@
 
 namespace Qissues\Model\Tracker;
 
-use Qissues\Model\Querying\Number;
-use Qissues\Model\Issue;
-use Qissues\Model\Meta\User;
+use Qissues\Model\Core\Issue;
+use Qissues\Model\Core\Meta\User;
 use Qissues\Model\Posting\NewIssue;
 use Qissues\Model\Posting\NewComment;
+use Qissues\Model\Querying\Number;
 use Qissues\Model\Querying\SearchCriteria;
 
 interface IssueRepository

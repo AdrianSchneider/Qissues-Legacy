@@ -1,8 +1,8 @@
 <?php
 
-namespace Qissues\Model;
+namespace Qissues\Model\Core;
 
-use Qissues\Model\Meta\User;
+use Qissues\Model\Meta\Core\User;
 use Qissues\System\DataType\ReadOnlyArrayAccess;
 
 class Comment extends ReadOnlyArrayAccess

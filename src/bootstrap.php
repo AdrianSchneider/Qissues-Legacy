@@ -20,5 +20,4 @@ if (isset($argv)) {
     $_SERVER['argv'] = $argv;
 }
 
-$loader = include $file;
-$loader->add('Qissues', __DIR__);
+include $file;

@@ -113,6 +113,7 @@ class FeatureContext extends BehatContext
     {
         assertEquals($title, $this->getIssue($num)->getTitle());
     }
+
     /**
      * @Then /^Issue number "([^"]*)" should be deleted$/
      */
@@ -121,6 +122,12 @@ class FeatureContext extends BehatContext
         assertNull($this->getIssue($num));
     }
 
+    /**
+     * Shortcut to grab an issue
+     *
+     * @param integer $num
+     * @return Issue
+     */
     protected function getIssue($num)
     {
         return $this->repository->lookup(new Number($num));

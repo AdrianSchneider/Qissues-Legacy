@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\System\Builders;
+namespace Qissues\Application\Container;
 
 use Qissues\Trackers\Shared\Support\Feature;
 use Qissues\Trackers\Shared\Support\FeatureSet;

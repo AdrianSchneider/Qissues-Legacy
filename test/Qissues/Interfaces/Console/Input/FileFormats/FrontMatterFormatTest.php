@@ -8,7 +8,7 @@ class FrontMatterFormatTest extends \PHPUnit_Framework_TestCase
 {
     public function testSeed()
     {
-        $parser = $this->getMockBuilder('Qissues\System\FrontMatterParser')->disableOriginalConstructor()->getMock();
+        $parser = $this->getMockBuilder('Qissues\Application\Input\FrontMatterParser')->disableOriginalConstructor()->getMock();
         $format = new FrontMatterFormat($parser);
 
         $template = $format->seed(array('a' => 'b'));
@@ -17,7 +17,7 @@ class FrontMatterFormatTest extends \PHPUnit_Framework_TestCase
 
     public function testSeedDoesntDoublePrintDescription()
     {
-        $parser = $this->getMockBuilder('Qissues\System\FrontMatterParser')->disableOriginalConstructor()->getMock();
+        $parser = $this->getMockBuilder('Qissues\Application\Input\FrontMatterParser')->disableOriginalConstructor()->getMock();
         $format = new FrontMatterFormat($parser);
 
         $template = $format->seed(array('a' => 'b', 'description' => 'Hello World'));
@@ -26,7 +26,7 @@ class FrontMatterFormatTest extends \PHPUnit_Framework_TestCase
 
     public function testSpecifyAnotherDescriptionField()
     {
-        $parser = $this->getMockBuilder('Qissues\System\FrontMatterParser')->disableOriginalConstructor()->getMock();
+        $parser = $this->getMockBuilder('Qissues\Application\Input\FrontMatterParser')->disableOriginalConstructor()->getMock();
         $format = new FrontMatterFormat($parser, 'body');
 
         $template = $format->seed(array('a' => 'b', 'body' => 'Oh Hai'));
@@ -38,7 +38,7 @@ class FrontMatterFormatTest extends \PHPUnit_Framework_TestCase
         $input = 'user input';
         $output = array('user' => 'input');
 
-        $parser = $this->getMockBuilder('Qissues\System\FrontMatterParser')->disableOriginalConstructor()->getMock();
+        $parser = $this->getMockBuilder('Qissues\Application\Input\FrontMatterParser')->disableOriginalConstructor()->getMock();
         $parser
             ->expects($this->once())
             ->method('parse')
@@ -55,7 +55,7 @@ class FrontMatterFormatTest extends \PHPUnit_Framework_TestCase
         $input = 'user input';
         $output = array('user' => 'input');
 
-        $parser = $this->getMockBuilder('Qissues\System\FrontMatterParser')->disableOriginalConstructor()->getMock();
+        $parser = $this->getMockBuilder('Qissues\Application\Input\FrontMatterParser')->disableOriginalConstructor()->getMock();
         $parser
             ->expects($this->once())
             ->method('parse')

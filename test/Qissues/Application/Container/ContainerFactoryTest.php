@@ -2,7 +2,7 @@
 
 namespace Qissues\Tests\System;
 
-use Qissues\System\ContainerFactory;
+use Qissues\Application\Container\ContainerFactory;
 
 class ContainerFactoryTest extends \PHPUnit_Framework_TestCase
 {

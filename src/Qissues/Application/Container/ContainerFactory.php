@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\System;
+namespace Qissues\Application\Container;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -15,7 +15,7 @@ class ContainerFactory
     public function create(array $config)
     {
         $container = new ContainerBuilder();
-        $locator = new FileLocator(__DIR__ . '/../../../config');
+        $locator = new FileLocator(__DIR__ . '/../../../../config');
 
         $loader = new YamlFileLoader($container, $locator);
         $loader->load('services.yml');

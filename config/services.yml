@@ -115,7 +115,7 @@ services:
             - %console.tmp_file.prefix%
 
     console.input.format.factory:
-        class: Qissues\System\FormatFactory
+        class: Qissues\Application\Input\FormatFactory
         arguments:
             - @container
 
@@ -206,7 +206,7 @@ services:
         factory_method: "build"
 
     support.featureset_builder:
-        class: Qissues\System\Builders\ArrayFeatureSetBuilder
+        class: Qissues\Application\Container\ArrayFeatureSetBuilder
 
     yaml_parser:
         class: Symfony\Component\Yaml\Parser
@@ -215,7 +215,7 @@ services:
         class: Symfony\Component\Yaml\Dumper
 
     frontmatter_parser:
-        class: Qissues\System\FrontMatterParser
+        class: Qissues\Application\Input\FrontMatterParser
         arguments:
              - @yaml_parser
 

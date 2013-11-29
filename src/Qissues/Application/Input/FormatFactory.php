@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\System;
+namespace Qissues\Application\Input;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

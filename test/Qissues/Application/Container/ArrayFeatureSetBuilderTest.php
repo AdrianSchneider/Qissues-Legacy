@@ -1,9 +1,9 @@
 <?php
 
-namespace Qissues\System\Builders;
+namespace Qissues\Application\Container;
 
 use Qissues\Trackers\Shared\Support\FeatureCatalogBuilder;
-use Qissues\System\Builders\ArrayFeatureSetBuilder;
+use Qissues\Application\Container\ArrayFeatureSetBuilder;
 
 class ArrayFeatureSetBuilderTest extends \PHPUnit_Framework_TestCase
 {

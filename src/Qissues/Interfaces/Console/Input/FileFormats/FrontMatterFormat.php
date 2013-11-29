@@ -2,7 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Input\FileFormats;
 
-use Qissues\System\FrontMatterParser;
+use Qissues\Application\Input\FrontMatterParser;
 
 class FrontMatterFormat implements FileFormat
 {

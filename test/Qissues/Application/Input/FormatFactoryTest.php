@@ -2,7 +2,7 @@
 
 namespace Qissues\Tests\System;
 
-use Qissues\System\FormatFactory;
+use Qissues\Application\Input\FormatFactory;
 
 class FormatFactoryTest extends \PHPUnit_Framework_TestCase
 {

@@ -3,8 +3,8 @@
 namespace Qissues\Domain\Service;
 
 use Qissues\Domain\Model\Number;
-use Qissues\Domain\Shared\User;
 use Qissues\Domain\Model\IssueRepository;
+use Qissues\Domain\Shared\User;
 
 class AssignIssue
 {

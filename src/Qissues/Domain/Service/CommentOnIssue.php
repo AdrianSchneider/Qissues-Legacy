@@ -9,6 +9,9 @@ class CommentOnIssue
 {
     protected $repository;
 
+    /**
+     * @param IssueRepository $repository
+     */
     public function __construct(IssueRepository $repository)
     {
         $this->repository = $repository;

@@ -9,6 +9,9 @@ class AssignIssue
 {
     protected $repository;
 
+    /**
+     * @param IssueRepository $repository
+     */
     public function __construct(IssueRepository $repository)
     {
         $this->repository = $repository;
@@ -27,7 +30,10 @@ class AssignIssue
         );
 
         if ($comment = $assignment->getComment()) {
-            $this->repository->coment($comment);
+            $this->repository->comment(
+                $assignment->getIssue(),
+                $assignment->getComment()
+            );
         }
     }
 }

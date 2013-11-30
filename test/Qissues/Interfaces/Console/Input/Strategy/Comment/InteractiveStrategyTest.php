@@ -64,7 +64,7 @@ class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
             $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
             $mapping = $this->getMock('Qissues\Trackers\Shared\FieldMapping'),
             $features = $this->getMock('Qissues\Trackers\Shared\Support\FeatureSet'),
-            $workflow = $this->getMock('Qissues\Domain\Workflow\Workflow')
+            $workflow = $this->getMock('Qissues\Domain\Model\Workflow')
         );
 
         $comment = $strategy->createNew($tracker);
@@ -94,7 +94,7 @@ class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
             $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
             $mapping = $this->getMock('Qissues\Trackers\Shared\FieldMapping'),
             $features = $this->getMock('Qissues\Trackers\Shared\Support\FeatureSet'),
-            $workflow = $this->getMock('Qissues\Domain\Workflow\Workflow')
+            $workflow = $this->getMock('Qissues\Domain\Model\Workflow')
         );
 
         $comment = $strategy->createNew($tracker);

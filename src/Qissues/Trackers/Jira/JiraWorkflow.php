@@ -3,20 +3,51 @@
 namespace Qissues\Trackers\Jira;
 
 use Qissues\Application\Input\Field;
+use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Model\Number;
-use Qissues\Domain\Workflow\Workflow;
-use Qissues\Domain\Workflow\Transition;
-use Qissues\Domain\Workflow\TransitionDetails;
-use Qissues\Domain\Workflow\TransitionRequirements;
-use Qissues\Domain\Workflow\UnsupportedTransitionException;
+use Qissues\Domain\Model\Workflow;
+use Qissues\Domain\Model\Transition;
+use Qissues\Domain\Shared\Details;
+use Qissues\Domain\Shared\RequiredDetails;
+use Qissues\Domain\Shared\Status;
+use Qissues\Domain\Model\Exception\MappingException;
 
+/**
+ * Support JIRA's dynamic workflow process
+ *
+ * Each issue type per project per credentials has a series
+ * of transitions (to statuses) available.
+ *
+ * Transitions don't appear to be cachable (ids) for some reason,
+ * so it is calculated at run-time.
+ */
 class JiraWorkflow implements Workflow
 {
     protected $repository;
 
+    /**
+     * @param JiraRepository $repository
+     */
     public function __construct(JiraRepository $repository)
     {
         $this->repository = $repository;
+    }
+
+    /**
+     * Builds a transition, querying JIRA at run-time
+     *
+     * {@inheritDoc}
+     */
+    public function buildTransition(Issue $issue, Status $status, /*Callable*/ $builder = null)
+    {
+        $requirements = $this->getRequirements(new Number($issue->getId()), $status);
+        if ($requirements->getFields()) {
+            $details = call_user_func($builder, $requirements);
+        } else {
+            $details = new Details();
+        }
+
+        return new Transition($status, $details);
     }
 
     /**
@@ -24,15 +55,15 @@ class JiraWorkflow implements Workflow
      *
      * {@inheritDoc}
      */
-    public function apply(Transition $transition, TransitionDetails $details)
+    public function apply(Transition $transition, Number $issue)
     {
-        $info = $this->getJiraTransition($transition);
+        $info = $this->getJiraTransition($issue, $transition->getStatus());
 
         $this->repository->changeStatus(
-            new Number($transition->getIssue()->getId()),
+            $issue,
             $transition->getStatus(),
             $info['id'],
-            $details->getDetails()
+            $transition->getDetails()
         );
     }
 
@@ -41,9 +72,9 @@ class JiraWorkflow implements Workflow
      *
      * {@inheritDoc}
      */
-    public function getRequirements(Transition $transition)
+    protected function getRequirements(Number $issue, Status $status)
     {
-        $info = $this->getJiraTransition($transition);
+        $info = $this->getJiraTransition($issue, $status);
 
         $fields = array();
         foreach ($info['fields'] as $fieldName => $info) {
@@ -59,23 +90,21 @@ class JiraWorkflow implements Workflow
             }
         }
 
-        return new TransitionRequirements($fields);
+        return new RequiredDetails($fields);
     }
 
     /**
      * Queries the repository for the transition info
-     * @param Transition $transition
+     * @param Number $issue
+     * @param Status $status
      * @return array|null
+     * @throws MappingException when invalid status
      */
-    protected function getJiraTransition(Transition $transition)
+    protected function getJiraTransition(Number $issue, Status $status)
     {
-        $issue = $transition->getIssue();
-        $status = $transition->getStatus();
-        $number = new Number($issue->getId());
-
         $valid = array();
 
-        foreach ($this->repository->lookupTransitions($number) as $trans) {
+        foreach ($this->repository->lookupTransitions($issue) as $trans) {
             if (stripos($trans['to']['name'], $status->getStatus()) !== false) {
                 return $trans;
             }
@@ -83,6 +112,6 @@ class JiraWorkflow implements Workflow
             $valid[] = $trans['to']['name'];
         }
 
-        throw new UnsupportedTransitionException("supported transitions: " . implode(', ', $valid));
+        throw new MappingException("supported transitions: " . implode(', ', $valid));
     }
 }

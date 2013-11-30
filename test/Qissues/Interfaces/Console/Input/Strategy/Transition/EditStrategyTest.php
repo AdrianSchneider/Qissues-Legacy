@@ -2,8 +2,8 @@
 
 namespace Qissues\Interfaces\Console\Input\Strategy\Transition;
 
-use Qissues\Domain\Workflow\TransitionDetails;
-use Qissues\Domain\Workflow\TransitionRequirements;
+use Qissues\Domain\Shared\Details;
+use Qissues\Domain\Shared\RequiredDetails;
 use Qissues\Interfaces\Console\Input\Strategy\Transition\EditStrategy;
 
 class EditStrategyTest extends \PHPUnit_Framework_TestCase
@@ -37,13 +37,13 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($content))
         ;
 
-        $requirements = new TransitionRequirements($fields);
+        $requirements = new RequiredDetails($fields);
 
         $issueFactory = new EditStrategy($editor, $fileFormat);
         $details = $issueFactory->create($requirements);
         $rawDetails = $details->getDetails();
 
-        $this->assertInstanceOf('Qissues\Domain\Workflow\TransitionDetails', $details);
+        $this->assertInstanceOf('Qissues\Domain\Shared\Details', $details);
         $this->assertEquals('input', $rawDetails['user']);
     }
 
@@ -54,10 +54,10 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
             $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock()
         );
 
-        $details = $issueFactory->create(new TransitionRequirements(array()));
+        $details = $issueFactory->create(new RequiredDetails());
 
         $this->assertEmpty($details->getDetails());
-        $this->assertInstanceOf('Qissues\Domain\Workflow\TransitionDetails', $details);
+        $this->assertInstanceOf('Qissues\Domain\Shared\Details', $details);
     }
 
     public function testCreatesEmptyIfNoContent()
@@ -83,10 +83,10 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         ;
 
         $issueFactory = new EditStrategy($editor, $fileFormat);
-        $details = $issueFactory->create(new TransitionRequirements($fields));
+        $details = $issueFactory->create(new RequiredDetails($fields));
 
         $this->assertEmpty($details->getDetails());
-        $this->assertInstanceOf('Qissues\Domain\Workflow\TransitionDetails', $details);
+        $this->assertInstanceOf('Qissues\Domain\Shared\Details', $details);
     }
 
     public function testInit()

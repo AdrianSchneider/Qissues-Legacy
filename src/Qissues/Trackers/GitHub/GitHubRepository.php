@@ -6,7 +6,7 @@ use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\SearchCriteria;
-use Qissues\Domain\Workflow\BasicTransitioner;
+use Qissues\Trackers\Shared\BasicTransitioner;
 use Qissues\Domain\Model\Request\NewIssue;
 use Qissues\Domain\Model\Message;
 use Qissues\Domain\Model\IssueRepository;

@@ -2,8 +2,8 @@
 
 namespace Qissues\Interfaces\Console\Input\Strategy\Transition;
 
-use Qissues\Domain\Workflow\TransitionDetails;
-use Qissues\Domain\Workflow\TransitionRequirements;
+use Qissues\Domain\Shared\Details;
+use Qissues\Domain\Shared\RequiredDetails;
 use Qissues\Interfaces\Console\Input\ExternalFileEditor;
 use Qissues\Interfaces\Console\Input\FileFormats\FileFormat;
 use Symfony\Component\Console\Application;
@@ -26,16 +26,16 @@ class EditStrategy implements DetailsStrategy
     /**
      * Creates a new TransitionDetails by loading the info into an editor
      *
-     * @param TransitionRequirements $requirements
+     * @param RequiredDetails $requirements
      * @return TransitionDetails
      */
-    public function create(TransitionRequirements $requirements)
+    public function create(RequiredDetails $requirements)
     {
-        return new TransitionDetails($this->getData($requirements));
+        return new Details($this->getData($requirements));
     }
 
 
-    protected function getData(TransitionRequirements $requirements)
+    protected function getData(RequiredDetails $requirements)
     {
         if (!$fields = $requirements->getFields()) {
             return array();

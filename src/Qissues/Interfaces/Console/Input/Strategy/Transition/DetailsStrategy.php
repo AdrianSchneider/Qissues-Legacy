@@ -2,8 +2,8 @@
 
 namespace Qissues\Interfaces\Console\Input\Strategy\Transition;
 
-use Qissues\Domain\Workflow\TransitionDetails;
-use Qissues\Domain\Workflow\TransitionRequirements;
+use Qissues\Domain\Shared\Details;
+use Qissues\Domain\Shared\RequiredDetails;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,5 +25,5 @@ interface DetailsStrategy
      * @param TransitionRequirements $requirements
      * @return TransitionDetails
      */
-    function create(TransitionRequirements $requirements);
+    function create(RequiredDetails $requirements);
 }

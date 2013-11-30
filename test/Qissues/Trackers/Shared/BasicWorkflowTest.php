@@ -1,0 +1,56 @@
+<?php
+
+namespace Qissues\Trackers\Shared;
+
+use Qissues\Domain\Model\Number;
+use Qissues\Domain\Model\Transition;
+use Qissues\Domain\Model\Workflow;
+use Qissues\Domain\Model\Issue;
+use Qissues\Domain\Shared\Status;
+use Qissues\Domain\Shared\Details;
+use Qissues\Trackers\Shared\BasicWorkflow;
+
+class BasicWorkflowTest extends \PHPUnit_Framework_TestCase
+{
+    public function testBuildTransition()
+    {
+        $workflow = new BasicWorkflow(
+            $this->getMock('Qissues\Trackers\Shared\BasicTransitioner')
+        );
+
+        $transition = $workflow->buildTransition(
+            $this->getMockBuilder('Qissues\Domain\Model\Issue')->disableOriginalConstructor()->getMock(),
+            $status = new Status('closed')
+        );
+
+        $this->assertInstanceOf('Qissues\Domain\Model\Transition', $transition);
+        $this->assertSame($status, $transition->getStatus());
+        $this->assertEmpty($transition->getDetails()->getDetails());
+    }
+
+    public function testApplyDelegatesToTransitioner()
+    {
+        $number = new Number(1);
+        $status = new Status('closed');
+
+        $transitioner = $this->getMock('Qissues\Trackers\Shared\BasicTransitioner');
+        $transitioner
+            ->expects($this->once())
+            ->method('changeStatus')
+            ->with($number, $status)
+        ;
+
+        $workflow = new BasicWorkflow($transitioner);
+        $workflow->apply(new Transition($status, new Details), $number);
+    }
+
+    public function testGetRequirementsReturnsEmpty()
+    {
+        $transition = new Transition(new Status('closed'), new Details);
+
+        $workflow = new BasicWorkflow($this->getMock('Qissues\Trackers\Shared\BasicTransitioner'));
+        $requirements = $workflow->getRequirements($transition);
+
+        $this->assertEmpty($requirements->getFields());
+    }
+}

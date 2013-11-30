@@ -11,21 +11,18 @@ use Qissues\Domain\Shared\Status;
 class IssueTransition
 {
     protected $issue;
-    protected $status;
-    protected $details;
+    protected $transition;
     protected $comment;
 
     /**
      * @param Number $issue
-     * @param Status $status
-     * @param IssueTransitionDetails|null $details
+     * @param Transition $transition
      * @param Message|null $comment
      */
-    public function __construct(Number $issue, Status $status, IssueTransitionDetails $details = null, Message $comment = null)
+    public function __construct(Number $issue, Transition $transition, Message $comment = null)
     {
         $this->issue = $issue;
-        $this->status = $status;
-        $this->details = $details;
+        $this->transition = $transition;
         $this->comment = $comment;
     }
 
@@ -34,14 +31,9 @@ class IssueTransition
         return $this->issue;
     }
 
-    public function getStatus()
+    public function getTransition()
     {
-        return $this->status;
-    }
-
-    public function getDetails()
-    {
-        return $this->details;
+        return $this->transition;
     }
 
     public function getComment()

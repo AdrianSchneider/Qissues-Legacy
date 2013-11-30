@@ -1,12 +1,12 @@
 <?php
 
-namespace Qissues\Domain\Workflow;
+namespace Qissues\Domain\Shared;
 
-class TransitionRequirements
+class RequiredDetails
 {
     protected $fields;
 
-    public function __construct(array $fields)
+    public function __construct(array $fields = array())
     {
         $this->fields = $fields;
     }

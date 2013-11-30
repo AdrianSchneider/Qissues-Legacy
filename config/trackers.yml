@@ -44,7 +44,7 @@ services:
                 labels: [multiple, dynamic]
 
     tracker.github.workflow:
-        class: Qissues\Domain\Workflow\BasicWorkflow
+        class: Qissues\Trackers\Shared\BasicWorkflow
         arguments:
             - @tracker.github.repository
 
@@ -86,7 +86,7 @@ services:
         class: Qissues\Trackers\BitBucket\BitBucketSupport
 
     tracker.bitbucket.workflow:
-        class: Qissues\Domain\Workflow\BasicWorkflow
+        class: Qissues\Trackers\Shared\BasicWorkflow
         arguments:
             - @tracker.bitbucket.repository
 
@@ -127,7 +127,7 @@ services:
                 metadata: [dynamic]
 
     tracker.trello.workflow:
-        class: Qissues\Domain\Workflow\BasicWorkflow
+        class: Qissues\Trackers\Shared\BasicWorkflow
         arguments:
             - @tracker.trello.repository
 

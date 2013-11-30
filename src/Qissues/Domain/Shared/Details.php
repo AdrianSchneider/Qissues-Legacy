@@ -1,10 +1,12 @@
 <?php
 
-namespace Qissues\Domain\Workflow;
+namespace Qissues\Domain\Shared;
 
-class TransitionDetails
+class Details
 {
-    public function __construct($details = null)
+    protected $details;
+
+    public function __construct(array $details = array())
     {
         $this->details = $details;
     }

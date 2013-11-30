@@ -1,9 +1,9 @@
 <?php
 
-namespace Qissues\Domain\Workflow;
+namespace Qissues\Trackers\Shared;
 
-use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Model\Number;
+use Qissues\Domain\Shared\Status;
 
 interface BasicTransitioner
 {

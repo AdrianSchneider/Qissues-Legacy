@@ -2,7 +2,7 @@
 
 namespace Qissues\Trackers\Shared;
 
-use Qissues\Domain\Workflow\Workflow;
+use Qissues\Domain\Model\Workflow;
 use Qissues\Domain\Model\IssueRepository;
 use Qissues\Trackers\Shared\Support\Feature;
 use Qissues\Trackers\Shared\Support\FeatureSet;

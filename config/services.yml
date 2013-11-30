@@ -235,5 +235,5 @@ services:
         factory_method: build
 
     basic_workflow:
-        class: Qissues\Domain\Workflow\BasicWorkflow
+        class: Qissues\Trackers\Shared\BasicWorkflow
         

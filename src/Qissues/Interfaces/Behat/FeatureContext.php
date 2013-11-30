@@ -52,6 +52,26 @@ class FeatureContext extends BehatContext
     }
 
     /**
+     * @When /^I lookup issue number "([^"]*)"$/
+     */
+    public function iLookupIssueNumber($number)
+    {
+        $service = new \Qissues\Domain\Service\LookupIssue($this->repository);
+        $this->lastResponse = $service(new Number($number));
+    }
+
+    /**
+     * @Then /^I should see an issue containing:$/
+     */
+    public function iShouldSeeAnIssueContaining(TableNode $assertions)
+    {
+        $issue = $this->lastResponse;
+        foreach ($assertions->getRowsHash() as $field => $expected) {
+            assertEquals($expected, call_user_func(array($issue, 'get' . ucfirst($field))));
+        }
+    }
+
+    /**
      * @When /^I update issue number "([^"]*)" with:$/
      */
     public function iUpdateIssueNumberWith($number, TableNode $changes)

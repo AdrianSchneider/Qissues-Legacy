@@ -1,18 +1,18 @@
 <?php
 
 use Qissues\Domain\Model\Number;
+use Qissues\Domain\Model\Message;
 use Qissues\Domain\Model\Transition;
 use Qissues\Domain\Model\SearchCriteria;
-use Qissues\Domain\Shared\Status;
-use Qissues\Domain\Shared\Details;
-use Qissues\Domain\Shared\User;
-use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Model\Request\NewIssue;
-use Qissues\Domain\Model\Message;
 use Qissues\Domain\Model\Request\NewComment;
 use Qissues\Domain\Model\Request\IssueAssignment;
 use Qissues\Domain\Model\Request\IssueChanges;
 use Qissues\Domain\Model\Request\IssueTransition;
+use Qissues\Domain\Shared\Status;
+use Qissues\Domain\Shared\Details;
+use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\Type;
 use Qissues\Trackers\InMemory\InMemoryRepository;
 use Qissues\Trackers\Shared\BasicWorkflow;
 use Behat\Behat\Context\ClosuredContextInterface;
@@ -171,6 +171,7 @@ class FeatureContext extends BehatContext
     }
 
     /**
+     * @Then /^issue number "([^"]*)" should have "([^"]*)" comment$/
      * @Then /^issue number "([^"]*)" should have "([^"]*)" comments$/
      */
     public function issueNumberShouldHaveComments($number, $comments)
@@ -190,6 +191,31 @@ class FeatureContext extends BehatContext
         $service(new IssueTransition(
             new Number($number),
             new Transition(new Status($status), new Details)
+        ));
+    }
+
+    /**
+     * @When /^I transition issue number "([^"]*)" to "([^"]*)" noting "([^"]*)"$/
+     */
+    public function iTransitionIssueNumberToNoting($number, $status, $message)
+    {
+        $service = new \Qissues\Domain\Service\TransitionIssue($this->workflow, $this->repository);
+        $service(new IssueTransition(
+            new Number($number),
+            new Transition(new Status($status), new Details),
+            new Message($message)
+        ));
+    }
+
+    /**
+     * @When /^I transition issue number "([^"]*)" to "([^"]*)" with:$/
+     */
+    public function iTransitionIssueNumberToWith($number, $status, TableNode $details)
+    {
+        $service = new \Qissues\Domain\Service\TransitionIssue($this->workflow, $this->repository);
+        $service(new IssueTransition(
+            new Number($number),
+            new Transition(new Status($status), new Details($details->getRowsHash()))
         ));
     }
 

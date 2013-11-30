@@ -8,9 +8,11 @@ use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Domain\Model\IssueRepository;
 use Qissues\Domain\Model\Request\NewIssue;
+use Qissues\Domain\Shared\Status;
+use Qissues\Trackers\Shared\BasicTransitioner;
 use Qissues\Domain\Shared\User;
 
-class InMemoryRepository implements IssueRepository
+class InMemoryRepository implements IssueRepository, BasicTransitioner
 {
     protected $issues;
     protected $index;
@@ -127,6 +129,12 @@ class InMemoryRepository implements IssueRepository
         $this->issues[$index]['comments'][] = array(
             'message' => (string)$comment
         );
+    }
+
+    public function changeStatus(Number $number, Status $status)
+    {
+        $index = (string)$number;
+        $this->issues[$index]['status'] = $status->getStatus();
     }
 
     /**

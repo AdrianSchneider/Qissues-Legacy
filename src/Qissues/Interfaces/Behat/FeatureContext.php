@@ -1,8 +1,10 @@
 <?php
 
 use Qissues\Domain\Model\Number;
+use Qissues\Domain\Model\Transition;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Domain\Shared\Status;
+use Qissues\Domain\Shared\Details;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Model\Request\NewIssue;
@@ -10,7 +12,9 @@ use Qissues\Domain\Model\Message;
 use Qissues\Domain\Model\Request\NewComment;
 use Qissues\Domain\Model\Request\IssueAssignment;
 use Qissues\Domain\Model\Request\IssueChanges;
+use Qissues\Domain\Model\Request\IssueTransition;
 use Qissues\Trackers\InMemory\InMemoryRepository;
+use Qissues\Trackers\Shared\BasicWorkflow;
 use Behat\Behat\Context\ClosuredContextInterface;
 use Behat\Behat\Context\TranslatedContextInterface;
 use Behat\Behat\Context\BehatContext;
@@ -35,6 +39,7 @@ class FeatureContext extends BehatContext
     public function startNewRepository()
     {
         $this->repository = new InMemoryRepository();
+        $this->workflow = new BasicWorkflow($this->repository);
     }
 
     /**
@@ -43,6 +48,7 @@ class FeatureContext extends BehatContext
     public function theFollowingIssues(TableNode $table)
     {
         $this->repository = new InMemoryRepository($table->getHash());
+        $this->workflow = new BasicWorkflow($this->repository);
     }
 
     /**
@@ -172,6 +178,29 @@ class FeatureContext extends BehatContext
         assertEquals(
             $comments,
             $this->getIssue($number)->getCommentCount()
+        );
+    }
+
+    /**
+     * @When /^I transition issue number "([^"]*)" to "([^"]*)"$/
+     */
+    public function iTransitionIssueNumberTo($number, $status)
+    {
+        $service = new \Qissues\Domain\Service\TransitionIssue($this->workflow, $this->repository);
+        $service(new IssueTransition(
+            new Number($number),
+            new Transition(new Status($status), new Details)
+        ));
+    }
+
+    /**
+     * @Then /^issue number "([^"]*)" should be "([^"]*)"$/
+     */
+    public function issueNumberShouldBe($number, $status)
+    {
+        assertEquals(
+            $status,
+            $this->getIssue($number)->getStatus()->getStatus()
         );
     }
 

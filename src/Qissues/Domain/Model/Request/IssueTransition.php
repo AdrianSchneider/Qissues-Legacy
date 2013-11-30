@@ -3,7 +3,8 @@
 namespace Qissues\Domain\Model\Request;
 
 use Qissues\Domain\Model\Number;
-use Qissues\Domain\Shared\Status;
+use Qissues\Domain\Model\Transition;
+use Qissues\Domain\Model\Message;
 
 /**
  * Represents a request to change an issue's status

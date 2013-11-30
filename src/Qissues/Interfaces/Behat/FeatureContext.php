@@ -15,11 +15,8 @@ use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Type;
 use Qissues\Trackers\InMemory\InMemoryRepository;
 use Qissues\Trackers\Shared\BasicWorkflow;
-use Behat\Behat\Context\ClosuredContextInterface;
-use Behat\Behat\Context\TranslatedContextInterface;
 use Behat\Behat\Context\BehatContext;
 use Behat\Behat\Exception\PendingException;
-use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 
 require_once 'PHPUnit/Autoload.php';

@@ -2,11 +2,10 @@
 
 namespace Qissues\Interfaces\Console\Command;
 
-use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Model\Number;
-use Qissues\Domain\Workflow\Transition;
-use Qissues\Domain\Workflow\TransitionDetails;
-use Qissues\Domain\Workflow\TransitionRequirements;
+use Qissues\Domain\Model\Request\IssueTransition;
+use Qissues\Domain\Service\TransitionIssue;
+use Qissues\Domain\Shared\Status;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -49,16 +48,24 @@ class MoveCommand extends Command
 
 
         try {
+            $command = $this;
             $workflow = $tracker->getWorkflow();
 
-            $workflow->apply(
-                $transition = new Transition($issue, new Status($status)),
-                $this->getDetails(
-                    $workflow->getRequirements($transition),
-                    $input,
-                    $output
-                )
+            $transitionIssue = new TransitionIssue(
+                $tracker->getWorkflow(),
+                $tracker->getRepository()
             );
+
+            $transitionIssue(new IssueTransition(
+                $number,
+                new Status($status),
+                function($requirements) use ($command, $input, $output) {
+                    $strategy = $command->getStrategy($input);
+                    $strategy->init($input, $output, $command->getApplication());
+                    return $strategy->create($requirements);
+                },
+                $this->getComment($input, $output)
+            ));
 
             $output->writeln("Issue <info>#$number</info> is now $status");
             return 0;
@@ -67,21 +74,6 @@ class MoveCommand extends Command
             $output->writeln("<error>Cannot transition #$number to $status at this time</error>");
             return 1;
         }
-    }
-
-    /**
-     * Prepares the details for a transition
-     *
-     * @param TransitionRequirements $requirements
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
-    protected function getDetails(TransitionRequirements $requirements, InputInterface $input, OutputInterface $output)
-    {
-        $strategy = $this->getStrategy($input);
-        $strategy->init($input, $output, $this->getApplication());
-
-        return $strategy->create($requirements);
     }
 
     protected function getStrategy(InputInterface $input)

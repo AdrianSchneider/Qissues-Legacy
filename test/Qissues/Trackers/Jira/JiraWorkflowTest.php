@@ -2,7 +2,6 @@
 
 namespace Qissues\Trackers\Jira;
 
-use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Shared\Status;
 use Qissues\Trackers\Jira\JiraWorkflow;
@@ -74,10 +73,8 @@ class JiraWorkflowTest extends \PHPUnit_Framework_TestCase
             )))
         ;
 
-        $issue = $this->getIssue(1, new Status('open'));
-
         $workflow = new JiraWorkflow($repository);
-        $transition = $workflow->buildTransition($issue, new Status('closed'));
+        $transition = $workflow->buildTransition(new Number(1), new Status('closed'));
 
         $this->assertEmpty($transition->getDetails()->getDetails());
     }
@@ -102,17 +99,14 @@ class JiraWorkflowTest extends \PHPUnit_Framework_TestCase
             )))
         ;
 
-        $issue = $this->getIssue(1, new Status('open'));
-
         $workflow = new JiraWorkflow($repository);
-        $transition = $workflow->buildTransition($issue, new Status('closed'), function(RequiredDetails $required) use ($test) {
-            $test->assertCount(1, $required->getFields());
-            return new Details();
-        });
-    }
-
-    protected function getIssue($id, $status)
-    {
-        return new Issue($id, '', '', $status, new \DateTime, new \DateTime);
+        $transition = $workflow->buildTransition(
+            new Number(1), 
+            new Status('closed'), 
+            function(RequiredDetails $required) use ($test) {
+                $test->assertCount(1, $required->getFields());
+                return new Details();
+            }
+        );
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Qissues\Trackers\Shared;
 
-use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\Transition;
 use Qissues\Domain\Model\Workflow;
@@ -23,7 +22,7 @@ class BasicWorkflow implements Workflow
     /**
      * {@inheritDoc}
      */
-    public function buildTransition(Issue $issue, Status $status, /*Caller*/ $builder = null)
+    public function buildTransition(Number $issue, Status $status, /*Caller*/ $builder = null)
     {
         return new Transition(
             $status,

@@ -14,6 +14,7 @@ use Qissues\Domain\Shared\Details;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Type;
 use Qissues\Trackers\InMemory\InMemoryRepository;
+use Qissues\Trackers\InMemory\InMemoryWorkflow;
 use Qissues\Trackers\Shared\BasicWorkflow;
 use Behat\Behat\Context\BehatContext;
 use Behat\Behat\Exception\PendingException;
@@ -36,7 +37,7 @@ class FeatureContext extends BehatContext
     public function startNewRepository()
     {
         $this->repository = new InMemoryRepository();
-        $this->workflow = new BasicWorkflow($this->repository);
+        $this->workflow = new InMemoryWorkflow($this->repository);
     }
 
     /**
@@ -45,7 +46,7 @@ class FeatureContext extends BehatContext
     public function theFollowingIssues(TableNode $table)
     {
         $this->repository = new InMemoryRepository($table->getHash());
-        $this->workflow = new BasicWorkflow($this->repository);
+        $this->workflow = new InMemoryWorkflow($this->repository);
     }
 
     /**
@@ -207,7 +208,8 @@ class FeatureContext extends BehatContext
         $service = new \Qissues\Domain\Service\TransitionIssue($this->workflow, $this->repository);
         $service(new IssueTransition(
             new Number($number),
-            new Transition(new Status($status), new Details)
+            new Status($status),
+            function(){}
         ));
     }
 
@@ -219,7 +221,8 @@ class FeatureContext extends BehatContext
         $service = new \Qissues\Domain\Service\TransitionIssue($this->workflow, $this->repository);
         $service(new IssueTransition(
             new Number($number),
-            new Transition(new Status($status), new Details),
+            new Status($status),
+            function(){},
             new Message($message)
         ));
     }
@@ -229,12 +232,31 @@ class FeatureContext extends BehatContext
      */
     public function iTransitionIssueNumberToWith($number, $status, TableNode $details)
     {
+        $details = $details->getRowsHash();
+        $this->workflow->changeRequiredFields(array_keys($details));
+
         $service = new \Qissues\Domain\Service\TransitionIssue($this->workflow, $this->repository);
         $service(new IssueTransition(
             new Number($number),
-            new Transition(new Status($status), new Details($details->getRowsHash()))
+            new Status($status),
+            function($requirements) use ($details) {
+                return new Details($details);
+            }
         ));
     }
+
+    /**
+     * @Given /^issue number "([^"]*)" should have been "([^"]*)" with "([^"]*)"$/
+     */
+    public function issueNumberShouldHaveBeenWith($number, $transitionField, $transitionValue)
+    {
+        $details = $this->repository->getStatusDetails(new Number($number));
+        assertEquals(
+            $transitionValue,
+            $details[$transitionField]
+        );
+    }
+
 
     /**
      * @Then /^issue number "([^"]*)" should be "([^"]*)"$/

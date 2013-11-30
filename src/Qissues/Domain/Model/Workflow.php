@@ -9,12 +9,12 @@ interface Workflow
     /**
      * Constructs a new transition for issue moving to status
      *
-     * @param Issue $issue
+     * @param Number $issue
      * @param Status $status
      * @param Callable $builder
      * @return Transition
      */
-    function buildTransition(Issue $issue, Status $status, /*Callable*/ $builder = null);
+    function buildTransition(Number $issue, Status $status, /*Callable*/ $builder = null);
 
     /**
      * Applies a transition to an issue

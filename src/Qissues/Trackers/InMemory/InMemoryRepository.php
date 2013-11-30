@@ -131,10 +131,17 @@ class InMemoryRepository implements IssueRepository, BasicTransitioner
         );
     }
 
-    public function changeStatus(Number $number, Status $status)
+    public function changeStatus(Number $number, Status $status, array $details = array())
     {
         $index = (string)$number;
         $this->issues[$index]['status'] = $status->getStatus();
+        $this->issues[$index]['transitionDetails'] = $details;
+    }
+
+    public function getStatusDetails(Number $number)
+    {
+        $index = (string)$number;
+        return $this->issues[$index]['transitionDetails'];
     }
 
     /**

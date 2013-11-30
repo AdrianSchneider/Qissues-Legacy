@@ -3,7 +3,6 @@
 namespace Qissues\Trackers\Jira;
 
 use Qissues\Application\Input\Field;
-use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\Workflow;
 use Qissues\Domain\Model\Transition;
@@ -38,9 +37,9 @@ class JiraWorkflow implements Workflow
      *
      * {@inheritDoc}
      */
-    public function buildTransition(Issue $issue, Status $status, /*Callable*/ $builder = null)
+    public function buildTransition(Number $issue, Status $status, /*Callable*/ $builder = null)
     {
-        $requirements = $this->getRequirements(new Number($issue->getId()), $status);
+        $requirements = $this->getRequirements($issue, $status);
         if ($requirements->getFields()) {
             $details = call_user_func($builder, $requirements);
         } else {

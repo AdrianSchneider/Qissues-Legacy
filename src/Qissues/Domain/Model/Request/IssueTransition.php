@@ -3,8 +3,8 @@
 namespace Qissues\Domain\Model\Request;
 
 use Qissues\Domain\Model\Number;
-use Qissues\Domain\Model\Transition;
 use Qissues\Domain\Model\Message;
+use Qissues\Domain\Shared\Status;
 
 /**
  * Represents a request to change an issue's status
@@ -12,18 +12,21 @@ use Qissues\Domain\Model\Message;
 class IssueTransition
 {
     protected $issue;
-    protected $transition;
+    protected $status;
+    protected $detailsBuilder;
     protected $comment;
 
     /**
      * @param Number $issue
-     * @param Transition $transition
+     * @param Status $status
+     * @param Callable $detailsBuilder
      * @param Message|null $comment
      */
-    public function __construct(Number $issue, Transition $transition, Message $comment = null)
+    public function __construct(Number $issue, Status $status, $detailsBuilder, Message $comment = null)
     {
         $this->issue = $issue;
-        $this->transition = $transition;
+        $this->status = $status;
+        $this->detailsBuilder = $detailsBuilder;
         $this->comment = $comment;
     }
 
@@ -32,9 +35,14 @@ class IssueTransition
         return $this->issue;
     }
 
-    public function getTransition()
+    public function getStatus()
     {
-        return $this->transition;
+        return $this->status;
+    }
+
+    public function getDetailsBuilder()
+    {
+        return $this->detailsBuilder;
     }
 
     public function getComment()

@@ -5,7 +5,6 @@ namespace Qissues\Trackers\Shared;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\Transition;
 use Qissues\Domain\Model\Workflow;
-use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Details;
 use Qissues\Trackers\Shared\BasicWorkflow;
@@ -19,7 +18,7 @@ class BasicWorkflowTest extends \PHPUnit_Framework_TestCase
         );
 
         $transition = $workflow->buildTransition(
-            $this->getMockBuilder('Qissues\Domain\Model\Issue')->disableOriginalConstructor()->getMock(),
+            new Number(1),
             $status = new Status('closed')
         );
 

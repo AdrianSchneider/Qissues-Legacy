@@ -25,12 +25,16 @@ class TransitionIssue
     /**
      * Transitions an issue from one status to another
      *
-     * @param IssueTransition $transition
+     * @param IssueTransition $request
      */
     public function __invoke(IssueTransition $request)
     {
         $this->workflow->apply(
-            $request->getTransition(),
+            $this->workflow->buildTransition(
+                $request->getIssue(),
+                $request->getStatus(),
+                $request->getDetailsBuilder()
+            ),
             $request->getIssue()
         );
 

@@ -15,9 +15,18 @@ class TransitionIssueTest extends \PHPUnit_Framework_TestCase
     public function testTransition()
     {
         $issue = new Number(1);
-        $transition = new Transition(new Status('open'), new Details);
+        $status = new Status('closed');
+        $builder = function(){};
+        $details = new Details(array('a' => 'b'));
+        $transition = new Transition($status, $details);
 
         $workflow = $this->getMock('Qissues\Domain\Model\Workflow');
+        $workflow
+            ->expects($this->once())
+            ->method('buildTransition')
+            ->with($issue, $status, $builder)
+            ->will($this->returnValue($transition))
+        ;
         $workflow
             ->expects($this->once())
             ->method('apply')
@@ -27,16 +36,25 @@ class TransitionIssueTest extends \PHPUnit_Framework_TestCase
         $repository = $this->getMock('Qissues\Domain\Model\IssueRepository');
 
         $service = new TransitionIssue($workflow, $repository);
-        $service(new IssueTransition($issue, $transition));
+        $service(new IssueTransition($issue, $status, $builder));
     }
 
     public function testTransitionWithComment()
     {
         $issue = new Number(1);
-        $transition = new Transition(new Status('open'), new Details);
-        $message = new Message('new message');
+        $status = new Status('closed');
+        $builder = function(){};
+        $details = new Details(array('a' => 'b'));
+        $message = new Message('oh hai');
+        $transition = new Transition($status, $details);
 
         $workflow = $this->getMock('Qissues\Domain\Model\Workflow');
+        $workflow
+            ->expects($this->once())
+            ->method('buildTransition')
+            ->with($issue, $status, $builder)
+            ->will($this->returnValue($transition))
+        ;
         $workflow
             ->expects($this->once())
             ->method('apply')
@@ -44,8 +62,13 @@ class TransitionIssueTest extends \PHPUnit_Framework_TestCase
         ;
 
         $repository = $this->getMock('Qissues\Domain\Model\IssueRepository');
+        $repository
+            ->expects($this->once())
+            ->method('comment')
+            ->with($issue, $message)
+        ;
 
         $service = new TransitionIssue($workflow, $repository);
-        $service(new IssueTransition($issue, $transition, $message));
+        $service(new IssueTransition($issue, $status, $builder, $message));
     }
 }

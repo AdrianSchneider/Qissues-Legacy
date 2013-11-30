@@ -13,6 +13,7 @@ Feature: Transition Issue
      When I transition issue number "1" to "closed" with:
       | Resolution | Fixed |
      Then issue number "1" should be "closed"
+      And issue number "1" should have been "Resolution" with "Fixed"
 
   Scenario: Transition with comment
     Given the following issues:

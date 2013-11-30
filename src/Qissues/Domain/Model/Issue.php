@@ -76,11 +76,6 @@ class Issue
         return $this->type;
     }
 
-    public function getTypes()
-    {
-        return $this->types;
-    }
-
     public function getAssignee()
     {
         return $this->assignee;
@@ -109,10 +104,5 @@ class Issue
     public function getLabels()
     {
         return $this->labels;
-    }
-
-    public function getComments()
-    {
-        return $this->comments;
     }
 }

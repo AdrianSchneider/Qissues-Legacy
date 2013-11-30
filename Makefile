@@ -12,7 +12,7 @@ install: ;@echo "Installing ${PROJECT}"; \
 	mv qissues.phar ~/bin/qissues -f;
 
 test: ;@echo "Unit Testing ${PROJECT}"; \
-	bin/phpunit && bin/behat;
+	bin/phpunit && bin/behat -f progress;
 
 travis:
 	composer install;

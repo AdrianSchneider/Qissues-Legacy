@@ -2,7 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Input\Strategy\Comment;
 
-use Qissues\Trackers\Shared\IssueTracker;
+use Qissues\Application\Tracker\IssueTracker;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

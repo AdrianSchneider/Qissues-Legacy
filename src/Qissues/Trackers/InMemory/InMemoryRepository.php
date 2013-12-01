@@ -9,7 +9,7 @@ use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Domain\Model\IssueRepository;
 use Qissues\Domain\Model\Request\NewIssue;
 use Qissues\Domain\Shared\Status;
-use Qissues\Trackers\Shared\BasicTransitioner;
+use Qissues\Application\Tracker\BasicTransitioner;
 use Qissues\Domain\Shared\User;
 
 class InMemoryRepository implements IssueRepository, BasicTransitioner

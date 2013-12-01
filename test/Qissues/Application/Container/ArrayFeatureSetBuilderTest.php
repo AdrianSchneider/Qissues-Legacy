@@ -16,7 +16,7 @@ class ArrayFeatureSetBuilderTest extends \PHPUnit_Framework_TestCase
             'main' => array('multiple', 'dynamic'),
             'secondary' => array()
         ));
-        $this->assertInstanceOf('Qissues\Trackers\Shared\Support\FeatureSet', $features);
+        $this->assertInstanceOf('Qissues\Application\Tracker\Support\FeatureSet', $features);
     }
 
     protected function getCatalog(array $features)

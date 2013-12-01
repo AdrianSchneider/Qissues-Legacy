@@ -5,7 +5,7 @@ parameters:
 
 services:
     tracker.bitbucket:
-        class: Qissues\Trackers\Shared\IssueTracker
+        class: Qissues\Application\Tracker\IssueTracker
         arguments:
             - @tracker.bitbucket.repository
             - @tracker.bitbucket.mapping
@@ -24,7 +24,7 @@ services:
         class: Qissues\Trackers\BitBucket\BitBucketMapping
 
     tracker.bitbucket.features:
-        class: Qissues\Trackers\Shared\Support\FeatureSet
+        class: Qissues\Application\Tracker\Support\FeatureSet
         factory_service: support.featureset_builder
         factory_method: build
         arguments:
@@ -39,6 +39,6 @@ services:
         class: Qissues\Trackers\BitBucket\BitBucketSupport
 
     tracker.bitbucket.workflow:
-        class: Qissues\Trackers\Shared\BasicWorkflow
+        class: Qissues\Application\Tracker\BasicWorkflow
         arguments:
             - @tracker.bitbucket.repository

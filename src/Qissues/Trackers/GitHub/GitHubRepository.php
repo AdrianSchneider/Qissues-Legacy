@@ -6,12 +6,12 @@ use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\SearchCriteria;
-use Qissues\Trackers\Shared\BasicTransitioner;
+use Qissues\Application\Tracker\BasicTransitioner;
 use Qissues\Domain\Model\Request\NewIssue;
 use Qissues\Domain\Model\Message;
 use Qissues\Domain\Model\IssueRepository;
-use Qissues\Trackers\Shared\FieldMapping;
-use Qissues\Trackers\Shared\Metadata\NullMetadata;
+use Qissues\Application\Tracker\FieldMapping;
+use Qissues\Application\Tracker\Metadata\NullMetadata;
 use Guzzle\Http\Client;
 
 class GitHubRepository implements IssueRepository, BasicTransitioner

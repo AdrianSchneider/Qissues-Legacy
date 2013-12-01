@@ -9,7 +9,7 @@ use Qissues\Domain\Shared\ClosedStatus;
 use Qissues\Domain\Model\Message;
 use Qissues\Trackers\Trello\TrelloRepository;
 use Qissues\Trackers\Trello\TrelloMetadata;
-use Qissues\Trackers\Shared\Metadata\NullMetadata;
+use Qissues\Application\Tracker\Metadata\NullMetadata;
 use Qissues\Domain\Model\SearchCriteria;
 use Guzzle\Http\Client;
 use Guzzle\Http\Message\Response;
@@ -38,7 +38,7 @@ class TrelloRepositoryTest extends \PHPUnit_Framework_TestCase
             $this->config['board'],
             $this->config['key'],
             $this->config['token'],
-            $mapping ?: $this->getMockBuilder('Qissues\Trackers\Shared\FieldMapping')->disableOriginalConstructor()->getMock(),
+            $mapping ?: $this->getMockBuilder('Qissues\Application\Tracker\FieldMapping')->disableOriginalConstructor()->getMock(),
             $metadata ? new TrelloMetadata($metadata) : new NullMetadata(),
             $this->client
         );
@@ -54,7 +54,7 @@ class TrelloRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $payload = array('issue_datas' => 'yup');
 
-        $mapping = $this->getMock('Qissues\Trackers\Shared\FieldMapping');
+        $mapping = $this->getMock('Qissues\Application\Tracker\FieldMapping');
         $mapping
             ->expects($this->once())
             ->method('toIssue')

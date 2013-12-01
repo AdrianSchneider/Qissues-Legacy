@@ -22,7 +22,7 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($message = 'hello world'))
         ;
 
-        $comment = $strategy->createNew($this->getMockBuilder('Qissues\Trackers\Shared\IssueTracker')->disableOriginalConstructor()->getMock());
+        $comment = $strategy->createNew($this->getMockBuilder('Qissues\Application\Tracker\IssueTracker')->disableOriginalConstructor()->getMock());
 
         $this->assertInstanceOf('Qissues\Domain\Model\Message', $comment);
         $this->assertEquals('hello world', $comment->getMessage());
@@ -44,7 +44,7 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(''))
         ;
 
-        $comment = $strategy->createNew($this->getMockBuilder('Qissues\Trackers\Shared\IssueTracker')->disableOriginalConstructor()->getMock());
+        $comment = $strategy->createNew($this->getMockBuilder('Qissues\Application\Tracker\IssueTracker')->disableOriginalConstructor()->getMock());
 
         $this->assertNull($comment);
     }

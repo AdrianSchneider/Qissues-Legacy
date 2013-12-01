@@ -4,7 +4,7 @@ namespace Qissues\Interfaces\Console;
 
 use Qissues\Interfaces\Console\Command;
 use Qissues\Application\Container\ContainerFactory;
-use Qissues\Trackers\Shared\Metadata\NullMetadataException;
+use Qissues\Application\Tracker\Metadata\NullMetadataException;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;

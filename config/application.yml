@@ -22,7 +22,7 @@ services:
             - %app.storage.filename%
 
     app.support_catalog:
-        class: Qissues\Trackers\Shared\Support\FeatureCatalog
+        class: Qissues\Application\Tracker\Support\FeatureCatalog
         factory_service: app.support_catalog_builder
         factory_method: "build"
 
@@ -32,12 +32,12 @@ services:
             - %app.features%
 
     tracker.metadata:
-        class: Qissues\Trackers\Shared\Metadata\Metadata
+        class: Qissues\Application\Tracker\Metadata\Metadata
         factory_service: tracker.metadata_builder
         factory_method: build
 
     tracker.metadata_builder:
-        class: Qissues\Trackers\Shared\Metadata\Builder
+        class: Qissues\Application\Tracker\Metadata\Builder
         arguments:
             - @app.storage
             - %tracker%

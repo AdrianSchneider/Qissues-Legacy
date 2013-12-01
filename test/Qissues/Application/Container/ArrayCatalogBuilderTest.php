@@ -10,7 +10,7 @@ class FeatureCatalogBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $builder = new ArrayCatalogBuilder(array());
         $catalog = $builder->build();
-        $this->assertInstanceOf('Qissues\Trackers\Shared\Support\FeatureCatalog', $catalog);
+        $this->assertInstanceOf('Qissues\Application\Tracker\Support\FeatureCatalog', $catalog);
     }
 
     public function testAddsConfiguredFeatures()

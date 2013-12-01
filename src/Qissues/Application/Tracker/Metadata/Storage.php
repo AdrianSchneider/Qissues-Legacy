@@ -1,8 +1,8 @@
 <?php
 
-namespace Qissues\Trackers\Shared;
+namespace Qissues\Application\Tracker\Metadata;
 
-interface MetadataStorage
+interface Storage
 {
     function exists($key);
     function get($key);

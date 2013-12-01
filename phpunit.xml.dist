@@ -25,6 +25,7 @@
             <exclude>
                 <directory>src/Qissues/Interfaces/Behat</directory>
                 <directory>src/Qissues/Interfaces/Console/Output/View</directory>
+                <directory>src/Qissues/Interfaces/Console/Command</directory>
             </exclude>
         </whitelist>
     </filter>

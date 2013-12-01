@@ -5,7 +5,7 @@ parameters:
 
 services:
     tracker.github:
-        class: Qissues\Trackers\Shared\IssueTracker
+        class: Qissues\Application\Tracker\IssueTracker
         arguments:
             - @tracker.github.repository
             - @tracker.github.mapping
@@ -24,7 +24,7 @@ services:
         class: Qissues\Trackers\GitHub\GitHubMapping
 
     tracker.github.features:
-        class: Qissues\Trackers\Shared\Support\FeatureSet
+        class: Qissues\Application\Tracker\Support\FeatureSet
         factory_service: support.featureset_builder
         factory_method: build
         arguments:
@@ -34,7 +34,7 @@ services:
                 labels: [multiple, dynamic]
 
     tracker.github.workflow:
-        class: Qissues\Trackers\Shared\BasicWorkflow
+        class: Qissues\Application\Tracker\BasicWorkflow
         arguments:
             - @tracker.github.repository
 

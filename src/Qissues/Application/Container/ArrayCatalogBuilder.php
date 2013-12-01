@@ -2,8 +2,8 @@
 
 namespace Qissues\Application\Container;
 
-use Qissues\Trackers\Shared\Support\Feature;
-use Qissues\Trackers\Shared\Support\FeatureCatalog;
+use Qissues\Application\Tracker\Support\Feature;
+use Qissues\Application\Tracker\Support\FeatureCatalog;
 
 class ArrayCatalogBuilder
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Qissues\Trackers\Shared;
+namespace Qissues\Application\Tracker;
 
-use Qissues\Trackers\Shared\IssueTracker;
+use Qissues\Application\Tracker\IssueTracker;
 
 class IssueTrackerTest extends \PHPUnit_Framework_TestCase
 {
@@ -10,8 +10,8 @@ class IssueTrackerTest extends \PHPUnit_Framework_TestCase
     {
         $tracker = new IssueTracker(
             $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
-            $mapping = $this->getMock('Qissues\Trackers\Shared\FieldMapping'),
-            $featureSet = $this->getMockBuilder('Qissues\Trackers\Shared\Support\FeatureSet')->disableOriginalConstructor()->getMock(),
+            $mapping = $this->getMock('Qissues\Application\Tracker\FieldMapping'),
+            $featureSet = $this->getMockBuilder('Qissues\Application\Tracker\Support\FeatureSet')->disableOriginalConstructor()->getMock(),
             $workflow = $this->getMock('Qissues\Domain\Model\Workflow')
         );
 

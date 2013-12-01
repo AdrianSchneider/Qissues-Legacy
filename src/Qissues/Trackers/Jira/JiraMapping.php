@@ -11,8 +11,8 @@ use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Priority;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\Label;
-use Qissues\Trackers\Shared\FieldMapping;
-use Qissues\Trackers\Shared\Metadata\Metadata;
+use Qissues\Application\Tracker\FieldMapping;
+use Qissues\Application\Tracker\Metadata\Metadata;
 use Qissues\Domain\Model\SearchCriteria;
 
 class JiraMapping implements FieldMapping

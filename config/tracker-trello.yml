@@ -5,7 +5,7 @@ parameters:
 
 services:
     tracker.trello:
-        class: Qissues\Trackers\Shared\IssueTracker
+        class: Qissues\Application\Tracker\IssueTracker
         arguments:
             - @tracker.trello.repository
             - @tracker.trello.mapping
@@ -30,7 +30,7 @@ services:
         class: Qissues\Trackers\Trello\TrelloMetadata
 
     tracker.trello.features:
-        class: Qissues\Trackers\Shared\Support\FeatureSet
+        class: Qissues\Application\Tracker\Support\FeatureSet
         factory_service: tracker.featureset_builder
         factory_method: build
         arguments:
@@ -41,6 +41,6 @@ services:
                 metadata: [dynamic]
 
     tracker.trello.workflow:
-        class: Qissues\Trackers\Shared\BasicWorkflow
+        class: Qissues\Application\Tracker\BasicWorkflow
         arguments:
             - @tracker.trello.repository

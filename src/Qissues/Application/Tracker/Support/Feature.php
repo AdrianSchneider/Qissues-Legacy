@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Trackers\Shared\Support;
+namespace Qissues\Application\Tracker\Support;
 
 class Feature
 {

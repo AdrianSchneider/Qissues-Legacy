@@ -15,7 +15,7 @@ use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Type;
 use Qissues\Trackers\InMemory\InMemoryRepository;
 use Qissues\Trackers\InMemory\InMemoryWorkflow;
-use Qissues\Trackers\Shared\BasicWorkflow;
+use Qissues\Application\Tracker\BasicWorkflow;
 use Behat\Behat\Context\BehatContext;
 use Behat\Behat\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;

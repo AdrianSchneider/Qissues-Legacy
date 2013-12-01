@@ -2,9 +2,9 @@
 
 namespace Qissues\Interfaces\Console\Output\View\IssuesList;
 
-use Qissues\Trackers\Shared\Support\Feature;
-use Qissues\Trackers\Shared\Support\FeatureSet;
-use Qissues\Trackers\Shared\Support\SupportLevel;
+use Qissues\Application\Tracker\Support\Feature;
+use Qissues\Application\Tracker\Support\FeatureSet;
+use Qissues\Application\Tracker\Support\SupportLevel;
 use Qissues\Interfaces\Console\Output\Renderer\TableRenderer;
 
 class DetailedView

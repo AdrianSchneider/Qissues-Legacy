@@ -1,6 +1,6 @@
 <?php
 
-namespace Qissues\Trackers\Shared;
+namespace Qissues\Application\Tracker;
 
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Shared\Status;

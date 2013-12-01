@@ -123,7 +123,7 @@ class JiraMapping implements FieldMapping
     {
         $metadata = $this->metadata;
         return array_map(
-            function($l) use ($metadata) { 
+            function($l) use ($metadata) {
                 return new Label($metadata->getMatchingStatusName($l));
             },
             preg_split('/[\s,]+/', $labels, -1, PREG_SPLIT_NO_EMPTY)

@@ -8,13 +8,6 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class ContainerFactory
 {
-    protected $dir;
-
-    public function __construct($configDir)
-    {
-        $this->dir = $configDir;
-    }
-
    /**
      * Creates a new ContainerInterface from services.yml
      * @return ContainerInterface
@@ -22,12 +15,16 @@ class ContainerFactory
     public function create(array $config)
     {
         $container = new ContainerBuilder();
-        $locator = new FileLocator($this->dir);
+        $locator = new FileLocator(__DIR__ . '/../../../../config');
 
         $loader = new YamlFileLoader($container, $locator);
-        foreach (glob($this->dir . '/*.yml') as $file) {
-            $loader->load(basename($file));
-        }
+        $loader->load('application.yml');
+        $loader->load('console.yml');
+        $loader->load('services.yml');
+        $loader->load('tracker-bitbucket.yml');
+        $loader->load('tracker-github.yml');
+        $loader->load('tracker-jira.yml');
+        $loader->load('tracker-trello.yml');
 
         $container->setParameter('defaults', $container->getParameterBag()->all());
 

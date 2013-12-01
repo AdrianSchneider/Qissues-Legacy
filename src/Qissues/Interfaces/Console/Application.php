@@ -164,7 +164,7 @@ class Application extends BaseApplication
 
     protected function registerContainer()
     {
-        $containerFactory = new ContainerFactory(__DIR__ . '/../../../../config');
+        $containerFactory = new ContainerFactory();
         $this->container = $containerFactory->create($this->config);
     }
 

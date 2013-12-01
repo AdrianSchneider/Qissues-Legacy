@@ -40,14 +40,29 @@ class Compiler
             ->files()
             ->ignoreVCS(true)
             ->name('*.php')
+            ->notName('*Test.php')
             ->in(__DIR__ . '/../../../../vendor');
+
+        $skip = array('/Test', 'Behat', 'phpunit');
         
         foreach ($finder as $file) {
+            $path = $file->getRealPath();
+            foreach ($skip as $skipFilePattern) {
+                if (strpos($path, $skipFilePattern) !== false) {
+                    continue 2;
+                }
+            }
+
             $this->addFile($phar, $file);
         }
 
+        $this->addFile($phar, new \SplFileInfo(__DIR__ . '/../../../../config/application.yml'));
+        $this->addFile($phar, new \SplFileInfo(__DIR__ . '/../../../../config/console.yml'));
         $this->addFile($phar, new \SplFileInfo(__DIR__ . '/../../../../config/services.yml'));
-        $this->addFile($phar, new \SplFileInfo(__DIR__ . '/../../../../config/trackers.yml'));
+        $this->addFile($phar, new \SplFileInfo(__DIR__ . '/../../../../config/tracker-bitbucket.yml'));
+        $this->addFile($phar, new \SplFileInfo(__DIR__ . '/../../../../config/tracker-github.yml'));
+        $this->addFile($phar, new \SplFileInfo(__DIR__ . '/../../../../config/tracker-jira.yml'));
+        $this->addFile($phar, new \SplFileInfo(__DIR__ . '/../../../../config/tracker-trello.yml'));
         
         $this->addFile($phar, new \SplFileInfo(__DIR__.'/../../../../vendor/autoload.php'));
         $this->addFile($phar, new \SplFileInfo(__DIR__.'/../../../../vendor/composer/autoload_namespaces.php'));

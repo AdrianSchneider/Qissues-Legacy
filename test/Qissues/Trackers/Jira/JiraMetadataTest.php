@@ -32,4 +32,17 @@ class JiraMetadataTest extends \PHPUnit_Framework_TestCase
         $metadata = new JiraMetadata(array('types' => array()));
         $metadata->getTypeIdByName('anything');
     }
+
+    public function testGetMatchingStatusName()
+    {
+        $metadata = new JiraMetadata(array('components' => array(array('id' => 1, 'name' => 'jira insanity'))));
+        $this->assertEquals('jira insanity', $metadata->getMatchingStatusName('jira'));
+    }
+
+    public function testGetMatchingStatusNameThrowsExceptionWhenNotFound()
+    {
+        $this->setExpectedException('Exception', 'not found');
+        $metadata = new JiraMetadata(array('components' => array()));
+        $metadata->getMatchingStatusName('jira');
+    }
 }

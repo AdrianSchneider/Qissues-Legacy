@@ -42,7 +42,7 @@ class JiraMapping implements FieldMapping
                 'description' => $issue->getDescription(),
                 'type' => $issue->getType() ? strval($issue->getType()) : '',
                 'priority' => $issue->getPriority()->getPriority(),
-                'label' => $issue->getLabels()
+                'labels' => $issue->getLabels()
                     ? implode(', ', array_map('strval', $issue->getLabels()))
                     : ''
             );
@@ -52,7 +52,7 @@ class JiraMapping implements FieldMapping
             'title' => '',
             'assignee' => 'me',
             'type' => '',
-            'label' => '',
+            'labels' => '',
             'priority' => '',
             'description' => ''
         );
@@ -101,7 +101,7 @@ class JiraMapping implements FieldMapping
      */
     public function toNewIssue(array $input)
     {
-        $assignee = $priority = $type = $label = null;
+        $assignee = $priority = $type = $labels = null;
 
         if (!empty($input['assignee'])) {
             $assignee = new User($input['assignee']);
@@ -112,25 +112,22 @@ class JiraMapping implements FieldMapping
         if (!empty($input['type'])) {
             $type = new Type($input['type']);
         }
-        if (!empty($input['label'])) {
-            $label = array($this->prepareLabel($input['label']));
+        if (!empty($input['labels'])) {
+            $labels = $this->prepareLabels($input['labels']);
         }
 
-        return new NewIssue( $input['title'], $input['description'], $assignee, $priority, $type, $label);
+        return new NewIssue( $input['title'], $input['description'], $assignee, $priority, $type, $labels);
     }
 
-    protected function prepareLabel($label)
+    protected function prepareLabels($labels)
     {
-        $label = array_map(
-            function($l) { return new Label($l); },
-            preg_split('/[\s,]+/', $label, -1, PREG_SPLIT_NO_EMPTY)
+        $metadata = $this->metadata;
+        return array_map(
+            function($l) use ($metadata) { 
+                return new Label($metadata->getMatchingStatusName($l));
+            },
+            preg_split('/[\s,]+/', $labels, -1, PREG_SPLIT_NO_EMPTY)
         );
-
-        if (count($label) > 1) {
-            throw new \DomainException('Jira only supports a single label/component.');
-        }
-
-        return $label[0];
     }
 
     /**
@@ -146,6 +143,20 @@ class JiraMapping implements FieldMapping
                 'issuetype' => array('id' => $this->metadata->getTypeIdByName($issue->getType()->getName()))
             )
         );
+
+        if ($assignee = $issue->getAssignee()) {
+            $new['fields']['assignee'] = array(
+                'name' => $assignee->getAccount()
+            );
+        }
+        if ($labels = $issue->getLabels()) {
+            $new['fields']['components'] = array_map(
+                function($label) {
+                    return array('name' => $label->getName());
+                },
+                $labels
+            );
+        }
 
         return $new;
     }

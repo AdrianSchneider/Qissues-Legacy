@@ -33,4 +33,18 @@ class JiraMetadata implements Metadata
 
         throw new \Exception('not found');
     }
+
+    public function getMatchingStatusName($name)
+    {
+        $components = array();
+        foreach ($this->project['components'] as $component) {
+            if (stripos($component['name'], $name) !== false) {
+                return $component['name'];
+            }
+
+            $components[] = $component['name'];
+        }
+
+        throw new \Exception('Label not found; supported labels: ' . implode(', ', $components));
+    }
 }

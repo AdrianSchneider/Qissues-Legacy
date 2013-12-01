@@ -19,7 +19,7 @@ class JiraMappingTest extends \PHPUnit_Framework_TestCase
         $mapping = $this->getMapping(array());
 
         $this->assertEquals(
-            array('title', 'assignee', 'type', 'label', 'priority', 'description'),
+            array('title', 'assignee', 'type', 'labels', 'priority', 'description'),
             array_keys($mapping->getEditFields())
         );
     }
@@ -91,7 +91,7 @@ class JiraMappingTest extends \PHPUnit_Framework_TestCase
             'assignee' => 'adrian',
             'priority' => 'important',
             'type' => 'bug',
-            'label' => 'wowza'
+            'labels' => ''
         );
 
         $mapping = $this->getMapping();
@@ -101,25 +101,32 @@ class JiraMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('adrian', $issue->getAssignee()->getAccount());
         $this->assertEquals('important', $issue->getPriority()->getName());
         $this->assertEquals('bug', $issue->getType()->getName());
-
-        $this->assertEquals('wowza', $labels[0]->getName());
     }
 
-    public function testToNewIssueThrowsArrayWithMultipleLabels()
+    public function testToNewIssueLabelsFuzzyMatch()
     {
         $input = array(
             'title' => '',
             'description' => '',
-            'assignee' => '',
-            'priority' => '',
-            'type' => '',
-            'label' => 'a, b, c'
+            'assignee' => 'adrian',
+            'priority' => 'important',
+            'type' => 'bug',
+            'labels' => 'symfony jira'
         );
 
-        $this->setExpectedException('DomainException', 'single label');
+        $mapping = $this->getMapping(array(
+            'id' => 5,
+            'components' => array(
+                array('id' => 5, 'name' => 'symfony console'),
+                array('id' => 7, 'name' => 'i love|hate jira')
+            )
+        ));
 
-        $mapping = $this->getMapping();
-        $mapping->tonewIssue($input);
+        $issue = $mapping->toNewIssue($input);
+        $labels = $issue->getLabels();
+
+        $this->assertEquals('symfony console', $labels[0]->getName());
+        $this->assertEquals('i love|hate jira', $labels[1]->getName());
     }
 
     public function testIssueToArray()
@@ -142,6 +149,42 @@ class JiraMappingTest extends \PHPUnit_Framework_TestCase
                 'issuetype' => array('id' => 1)
             )
         ), $array);
+    }
+
+    public function testIssueToArrayWithAssignee()
+    {
+        $mapping = $this->getMapping(array(
+            'id' => 5,
+            'types' => array(
+                array('id' => 1, 'name' => 'bug')
+            )
+        ));
+
+        $issue = new NewIssue("Hello World", "Nice to meet you", new User('me'), null, new Type('bug'));
+        $array = $mapping->issueToArray($issue);
+
+        $this->assertEquals('me', $array['fields']['assignee']['name']);
+    }
+
+    public function testIssueToArrayWithLabels()
+    {
+        $mapping = $this->getMapping(array(
+            'id' => 5,
+            'types' => array(
+                array('id' => 1, 'name' => 'bug')
+            )
+        ));
+
+        $labels = array(
+            new Label('a'),
+            new Label('b')
+        );
+
+        $issue = new NewIssue("Hello World", "Nice to meet you", new User('me'), null, new Type('bug'), $labels);
+        $array = $mapping->issueToArray($issue);
+
+        $this->assertEquals('a', $array['fields']['components'][0]['name']);
+        $this->assertEquals('b', $array['fields']['components'][1]['name']);
     }
 
     public function testBuildSearchQuery()

@@ -25,7 +25,7 @@ services:
 
     tracker.bitbucket.features:
         class: Qissues\Application\Tracker\Support\FeatureSet
-        factory_service: support.featureset_builder
+        factory_service: tracker.featureset_builder
         factory_method: build
         arguments:
              - @app.support_catalog

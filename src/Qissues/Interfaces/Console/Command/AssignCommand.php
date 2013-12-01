@@ -2,9 +2,9 @@
 
 namespace Qissues\Interfaces\Console\Command;
 
-use Qissues\Domain\Service\AssignIssue;
-use Qissues\Domain\Request\IssueAssignment;
 use Qissues\Domain\Model\Number;
+use Qissues\Domain\Model\Request\IssueAssignment;
+use Qissues\Domain\Service\AssignIssue;
 use Qissues\Domain\Shared\User;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;

@@ -41,7 +41,7 @@ class ViewCommand extends Command
         list($width, $height) = $this->getApplication()->getTerminalDimensions();
         $comments = $input->getOption('no-comments') ? array() : $tracker->findComments($number);
 
-        $view = $this->get(sprintf('console.output.issue_views.%s', $input->getOption('view')));
+        $view = $this->get(sprintf('console.output.view.issue.%s', $input->getOption('view')));
         $rendered = $view->render($issue, $width, $height, $comments);
 
         $output->writeln($rendered);

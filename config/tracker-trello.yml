@@ -1,0 +1,46 @@
+parameters:
+    trello.key: "application/developer api key"
+    trello.token: "oauth token"
+    trello.board: "Board Name"
+
+services:
+    tracker.trello:
+        class: Qissues\Trackers\Shared\IssueTracker
+        arguments:
+            - @tracker.trello.repository
+            - @tracker.trello.mapping
+            - @tracker.trello.features
+            - @tracker.trello.workflow
+
+    tracker.trello.repository:
+        class: Qissues\Trackers\Trello\TrelloRepository
+        arguments:
+            - %trello.board%
+            - %trello.key%
+            - %trello.token%
+            - @tracker.trello.mapping
+            - @tracker.metadata
+
+    tracker.trello.mapping:
+        class: Qissues\Trackers\Trello\TrelloMapping
+        arguments:
+            - @tracker.metadata
+
+    tracker.trello.metadata:
+        class: Qissues\Trackers\Trello\TrelloMetadata
+
+    tracker.trello.features:
+        class: Qissues\Trackers\Shared\Support\FeatureSet
+        factory_service: tracker.featureset_builder
+        factory_method: build
+        arguments:
+             - @app.support_catalog
+             -
+                statuses: [single]
+                labels: [multiple, dynamic]
+                metadata: [dynamic]
+
+    tracker.trello.workflow:
+        class: Qissues\Trackers\Shared\BasicWorkflow
+        arguments:
+            - @tracker.trello.repository

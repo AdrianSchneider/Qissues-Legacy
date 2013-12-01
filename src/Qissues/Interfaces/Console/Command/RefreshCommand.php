@@ -20,7 +20,7 @@ class RefreshCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $storage = $this->get('system.storage');
+        $storage = $this->get('app.storage');
         $repository = $this->getApplication()->getTracker()->getRepository();
 
         $storage->set(

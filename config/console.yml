@@ -1,0 +1,166 @@
+parameters:
+    console.editor: "vim"
+    console.tmp_file.prefix: "qissues"
+    console.browser.command:
+    console.input.default_strategy: "edit"
+    console.input.default_format: "frontmatter"
+    console.input.default_issue_format: "frontmatter"
+    console.input.default_details_format: "yaml"
+    console.output.tinyview_priorities:
+        5: '▲'
+        4: '▴'
+        3: '-'
+        2: '▾'
+        1: '▼'
+    console.output.tinyview_colors:
+        bug: "p5"
+
+services:
+    console.input.report_manager:
+        class: Qissues\Interfaces\Console\Input\ReportManager
+        arguments:
+            - %reports%
+
+    console.input.criteria_builder:
+        class: Qissues\Interfaces\Console\Input\CriteriaBuilder
+
+    console.input.report_criteria_builder:
+        class: Qissues\Interfaces\Console\Input\ReportCriteriaBuilder
+
+    console.input.git_id:
+        class: Qissues\Interfaces\Console\Input\GitId
+        arguments:
+            - @shell
+
+    console.input.issue_strategy.edit:
+        class: Qissues\Interfaces\Console\Input\Strategy\Issue\EditStrategy
+        arguments:
+            - @console.input.external_editor
+            - @console.input.active_format.issue
+
+    console.input.issue_strategy.interactive:
+        class: Qissues\Interfaces\Console\Input\Strategy\Issue\InteractiveStrategy
+
+    console.input.issue_strategy.stdin:
+        class: Qissues\Interfaces\Console\Input\Strategy\Issue\StdinStrategy
+        arguments:
+            - "php://stdin"
+            - @console.input.format.json
+
+    console.input.issue_strategy.option:
+        class: Qissues\Interfaces\Console\Input\Strategy\Issue\OptionStrategy
+
+    console.input.comment_strategy.option:
+        class: Qissues\Interfaces\Console\Input\Strategy\Comment\OptionStrategy
+
+    console.input.comment_strategy.edit:
+        class: Qissues\Interfaces\Console\Input\Strategy\Comment\EditStrategy
+        arguments:
+            - @console.input.external_editor
+
+    console.input.comment_strategy.stdin:
+        class: Qissues\Interfaces\Console\Input\Strategy\Comment\StdinStrategy
+        arguments:
+            - "php://stdin"
+
+    console.input.comment_strategy.interactive:
+        class: Qissues\Interfaces\Console\Input\Strategy\Comment\InteractiveStrategy
+
+    console.input.details_strategy.edit:
+        class: Qissues\Interfaces\Console\Input\Strategy\Transition\EditStrategy
+        arguments:
+            - @console.input.external_editor
+            - @console.input.active_format.details
+
+
+    console.input.external_editor:
+        class: Qissues\Interfaces\Console\Input\ExternalFileEditor
+        arguments:
+            - @shell
+            - @filesystem
+            - %console.editor%
+            - %console.tmp_file.prefix%
+
+
+    console.input.active_format.issue:
+        class: Qissues\Interfaces\Console\Input\FileFormats\FileFormat
+        factory_service: app.input.format.factory
+        factory_method: getFormat
+        arguments: ['issue']
+
+    console.input.active_format.comment:
+        class: Qissues\Interfaces\Console\Input\FileFormats\FileFormat
+        factory_service: app.input.format.factory
+        factory_method: getFormat
+        arguments: ['comment']
+
+    console.input.active_format.details:
+        class: Qissues\Interfaces\Console\Input\FileFormats\FileFormat
+        factory_service: app.input.format.factory
+        factory_method: getFormat
+        arguments: ['details']
+
+
+    console.input.format.yaml:
+        class: Qissues\Interfaces\Console\Input\FileFormats\YmlFormat
+        arguments:
+            - @yaml_parser
+            - @yaml_builder
+
+    console.input.format.frontmatter:
+        class: Qissues\Interfaces\Console\Input\FileFormats\FrontMatterFormat
+        arguments:
+            - @frontmatter_parser
+
+    console.input.format.json:
+        class: Qissues\Interfaces\Console\Input\FileFormats\JsonFormat
+
+    console.output.browser:
+        class: Qissues\Interfaces\Console\Output\WebBrowser
+        arguments:
+             - @shell
+             - %console.browser.command%
+
+    console.output.issue_serializer:
+        class: Qissues\Interfaces\Console\Output\Serializer\IssueSerializer
+
+    console.output.comment_serializer:
+        class: Qissues\Interfaces\Console\Output\Serializer\CommentSerializer
+
+    console.output.table_renderer:
+        class: Qissues\Interfaces\Console\Output\Renderer\TableRenderer
+
+    console.output.spaced_table_renderer:
+        class: Qissues\Interfaces\Console\Output\Renderer\SpacedTableRenderer
+
+    console.output.view.issue.standard:
+        class: Qissues\Interfaces\Console\Output\View\Issue\StandardView
+
+    console.output.view.issue.json:
+        class: Qissues\Interfaces\Console\Output\View\Issue\JsonView
+        arguments:
+            - @console.output.issue_serializer
+            - @console.output.comment_serializer
+
+    console.output.view.issues.detailed:
+        class: Qissues\Interfaces\Console\Output\View\IssuesList\DetailedView
+        arguments:
+            - @console.output.table_renderer
+
+    console.output.view.issues.basic:
+        class: Qissues\Interfaces\Console\Output\View\IssuesList\BasicView
+        arguments:
+            - @console.output.table_renderer
+
+    console.output.view.issues.tiny:
+        class: Qissues\Interfaces\Console\Output\View\IssuesList\TinyView
+        arguments:
+            - @console.output.spaced_table_renderer
+            - %console.output.tinyview_priorities%
+            - %console.output.tinyview_colors%
+
+    console.output.view.issues.json:
+        class: Qissues\Interfaces\Console\Output\View\IssuesList\JsonView
+        arguments:
+            - @console.output.issue_serializer
+

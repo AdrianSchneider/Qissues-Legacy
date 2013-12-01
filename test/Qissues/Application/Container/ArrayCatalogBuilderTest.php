@@ -1,14 +1,14 @@
 <?php
 
-namespace Qissues\Trackers\Shared\Support;
+namespace Qissues\Application\Container;
 
-use Qissues\Trackers\Shared\Support\FeatureCatalogBuilder;
+use Qissues\Application\Container\ArrayCatalogBuilder;
 
 class FeatureCatalogBuilderTest extends \PHPUnit_Framework_TestCase
 {
     public function testReturnsaCatalog()
     {
-        $builder = new FeatureCatalogBuilder(array());
+        $builder = new ArrayCatalogBuilder(array());
         $catalog = $builder->build();
         $this->assertInstanceOf('Qissues\Trackers\Shared\Support\FeatureCatalog', $catalog);
     }
@@ -16,7 +16,7 @@ class FeatureCatalogBuilderTest extends \PHPUnit_Framework_TestCase
     public function testAddsConfiguredFeatures()
     {
         $features = array('a', 'b', 'c');
-        $builder = new FeatureCatalogBuilder($features);
+        $builder = new ArrayCatalogBuilder($features);
         $catalog = $builder->build();
 
         foreach ($features as $feature) {

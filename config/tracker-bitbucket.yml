@@ -1,0 +1,44 @@
+parameters:
+    bitbucket.repository: "account/repo-name"
+    bitbucket.username: "account"
+    bitbucket.password: "password"
+
+services:
+    tracker.bitbucket:
+        class: Qissues\Trackers\Shared\IssueTracker
+        arguments:
+            - @tracker.bitbucket.repository
+            - @tracker.bitbucket.mapping
+            - @tracker.bitbucket.features
+            - @tracker.bitbucket.workflow
+
+    tracker.bitbucket.repository:
+        class: Qissues\Trackers\BitBucket\BitBucketRepository
+        arguments:
+            - %bitbucket.repository%
+            - %bitbucket.username%
+            - %bitbucket.password%
+            - @tracker.bitbucket.mapping
+
+    tracker.bitbucket.mapping:
+        class: Qissues\Trackers\BitBucket\BitBucketMapping
+
+    tracker.bitbucket.features:
+        class: Qissues\Trackers\Shared\Support\FeatureSet
+        factory_service: support.featureset_builder
+        factory_method: build
+        arguments:
+             - @app.support_catalog
+             -
+                statuses: [single]
+                types: [single]
+                labels: [multiple, dynamic]
+                priorities: [single]
+
+    tracker.bitbucket.features_builder:
+        class: Qissues\Trackers\BitBucket\BitBucketSupport
+
+    tracker.bitbucket.workflow:
+        class: Qissues\Trackers\Shared\BasicWorkflow
+        arguments:
+            - @tracker.bitbucket.repository

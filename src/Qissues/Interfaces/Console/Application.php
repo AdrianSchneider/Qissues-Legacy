@@ -20,26 +20,19 @@ class Application extends BaseApplication
 
     /**
      * Retrieve an instance of the IssueTracker
-     * @param string|null override tracker to get
      * @return IssueTracker
      */
-    public function getTracker($name = '')
+    public function getTracker()
     {
-        if (!$name) {
-            if (isset($this->config['tracker'])) {
-                $name = $this->config['tracker'];
-            } elseif (isset($this->config['connector'])) {
-                $name = $this->config['connector'];
-            } else {
-                throw new \Qissues\Interfaces\Console\Input\Exception('No configuration found; run "qissues init" first');
-            }
+        if (!isset($this->config['tracker'])) {
+            throw new \Qissues\Interfaces\Console\Input\Exception('No configuration found; run "qissues init" first');
         }
 
-        $name = strtolower($name);
+        $name = strtolower($this->config['tracker']);
         return $this->container->get('tracker.' . $name);
     }
 
-    /**
+    /*a
      * {@inheritDoc}
      */
     public function doRun(InputInterface $input, OutputInterface $output)
@@ -171,7 +164,7 @@ class Application extends BaseApplication
 
     protected function registerContainer()
     {
-        $containerFactory = new ContainerFactory();
+        $containerFactory = new ContainerFactory(__DIR__ . '/../../../../config');
         $this->container = $containerFactory->create($this->config);
     }
 

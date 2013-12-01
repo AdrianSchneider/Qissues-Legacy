@@ -1,0 +1,54 @@
+parameters:
+    jira.projectKey: "PROJ"
+    jira.host: "subdomain.atlassian.net"
+    jira.username: "account"
+    jira.password: "password"
+
+services:
+    tracker.jira:
+        class: Qissues\Trackers\Shared\IssueTracker
+        arguments:
+            - @tracker.jira.repository
+            - @tracker.jira.mapping
+            - @tracker.jira.features
+            - @tracker.jira.workflow
+
+    tracker.jira.repository:
+        class: Qissues\Trackers\Jira\JiraRepository
+        arguments:
+            - %jira.host%
+            - %jira.projectKey%
+            - %jira.username%
+            - %jira.password%
+            - @tracker.jira.mapping
+
+    tracker.jira.mapping:
+        class: Qissues\Trackers\Jira\JiraMapping
+        arguments:
+            - @tracker.metadata
+            - @tracker.jira.jql
+
+    tracker.jira.metadata:
+        class: Qissues\Trackers\Jira\JiraMetadata
+
+    tracker.jira.jql:
+        class: Qissues\Trackers\Jira\JqlQueryBuilder
+        arguments:
+            - @tracker.metadata
+
+    tracker.jira.features:
+        class: Qissues\Trackers\Shared\Support\FeatureSet
+        factory_service: support.featureset_builder
+        factory_method: build
+        arguments:
+            - @app.support_catalog
+            -
+                statuses: [single]
+                types: [single]
+                labels: [multiple, dynamic]
+                priorities: [single]
+
+    tracker.jira.workflow:
+        class: Qissues\Trackers\Jira\JiraWorkflow
+        arguments:
+            - @tracker.jira.repository

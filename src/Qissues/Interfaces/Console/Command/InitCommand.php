@@ -32,7 +32,7 @@ class InitCommand extends Command
             return 1;
         }
 
-        $initializer = $this->get('system.initializer');
+        $initializer = $this->get('app.initializer');
         $initializer->initialize($name);
 
         $output->writeln("A new <info>.qissues</info> has been created. Edit it accordingly");

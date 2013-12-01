@@ -1,0 +1,52 @@
+parameters:
+    app.features:
+        - types
+        - statuses
+        - labels
+        - priorities
+        - metadata
+
+    app.storage.filename: "~/.qissues.json"
+
+services:
+    app.initializer:
+        class: Qissues\Application\Initializer
+        arguments:
+            - @container
+            - @filesystem
+
+    app.storage:
+        class: Qissues\Application\Storage\LocalStorage
+        arguments:
+            - @filesystem
+            - %app.storage.filename%
+
+    app.support_catalog:
+        class: Qissues\Trackers\Shared\Support\FeatureCatalog
+        factory_service: app.support_catalog_builder
+        factory_method: "build"
+
+    app.support_catalog_builder:
+        class: Qissues\Application\Container\ArrayCatalogBuilder
+        arguments:
+            - %app.features%
+
+    tracker.metadata:
+        class: Qissues\Trackers\Shared\Metadata\Metadata
+        factory_service: tracker.metadata_builder
+        factory_method: build
+
+    tracker.metadata_builder:
+        class: Qissues\Trackers\Shared\Metadata\Builder
+        arguments:
+            - @app.storage
+            - %tracker%
+            - %tracker.mapping_class%
+
+    tracker.featureset_builder:
+        class: Qissues\Application\Container\ArrayFeatureSetBuilder
+
+    app.input.format.factory:
+        class: Qissues\Application\Input\FormatFactory
+        arguments:
+            - @container

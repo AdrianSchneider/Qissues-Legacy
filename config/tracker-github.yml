@@ -1,0 +1,42 @@
+parameters:
+    github.repository: "account/repo-name"
+    github.username: "account"
+    github.password: "password"
+
+services:
+    tracker.github:
+        class: Qissues\Trackers\Shared\IssueTracker
+        arguments:
+            - @tracker.github.repository
+            - @tracker.github.mapping
+            - @tracker.github.features
+            - @tracker.github.workflow
+
+    tracker.github.repository:
+        class: Qissues\Trackers\GitHub\GitHubRepository
+        arguments:
+            - %github.repository%
+            - %github.username%
+            - %github.password%
+            - @tracker.github.mapping
+
+    tracker.github.mapping:
+        class: Qissues\Trackers\GitHub\GitHubMapping
+
+    tracker.github.features:
+        class: Qissues\Trackers\Shared\Support\FeatureSet
+        factory_service: support.featureset_builder
+        factory_method: build
+        arguments:
+             - @app.support_catalog
+             -
+                statuses: [single]
+                labels: [multiple, dynamic]
+
+    tracker.github.workflow:
+        class: Qissues\Trackers\Shared\BasicWorkflow
+        arguments:
+            - @tracker.github.repository
+
+    tracker.github.features_builder:
+        class: Qissues\Trackers\GitHub\GitHubSupport

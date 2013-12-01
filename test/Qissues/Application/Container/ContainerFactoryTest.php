@@ -8,14 +8,14 @@ class ContainerFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreatesAContainer()
     {
-        $factory = new ContainerFactory();
+        $factory = new ContainerFactory(__DIR__ . '/../../../../config');
         $container = $factory->create(array());
         $this->assertInstanceOf('Symfony\Component\DependencyInjection\ContainerInterface', $container);
     }
 
     public function testSetsParametersFromConfig()
     {
-        $factory = new ContainerFactory();
+        $factory = new ContainerFactory(__DIR__ . '/../../../../config');
         $container = $factory->create(array(
             'a' => 'test',
             'b' => array(
@@ -29,14 +29,14 @@ class ContainerFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testContainerIsLocked()
     {
-        $factory = new ContainerFactory();
+        $factory = new ContainerFactory(__DIR__ . '/../../../../config');
         $container = $factory->create(array());
         $this->assertTrue($container->isFrozen());
     }
 
     public function testLoadedServices()
     {
-        $factory = new ContainerFactory();
+        $factory = new ContainerFactory(__DIR__ . '/../../../../config');
         $container = $factory->create(array());
 
         $this->assertInstanceOf('Symfony\Component\Yaml\Parser', $container->get('yaml_parser'));
@@ -44,7 +44,7 @@ class ContainerFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testPluralKeysArePreservedAsArrays()
     {
-        $factory = new ContainerFactory();
+        $factory = new ContainerFactory(__DIR__ . '/../../../../config');
         $container = $factory->create(array(
             'reports' => array(
                 'a' => array('assignees' => 1),
@@ -68,7 +68,7 @@ class ContainerFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testSetsContainerAsItself()
     {
-        $factory = new ContainerFactory();
+        $factory = new ContainerFactory(__DIR__ . '/../../../../config');
         $container = $factory->create(array());
 
         $this->assertSame($container, $container->get('container'));

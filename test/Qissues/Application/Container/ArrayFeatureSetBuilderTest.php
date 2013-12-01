@@ -2,7 +2,7 @@
 
 namespace Qissues\Application\Container;
 
-use Qissues\Trackers\Shared\Support\FeatureCatalogBuilder;
+use Qissues\Application\Container\ArrayCatalogBuilder;
 use Qissues\Application\Container\ArrayFeatureSetBuilder;
 
 class ArrayFeatureSetBuilderTest extends \PHPUnit_Framework_TestCase
@@ -21,7 +21,7 @@ class ArrayFeatureSetBuilderTest extends \PHPUnit_Framework_TestCase
 
     protected function getCatalog(array $features)
     {
-        $builder = new FeatureCatalogBuilder($features);
+        $builder = new ArrayCatalogBuilder($features);
         return $builder->build();
     }
 }

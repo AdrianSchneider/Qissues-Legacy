@@ -78,7 +78,7 @@ class QueryCommand extends Command
             }
         }
 
-        $view = $this->get('console.output.issues_views.' . $size);
+        $view = $this->get('console.output.view.issues.' . $size);
         return $output->writeln($view->render($issues, $tracker->getFeatures(), $width, $height));
     }
 }

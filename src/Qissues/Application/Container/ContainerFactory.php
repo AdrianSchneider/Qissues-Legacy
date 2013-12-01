@@ -8,6 +8,13 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class ContainerFactory
 {
+    protected $dir;
+
+    public function __construct($configDir)
+    {
+        $this->dir = $configDir;
+    }
+
    /**
      * Creates a new ContainerInterface from services.yml
      * @return ContainerInterface
@@ -15,11 +22,12 @@ class ContainerFactory
     public function create(array $config)
     {
         $container = new ContainerBuilder();
-        $locator = new FileLocator(__DIR__ . '/../../../../config');
+        $locator = new FileLocator($this->dir);
 
         $loader = new YamlFileLoader($container, $locator);
-        $loader->load('services.yml');
-        $loader->load('trackers.yml');
+        foreach (glob($this->dir . '/*.yml') as $file) {
+            $loader->load(basename($file));
+        }
 
         $container->setParameter('defaults', $container->getParameterBag()->all());
 
@@ -31,7 +39,7 @@ class ContainerFactory
 
         try {
             $container->setParameter(
-                'mapping_class', 
+                'tracker.mapping_class', 
                 $container->getDefinition(sprintf(
                     'tracker.%s.metadata',
                     $container->getParameter('tracker')

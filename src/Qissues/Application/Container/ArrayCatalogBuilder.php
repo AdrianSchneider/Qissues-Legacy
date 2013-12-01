@@ -1,8 +1,11 @@
 <?php
 
-namespace Qissues\Trackers\Shared\Support;
+namespace Qissues\Application\Container;
 
-class FeatureCatalogBuilder
+use Qissues\Trackers\Shared\Support\Feature;
+use Qissues\Trackers\Shared\Support\FeatureCatalog;
+
+class ArrayCatalogBuilder
 {
     protected $features;
 

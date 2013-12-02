@@ -6,6 +6,9 @@ use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Model\Comment;
 use Qissues\Domain\Model\Request\NewIssue;
 use Qissues\Domain\Model\Message;
+use Qissues\Domain\Shared\Details;
+use Qissues\Domain\Shared\ExpectedDetail;
+use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Priority;
@@ -30,32 +33,30 @@ class TrelloMapping implements FieldMapping
      */
     public function getExpectedDetails(Issue $issue = null)
     {
-
         if ($issue) {
             $description = $issue->getDescription();
             if (false !== $pos = strpos($description, "\n\nChecklists:\n\n")) {
                 $description = trim(substr($description, 0, $pos));
             }
 
-            return array(
-                'title' => $issue->getTitle(),
-                'description' => $description,
-                'status' => $issue->getStatus()->getStatus(),
-                'assignee' => $issue->getAssignee() ? $issue->getAssignee()->getAccount() : null,
-                'labels' => $issue->getLabels()
-                    ? implode(', ', array_map('strval', $issue->getLabels()))
-                    : ''
-            );
+            return new ExpectedDetails(array(
+                new ExpectedDetail('title', $issue->getTitle()),
+                new ExpectedDetail('description', $description),
+                new ExpectedDetail('status', $issue->getStatus()->getStatus()),
+                new ExpectedDetail('labels', $issue->getLabels() ? implode(', ', array_map('strval', $issue->getLabels())) : ''),
+                new ExpectedDetail('assignee', $issue->getAssignee() ? $issue->getAssignee()->getAccount : null),
+                new ExpectedDetail('priority', 'bottom', array('bottom', 'top'))
+            ));
         }
 
-        return array(
-            'title' => '',
-            'status' => $this->metadata->getFirstListName(),
-            'labels' => '',
-            'assignee' => '',
-            'description' => '',
-            'priority' => 'bottom'
-        );
+        return new ExpectedDetails(array(
+            new ExpectedDetail('title'),
+            new ExpectedDetail('description'),
+            new ExpectedDetail('status', $this->metadata->getFirstListName()), // lsit names
+            new ExpectedDetail('labels'),
+            new ExpectedDetail('assignee'),
+            new ExpectedDetail('priority', 'bottom', array('bottom', 'top'))
+        ));
     }
 
     /**
@@ -126,7 +127,7 @@ class TrelloMapping implements FieldMapping
     {
         $metadata = $this->metadata;
         return array_map(
-            function($label) use ($metadata) { 
+            function($label) use ($metadata) {
                 $id = $metadata->getLabelIdByName($label);
                 $name = $metadata->getLabelNameById($id);
                 return new Label($name, $id);

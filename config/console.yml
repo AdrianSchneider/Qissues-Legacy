@@ -1,5 +1,6 @@
 parameters:
     console.editor: "vim"
+    console.editor.error_delay: 2
     console.tmp_file.prefix: "qissues"
     console.browser.command:
     console.input.default_strategy: "edit"
@@ -37,6 +38,7 @@ services:
         arguments:
             - @console.input.external_editor
             - @console.input.active_format.issue
+            - %console.editor.error_delay%
 
     console.input.issue_strategy.interactive:
         class: Qissues\Interfaces\Console\Input\Strategy\Issue\InteractiveStrategy
@@ -71,6 +73,7 @@ services:
         arguments:
             - @console.input.external_editor
             - @console.input.active_format.details
+            - %console.editor.error_delay%
 
 
     console.input.external_editor:

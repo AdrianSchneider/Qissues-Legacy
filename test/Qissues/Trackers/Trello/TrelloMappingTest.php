@@ -11,6 +11,31 @@ use Qissues\Trackers\Trello\TrelloMapping;
 
 class TrelloMappingTest extends \PHPUnit_Framework_TestCase
 {
+    public function testGetExpectedDetails()
+    {
+        $mapping = $this->getMapper(array('lists' => array(array('id' => 1, 'name' => 'First'))));
+        $details = $mapping->getExpectedDetails();
+
+        $this->assertInstanceOf('Qissues\Domain\Shared\ExpectedDetails', $details);
+
+        foreach (array('title', 'description', 'status', 'labels', 'assignee', 'priority') as $field) {
+            $this->assertTrue(isset($details[$field]));
+        }
+    }
+
+    public function testGetExpectedDetailsListDefaultsToFirst()
+    {
+        $mapping = $this->getMapper(array('lists' => array(
+            array('id' => 1, 'name' => 'First'),
+            array('id' => 2, 'name' => 'Middle'),
+            array('id' => 3, 'name' => 'Last')
+        )));
+
+        $details = $mapping->getExpectedDetails();
+
+        $this->assertEquals('First', $details['status']->getDefault());
+    }
+
     public function testToIssueBasic()
     {
         $date = new \DateTime();

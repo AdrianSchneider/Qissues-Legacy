@@ -3,7 +3,7 @@
 namespace Qissues\Interfaces\Console\Input\Strategy\Transition;
 
 use Qissues\Domain\Shared\Details;
-use Qissues\Domain\Shared\RequiredDetails;
+use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Interfaces\Console\Input\ExternalFileEditor;
 use Qissues\Interfaces\Console\Input\FileFormats\FileFormat;
 use Symfony\Component\Console\Application;
@@ -26,23 +26,17 @@ class EditStrategy implements DetailsStrategy
     /**
      * Creates a new TransitionDetails by loading the info into an editor
      *
-     * @param RequiredDetails $requirements
+     * @param ExpectedDetails $requirements
      * @return TransitionDetails
      */
-    public function create(RequiredDetails $requirements)
+    public function create(ExpectedDetails $requirements)
     {
-        return new Details($this->getData($requirements));
-    }
-
-
-    protected function getData(RequiredDetails $requirements)
-    {
-        if (!$fields = $requirements->getFields()) {
-            return array();
+        if (!count($requirements)) {
+            return new Details(array());
         }
 
-        if (!$content = trim($this->editor->getEdited($this->fileFormat->seed($fields)))) {
-            return array();
+        if (!$content = trim($this->editor->getEdited($this->fileFormat->seed($requirements)))) {
+            return new Details(array());
         }
 
         return $this->fileFormat->parse($content);

@@ -4,6 +4,9 @@ namespace Qissues\Tests\Console\Input\Strategy\Issue;
 
 use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Shared\Status;
+use Qissues\Domain\Shared\Details;
+use Qissues\Domain\Shared\ExpectedDetail;
+use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Application\Tracker\IssueTracker;
 use Qissues\Interfaces\Console\Input\Strategy\Issue\EditStrategy;
 
@@ -13,14 +16,16 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
     {
         $template = 'enter input here';
         $content = 'user input';
-        $parsed = array('user input');
-        $fields = array('title' => 'hello');
+        $parsed = new Details($parsedRaw = array('user' => 'input'));
+        $expectations = new ExpectedDetails(array(
+            new ExpectedDetail('user', 'input')
+        ));
 
         $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
         $fileFormat
             ->expects($this->once())
             ->method('seed')
-            ->with($fields)
+            ->with($expectations)
             ->will($this->returnValue($template))
         ;
         $fileFormat
@@ -47,13 +52,13 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
 
         $mapping
             ->expects($this->once())
-            ->method('getEditFields')
-            ->will($this->returnValue($fields))
+            ->method('getExpectedDetails')
+            ->will($this->returnValue($expectations))
         ;
         $mapping
             ->expects($this->once())
             ->method('toNewIssue')
-            ->with($parsed)
+            ->with($parsedRaw)
             ->will($this->returnValue(
                 $this->getMockBuilder('Qissues\Domain\Model\Request\NewIssue')->disableOriginalConstructor()->getMock())
             )
@@ -68,13 +73,17 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
     public function testCreateNewReturnsNullIfNoContent()
     {
         $template = 'enter input here';
-        $fields = array('title' => 'hello');
+        $content = '';
+        $parsed = new Details($parsedRaw = array('user' => 'input'));
+        $expectations = new ExpectedDetails(array(
+            new ExpectedDetail('user', 'input')
+        ));
 
         $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
         $fileFormat
             ->expects($this->once())
             ->method('seed')
-            ->with($fields)
+            ->with($expectations)
             ->will($this->returnValue($template))
         ;
 
@@ -83,7 +92,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('getEdited')
             ->with($template)
-            ->will($this->returnValue(''))
+            ->will($this->returnValue($content))
         ;
 
         $tracker = new IssueTracker(
@@ -95,8 +104,8 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
 
         $mapping
             ->expects($this->once())
-            ->method('getEditFields')
-            ->will($this->returnValue($fields))
+            ->method('getExpectedDetails')
+            ->will($this->returnValue($expectations))
         ;
 
         $issueFactory = new EditStrategy($editor, $fileFormat);
@@ -107,18 +116,20 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
 
     public function testUpdateExisting()
     {
+        $issue = new Issue(1, 'title', 'desc', new Status('open'), new \DateTime, new \DateTime);
+
         $template = 'enter input here';
         $content = 'user input';
-        $parsed = array('user input');
-        $fields = array('title' => 'hello');
-
-        $issue = new Issue(1, 'title', 'desc', new Status('open'), new \DateTime, new \DateTime);
+        $parsed = new Details($parsedRaw = array('user' => 'input'));
+        $expectations = new ExpectedDetails(array(
+            new ExpectedDetail('user', 'input')
+        ));
 
         $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
         $fileFormat
             ->expects($this->once())
             ->method('seed')
-            ->with($fields)
+            ->with($expectations)
             ->will($this->returnValue($template))
         ;
         $fileFormat
@@ -145,13 +156,14 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
 
         $mapping
             ->expects($this->once())
-            ->method('getEditFields')
-            ->will($this->returnValue($fields))
+            ->method('getExpectedDetails')
+            ->with($issue)
+            ->will($this->returnValue($expectations))
         ;
         $mapping
             ->expects($this->once())
             ->method('toNewIssue')
-            ->with($parsed)
+            ->with($parsedRaw)
             ->will($this->returnValue(
                 $this->getMockBuilder('Qissues\Domain\Model\Request\NewIssue')->disableOriginalConstructor()->getMock())
             )
@@ -161,48 +173,6 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         $issue = $issueFactory->updateExisting($tracker, $issue);
 
         $this->assertInstanceOf('Qissues\Domain\Model\Request\NewIssue', $issue);
-    }
-
-    public function testUpdateExistingReturnsNullIfNoContent()
-    {
-        $template = 'enter input here';
-        $fields = array('title' => 'hello');
-
-        $issue = new Issue(1, 'title', 'desc', new Status('open'), new \DateTime, new \DateTime);
-
-        $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
-        $fileFormat
-            ->expects($this->once())
-            ->method('seed')
-            ->with($fields)
-            ->will($this->returnValue($template))
-        ;
-
-        $editor = $this->getMockBuilder('Qissues\Interfaces\Console\Input\ExternalFileEditor')->disableOriginalConstructor()->getMock();
-        $editor
-            ->expects($this->once())
-            ->method('getEdited')
-            ->with($template)
-            ->will($this->returnValue(''))
-        ;
-
-        $tracker = new IssueTracker(
-            $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
-            $mapping    = $this->getMock('Qissues\Application\Tracker\FieldMapping'),
-            $features   = $this->getMock('Qissues\Application\Tracker\Support\FeatureSet'),
-            $workflow   = $this->getMock('Qissues\Domain\Model\Workflow')
-        );
-
-        $mapping
-            ->expects($this->once())
-            ->method('getEditFields')
-            ->will($this->returnValue($fields))
-        ;
-
-        $issueFactory = new EditStrategy($editor, $fileFormat);
-        $issue = $issueFactory->updateExisting($tracker, $issue);
-
-        $this->assertNull($issue);
     }
 
     public function testInit()

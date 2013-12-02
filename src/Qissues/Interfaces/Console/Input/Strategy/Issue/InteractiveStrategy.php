@@ -59,7 +59,7 @@ class InteractiveStrategy implements IssueStrategy
     protected function buildData(FieldMapping $mapping, Issue $issue = null)
     {
         $data = array();
-        foreach ($mapping->getEditFields($issue) as $key => $value) {
+        foreach ($mapping->getExpectedDetails($issue) as $key => $value) {
             $data[$key] = $this->ask($key, $value, $issue);
         }
 

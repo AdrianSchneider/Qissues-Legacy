@@ -50,6 +50,6 @@ class BasicWorkflowTest extends \PHPUnit_Framework_TestCase
         $workflow = new BasicWorkflow($this->getMock('Qissues\Application\Tracker\BasicTransitioner'));
         $requirements = $workflow->getRequirements($transition);
 
-        $this->assertEmpty($requirements->getFields());
+        $this->assertCount(0, $requirements);
     }
 }

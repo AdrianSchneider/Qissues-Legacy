@@ -76,7 +76,7 @@ class JqlQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertContains("id IN ('PRX-1','PRX-2')", $jql);
     }
 
-    public function testSortsByExpectedFields()
+    public function testSortsByExpectedDetails()
     {
         $criteria = new SearchCriteria();
         $criteria->addSortField('priority');

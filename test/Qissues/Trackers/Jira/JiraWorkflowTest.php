@@ -7,7 +7,7 @@ use Qissues\Domain\Shared\Status;
 use Qissues\Trackers\Jira\JiraWorkflow;
 use Qissues\Domain\Model\Transition;
 use Qissues\Domain\Shared\Details;
-use Qissues\Domain\Shared\RequiredDetails;
+use Qissues\Domain\Shared\ExpectedDetails;
 
 class JiraWorkflowTest extends \PHPUnit_Framework_TestCase
 {
@@ -101,10 +101,10 @@ class JiraWorkflowTest extends \PHPUnit_Framework_TestCase
 
         $workflow = new JiraWorkflow($repository);
         $transition = $workflow->buildTransition(
-            new Number(1), 
-            new Status('closed'), 
-            function(RequiredDetails $required) use ($test) {
-                $test->assertCount(1, $required->getFields());
+            new Number(1),
+            new Status('closed'),
+            function(ExpectedDetails $required) use ($test) {
+                $test->assertTrue(isset($required['resolution']));
                 return new Details();
             }
         );

@@ -65,7 +65,7 @@ class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
 
         $mapping
             ->expects($this->once())
-            ->method('getEditFields')
+            ->method('getExpectedDetails')
             ->will($this->returnValue($fields))
         ;
         $mapping
@@ -110,7 +110,7 @@ class InteractiveStrategyTest extends \PHPUnit_Framework_TestCase
 
         $mapping
             ->expects($this->once())
-            ->method('getEditFields')
+            ->method('getExpectedDetails')
             ->with($issue)
             ->will($this->returnValue($fields))
         ;

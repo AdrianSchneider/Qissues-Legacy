@@ -2,17 +2,22 @@
 
 namespace Qissues\Tests\Console\Input\FileFormats;
 
+use Qissues\Domain\Shared\Details;
+use Qissues\Domain\Shared\ExpectedDetail;
+use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Interfaces\Console\Input\FileFormats\JsonFormat;
 
 class JsonFormatTest extends \PHPUnit_Framework_TestCase
 {
     public function testSeedJustEncodes()
     {
-        $payload = array('a' => 'b');
-        $format = new JsonFormat();
-        $formatted = $format->seed($payload);
+        $rawPayload = array('field' => 'value');
+        $expectations = new ExpectedDetails(array(new ExpectedDetail('field', 'value')));
 
-        $this->assertEquals(json_decode(json_encode($payload)), json_decode($formatted));
+        $format = new JsonFormat();
+        $formatted = $format->seed($expectations);
+
+        $this->assertEquals(json_encode($rawPayload), $formatted);
     }
 
     public function testParseJustDecodes()
@@ -21,6 +26,6 @@ class JsonFormatTest extends \PHPUnit_Framework_TestCase
         $format = new JsonFormat();
         $parsed = $format->parse(json_encode($payload));
 
-        $this->assertEquals($payload, $parsed);
+        $this->assertEquals($payload, $parsed->getDetails());
     }
 }

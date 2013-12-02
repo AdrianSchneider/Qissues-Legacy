@@ -6,7 +6,7 @@ use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\Transition;
 use Qissues\Domain\Shared\Details;
 use Qissues\Domain\Shared\Status;
-use Qissues\Domain\Shared\RequiredDetails;
+use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Trackers\InMemory\InMemoryWorkflow;
 
 class InMemoryWorkflowTest extends \PHPUnit_Framework_TestCase
@@ -32,7 +32,7 @@ class InMemoryWorkflowTest extends \PHPUnit_Framework_TestCase
             $this->getMock('Qissues\Domain\Model\IssueRepository'), 
             array('reason')
         );
-        $transition = $workflow->buildTransition($issue, $status, function(RequiredDetails $requirements) {
+        $transition = $workflow->buildTransition($issue, $status, function(ExpectedDetails $requirements) {
             return new Details(array('reason' => 'ugh, callbacks'));
         });
 

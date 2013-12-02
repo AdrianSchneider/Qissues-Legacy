@@ -18,7 +18,7 @@ class InMemoryMapping implements FieldMapping
     /**
      * {@inheritDoc}
      */
-    public function getEditFields(Issue $issue = null)
+    public function getExpectedDetails(Issue $issue = null)
     {
         throw new \DomainException('For testing only');
     }

@@ -11,6 +11,8 @@ use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Priority;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\Label;
+use Qissues\Domain\Shared\ExpectedDetail;
+use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Application\Tracker\FieldMapping;
 use Qissues\Application\Tracker\Metadata\Metadata;
 use Qissues\Domain\Model\SearchCriteria;
@@ -33,9 +35,27 @@ class JiraMapping implements FieldMapping
     /**
      * {@inheritDoc}
      */
-    public function getEditFields(Issue $issue = null)
+    public function getExpectedDetails(Issue $issue = null)
     {
         if ($issue) {
+            $priority = $labels;
+
+            if ($user = $issue->getAssignee()) {
+                $assignee = $user->getAccount();
+            } else {
+                $assignee = '';
+            }
+
+            return new ExpectedDetails(array(
+                new ExpectedDetail('title', $issue->getTitle()),
+                new ExpectedDetail('assignee', $assignee, $this->metadata->getAllowedAssignees($issue)),
+                new ExpectedDetail('type', strval($issue->getType()), $this->metadata->getAllowedTypes()),
+                new ExpectedDetail('priority', 3, range(1, 5)),
+                new ExpectedDetail('labels', '', $this->metadata->getAllowedLabels()),
+                new ExpectedDetail('description')
+            ));
+
+
             return array(
                 'title' => $issue->getTitle(),
                 'assignee' => $issue->getAssignee() ? $issue->getAssignee()->getAccount() : '',
@@ -48,14 +68,14 @@ class JiraMapping implements FieldMapping
             );
         }
 
-        return array(
-            'title' => '',
-            'assignee' => 'me',
-            'type' => '',
-            'labels' => '',
-            'priority' => '',
-            'description' => ''
-        );
+        return new ExpectedDetails(array(
+            new ExpectedDetail('title'),
+            new ExpectedDetail('description'),
+            new ExpectedDetail('assignee'),
+            new ExpectedDetail('type', '', $this->metadata->getAllowedTypes()),
+            new ExpectedDetail('priority', 3, range(1, 5)),
+            new ExpectedDetail('labels', '', $this->metadata->getAllowedLabels()),
+        ));
     }
 
     /**

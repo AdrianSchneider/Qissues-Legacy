@@ -7,7 +7,8 @@ use Qissues\Domain\Model\Transition;
 use Qissues\Domain\Model\Workflow;
 use Qissues\Domain\Model\IssueRepository;
 use Qissues\Domain\Shared\Details;
-use Qissues\Domain\Shared\RequiredDetails;
+use Qissues\Domain\Shared\ExpectedDetail;
+use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Domain\Shared\Status;
 
 class InMemoryWorkflow implements Workflow
@@ -34,7 +35,12 @@ class InMemoryWorkflow implements Workflow
         if ($this->requireFields) {
             return new Transition(
                 $status,
-                call_user_func($builder, new RequiredDetails($this->requireFields))
+                call_user_func($builder, new ExpectedDetails(
+                    array_map(
+                        function($field) { return new ExpectedDetail($field); },
+                        $this->requireFields
+                    )
+                ))
             );
         }
 

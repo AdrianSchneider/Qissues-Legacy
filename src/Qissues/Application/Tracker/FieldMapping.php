@@ -12,9 +12,9 @@ interface FieldMapping
     /**
      * Prepare fields for editing
      * @param Issue|null $issue, if existing
-     * @return array fields => values
+     * @return ExpectedDetails
      */
-    function getEditFields(Issue $issue = null);
+    function getExpectedDetails(Issue $issue = null);
 
     /**
      * Creates an Issue from raw data

@@ -14,14 +14,50 @@ use Qissues\Domain\Model\SearchCriteria;
 
 class JiraMappingTest extends \PHPUnit_Framework_TestCase
 {
-    public function testGetEditFields()
+    public function testGetsCorrectExpectedDetails()
     {
-        $mapping = $this->getMapping(array());
+        $mapping = $this->getMapping(array( 'components' => array()));
+        $details = $mapping->getExpectedDetails();
 
-        $this->assertEquals(
-            array('title', 'assignee', 'type', 'labels', 'priority', 'description'),
-            array_keys($mapping->getEditFields())
-        );
+        $this->assertInstanceOf('Qissues\Domain\Shared\ExpectedDetails', $details);
+
+        foreach (array('title', 'description', 'assignee', 'type', 'priority', 'labels') as $field) {
+            $this->assertTrue(isset($details[$field]));
+        }
+    }
+
+    public function testExpectsCorrectDefaults()
+    {
+        $mapping = $this->getMapping(array(
+            'types' => array(
+                array('id' => 1, 'name' => 'New Feature')
+            ),
+            'components' => array()
+        ));
+
+        $details = $mapping->getExpectedDetails();
+
+        $this->assertEquals('', $details['title']->getDefault());
+        $this->assertEquals('', $details['description']->getDefault());
+        $this->assertEquals('', $details['assignee']->getDefault());
+        $this->assertEquals('', $details['type']->getDefault());
+        $this->assertEquals(3, $details['priority']->getDefault());
+    }
+
+    public function testExpectsCorrectOptions()
+    {
+        $mapping = $this->getMapping(array(
+            'components' => array(
+                array('id' => 1, 'name' => 'a'),
+                array('id' => 2, 'name' => 'b'),
+                array('id' => 3, 'name' => 'c'),
+            )
+        ));
+
+        $details = $mapping->getExpectedDetails();
+
+        $this->assertEquals(range(1, 5), $details['priority']->getOptions());
+        $this->assertEquals(array('a', 'b', 'c'), $details['labels']->getOptions());
     }
 
     public function testToIssueCreatesIssue()

@@ -2,35 +2,75 @@
 
 namespace Qissues\Tests\Console\Input\FileFormats;
 
+use Qissues\Domain\Shared\Details;
+use Qissues\Domain\Shared\ExpectedDetail;
+use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Interfaces\Console\Input\FileFormats\FrontMatterFormat;
 
 class FrontMatterFormatTest extends \PHPUnit_Framework_TestCase
 {
-    public function testSeed()
+    public function testBasicSeed()
     {
         $parser = $this->getMockBuilder('Qissues\Application\Input\FrontMatterParser')->disableOriginalConstructor()->getMock();
-        $format = new FrontMatterFormat($parser);
+        $dumper = $this->getMockBuilder('Symfony\Component\Yaml\Dumper')->disableOriginalConstructor()->getMock();
+        $dumper
+            ->expects($this->once())
+            ->method('dump')
+            ->with(array('a' => 1, 'b' => 2))
+            ->will($this->returnValue("a: 1\nb: 2"))
+        ;
 
-        $template = $format->seed(array('a' => 'b'));
-        $this->assertEquals("---\na: b\n---\nEnter content here...", $template);
+        $format = new FrontMatterFormat($parser, $dumper);
+
+        $expectations = new ExpectedDetails(array(
+            new ExpectedDetail('description'),
+            new ExpectedDetail('a', 1),
+            new ExpectedDetail('b', 2)
+        ));
+
+        $this->assertEquals("---\na: 1\nb: 2\n---\n", $format->seed($expectations));
     }
 
-    public function testSeedDoesntDoublePrintDescription()
+    public function testSeedWithOptionsComment()
     {
         $parser = $this->getMockBuilder('Qissues\Application\Input\FrontMatterParser')->disableOriginalConstructor()->getMock();
-        $format = new FrontMatterFormat($parser);
+        $dumper = $this->getMockBuilder('Symfony\Component\Yaml\Dumper')->disableOriginalConstructor()->getMock();
+        $dumper
+            ->expects($this->once())
+            ->method('dump')
+            ->with(array('input' => 'default'))
+            ->will($this->returnValue("input: 'default'"))
+        ;
 
-        $template = $format->seed(array('a' => 'b', 'description' => 'Hello World'));
-        $this->assertEquals("---\na: b\n---\nHello World", $template);
+        $format = new FrontMatterFormat($parser, $dumper);
+
+        $expectations = new ExpectedDetails(array(
+            new ExpectedDetail('description'),
+            new ExpectedDetail('input', 'default', array('a', 'b', 'c'))
+        ));
+
+        $this->assertEquals("---\n# [a, b, c]\ninput: 'default'\n---\n", $format->seed($expectations));
     }
 
-    public function testSpecifyAnotherDescriptionField()
+    public function testSeedStripsQuotingFromEmptyStrings()
     {
         $parser = $this->getMockBuilder('Qissues\Application\Input\FrontMatterParser')->disableOriginalConstructor()->getMock();
-        $format = new FrontMatterFormat($parser, 'body');
+        $dumper = $this->getMockBuilder('Symfony\Component\Yaml\Dumper')->disableOriginalConstructor()->getMock();
+        $dumper
+            ->expects($this->once())
+            ->method('dump')
+            ->with(array('input' => ''))
+            ->will($this->returnValue("input: ''"))
+        ;
 
-        $template = $format->seed(array('a' => 'b', 'body' => 'Oh Hai'));
-        $this->assertEquals("---\na: b\n---\nOh Hai", $template);
+        $format = new FrontMatterFormat($parser, $dumper);
+
+        $expectations = new ExpectedDetails(array(
+            new ExpectedDetail('description'),
+            new ExpectedDetail('input')
+        ));
+
+        $this->assertEquals("---\ninput: \n---\n", $format->seed($expectations));
     }
 
     public function testParsesUsingFrontMatter()
@@ -45,25 +85,9 @@ class FrontMatterFormatTest extends \PHPUnit_Framework_TestCase
             ->with($input)
             ->will($this->returnValue($output))
         ;
+        $dumper = $this->getMockBuilder('Symfony\Component\Yaml\Dumper')->disableOriginalConstructor()->getMock();
 
-        $format = new FrontMatterFormat($parser);
-        $this->assertEquals($output, $format->parse($input));
-    }
-
-    public function testParsesWithCustomBodyField()
-    {
-        $input = 'user input';
-        $output = array('user' => 'input');
-
-        $parser = $this->getMockBuilder('Qissues\Application\Input\FrontMatterParser')->disableOriginalConstructor()->getMock();
-        $parser
-            ->expects($this->once())
-            ->method('parse')
-            ->with($input, 'body')
-            ->will($this->returnValue($output))
-        ;
-
-        $format = new FrontMatterFormat($parser, 'body');
-        $this->assertEquals($output, $format->parse($input));
+        $format = new FrontMatterFormat($parser, $dumper);
+        $this->assertEquals($output, $format->parse($input)->getDetails());
     }
 }

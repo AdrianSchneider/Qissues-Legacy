@@ -3,7 +3,8 @@
 namespace Qissues\Interfaces\Console\Input\Strategy\Transition;
 
 use Qissues\Domain\Shared\Details;
-use Qissues\Domain\Shared\RequiredDetails;
+use Qissues\Domain\Shared\ExpectedDetail;
+use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Interfaces\Console\Input\Strategy\Transition\EditStrategy;
 
 class EditStrategyTest extends \PHPUnit_Framework_TestCase
@@ -12,14 +13,18 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
     {
         $template = 'enter input here';
         $content = 'user input';
-        $parsed = array('user' => 'input');
-        $fields = array('resolution' => 'fixed', 'comment' => '');
+        $parsed = new Details(array('user' => 'input'));
+
+        $expectations = new ExpectedDetails(array(
+            new ExpectedDetail('resolution', 'fixed'),
+            new ExpectedDetail('comment')
+        ));
 
         $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
         $fileFormat
             ->expects($this->once())
             ->method('seed')
-            ->with($fields)
+            ->with($expectations)
             ->will($this->returnValue($template))
         ;
         $fileFormat
@@ -37,10 +42,8 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($content))
         ;
 
-        $requirements = new RequiredDetails($fields);
-
         $issueFactory = new EditStrategy($editor, $fileFormat);
-        $details = $issueFactory->create($requirements);
+        $details = $issueFactory->create($expectations);
         $rawDetails = $details->getDetails();
 
         $this->assertInstanceOf('Qissues\Domain\Shared\Details', $details);
@@ -54,7 +57,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
             $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock()
         );
 
-        $details = $issueFactory->create(new RequiredDetails());
+        $details = $issueFactory->create(new ExpectedDetails(array()));
 
         $this->assertEmpty($details->getDetails());
         $this->assertInstanceOf('Qissues\Domain\Shared\Details', $details);
@@ -64,13 +67,16 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
     {
         $template = 'enter input here';
         $content = '';
-        $fields = array('resolution' => 'fixed', 'comment' => '');
+        $expectations = new ExpectedDetails(array(
+            new ExpectedDetail('resolution', 'fixed'),
+            new ExpectedDetail('comment')
+        ));
 
         $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
         $fileFormat
             ->expects($this->once())
             ->method('seed')
-            ->with($fields)
+            ->with($expectations)
             ->will($this->returnValue($template))
         ;
 
@@ -83,7 +89,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         ;
 
         $issueFactory = new EditStrategy($editor, $fileFormat);
-        $details = $issueFactory->create(new RequiredDetails($fields));
+        $details = $issueFactory->create($expectations);
 
         $this->assertEmpty($details->getDetails());
         $this->assertInstanceOf('Qissues\Domain\Shared\Details', $details);

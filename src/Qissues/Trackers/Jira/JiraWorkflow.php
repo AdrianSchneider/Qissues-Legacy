@@ -7,7 +7,8 @@ use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\Workflow;
 use Qissues\Domain\Model\Transition;
 use Qissues\Domain\Shared\Details;
-use Qissues\Domain\Shared\RequiredDetails;
+use Qissues\Domain\Shared\ExpectedDetail;
+use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Model\Exception\MappingException;
 
@@ -40,7 +41,7 @@ class JiraWorkflow implements Workflow
     public function buildTransition(Number $issue, Status $status, /*Callable*/ $builder = null)
     {
         $requirements = $this->getRequirements($issue, $status);
-        if ($requirements->getFields()) {
+        if (count($requirements)) {
             $details = call_user_func($builder, $requirements);
         } else {
             $details = new Details();
@@ -75,8 +76,12 @@ class JiraWorkflow implements Workflow
     {
         $info = $this->getJiraTransition($issue, $status);
 
-        $fields = array();
+        $expectations = array();
         foreach ($info['fields'] as $fieldName => $info) {
+            if (empty($info['required'])) {
+                continue;
+            }
+
             $options = array();
             if (!empty($info['allowedValues'])) {
                 foreach ($info['allowedValues'] as $value) {
@@ -84,12 +89,10 @@ class JiraWorkflow implements Workflow
                 }
             }
 
-            if ($info['required']) {
-                $fields[] = new Field($fieldName, $options ? $options[0] : null, $options);
-            }
+            $expectations[] = new ExpectedDetail($fieldName, '', $options); 
         }
 
-        return new RequiredDetails($fields);
+        return new ExpectedDetails($expectations);
     }
 
     /**

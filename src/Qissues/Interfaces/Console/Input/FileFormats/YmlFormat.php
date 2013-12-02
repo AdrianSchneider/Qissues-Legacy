@@ -2,7 +2,8 @@
 
 namespace Qissues\Interfaces\Console\Input\FileFormats;
 
-use Qissues\Application\Input\Field;
+use Qissues\Domain\Shared\Details;
+use Qissues\Domain\Shared\ExpectedDetails;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Dumper;
 
@@ -28,20 +29,48 @@ class YmlFormat implements FileFormat
      *
      * {@inheritDoc}
      */
-    public function seed(array $fields)
+    public function seed(ExpectedDetails $expectations)
     {
-        $out = '';
-        foreach ($fields as $i => $field) {
-            if ($field instanceof Field and $options = $field->getOptions()) {
-                $out .= "# $field: [" . implode(', ', $options) . "]\n";
-                unset($fields[$i]);
-                $fields["$field"] = $field->getDefault() ?: '';
+        return $this->stripQuotedEmptyStrings(
+            $this->addComments(
+                $this->dumper->dump($expectations->getDefaults(), $this->depth),
+                $expectations
+            )
+        );
+    }
+
+    /**
+     * Add comments above each field if there are options
+     *
+     * @param string $yml
+     * @param ExpectedDetails $expectations
+     */
+    protected function addComments($yml, ExpectedDetails $expectations)
+    {
+        $yml = "\n$yml";
+        foreach ($expectations as $field => $expectation) {
+            if ($options = $expectation->getOptions()) {
+                $yml = str_replace(
+                    "\n$field: ",
+                    "\n# [" . implode(', ', $options) . "]\n$field: ",
+                    $yml
+                );
             }
         }
 
-        $out .=  str_replace("''\n", "\n", $this->dumper->dump($fields, $this->depth));
+        return trim($yml);
+    }
 
-        return $out;
+    /**
+     * Removes quotes around empty strings
+     * emptyField: ""\n turns to emptyField: \n
+     *
+     * @param string $yml
+     * @return string
+     */
+    protected function stripQuotedEmptyStrings($yml)
+    {
+        return trim(str_replace("''\n", "\n", "$yml\n"), "\n");
     }
 
     /**
@@ -51,6 +80,6 @@ class YmlFormat implements FileFormat
      */
     public function parse($input)
     {
-        return $this->parser->parse($input);
+        return new Details($this->parser->parse($input));
     }
 }

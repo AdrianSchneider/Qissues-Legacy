@@ -2,19 +2,22 @@
 
 namespace Qissues\Interfaces\Console\Input\FileFormats;
 
+use Qissues\Domain\Shared\Details;
+use Qissues\Domain\Shared\ExpectedDetails;
+
 class JsonFormat implements FileFormat
 {
     /**
      * {@inheritDoc}
      */
-    public function seed(array $fields)
+    public function seed(ExpectedDetails $expectations)
     {
         $flags = 0;
         if (defined('JSON_PRETTY_PRINT')) {
             $flags |= JSON_PRETTY_PRINT;
         }
 
-        return json_encode($fields, $flags);
+        return json_encode($expectations->getDefaults(), $flags);
     }
 
     /**
@@ -22,6 +25,6 @@ class JsonFormat implements FileFormat
      */
     public function parse($content)
     {
-        return json_decode($content, true);
+        return new Details(json_decode($content, true));
     }
 }

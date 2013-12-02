@@ -28,7 +28,7 @@ class TrelloMapping implements FieldMapping
     /**
      * {@inheritDoc}
      */
-    public function getEditFields(Issue $issue = null)
+    public function getExpectedDetails(Issue $issue = null)
     {
 
         if ($issue) {

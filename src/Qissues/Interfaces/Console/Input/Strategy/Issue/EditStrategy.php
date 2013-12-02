@@ -3,6 +3,9 @@
 namespace Qissues\Interfaces\Console\Input\Strategy\Issue;
 
 use Qissues\Domain\Model\Issue;
+use Qissues\Domain\Shared\Details;
+use Qissues\Domain\Shared\ExpectedDetail;
+use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Application\Tracker\IssueTracker;
 use Qissues\Interfaces\Console\Input\ExternalFileEditor;
 use Qissues\Interfaces\Console\Input\FileFormats\FileFormat;
@@ -24,39 +27,39 @@ class EditStrategy implements IssueStrategy
     function init(InputInterface $input, OutputInterface $output, Application $application) { }
 
     /**
-     * Creates a NewIssue by editing a formatted file in an external editor
-     *
-     * @param IssueTracker $tracker
-     * @return NewIssue
+     * {@inheritDoc}
      */
     public function createNew(IssueTracker $tracker)
     {
-        $mapping = $tracker->getMapping();
-        $content = trim($this->editor->getEdited($this->fileFormat->seed($mapping->getEditFields())));
-
-        if (!$content) {
-            return;
-        }
-
-        return $mapping->toNewIssue($this->fileFormat->parse($content));
+        return $this->getNewIssue($tracker);
     }
 
     /**
-     * Creates a NewIssue with changes to be applied against Issue
-     *
-     * @param IssueTracker $tracker
-     * @param Issue $existing
-     * @return NewIssue
+     * {@inheritDoc}
      */
     public function updateExisting(IssueTracker $tracker, Issue $existing)
     {
-        $mapping = $tracker->getMapping();
-        $content = $this->editor->getEdited($this->fileFormat->seed($mapping->getEditFields($existing)));
+        return $this->getNewIssue($tracker, $existing);
+    }
 
-        if (!$content) {
+    /**
+     * Creates a NewIssue from an edited file populated by the file format
+     *
+     * @param IssueTracker $tracker
+     * @param Issue|null $existing
+     * @return NewIssue
+     */
+    protected function getNewIssue(IssueTracker $tracker, Issue $existing = null)
+    {
+        $mapping = $tracker->getMapping();
+        $details = $this->fileFormat->seed($mapping->getExpectedDetails($existing));
+
+        if (!$content = trim($this->editor->getEdited($details))) {
             return;
         }
 
-        return $mapping->toNewIssue($this->fileFormat->parse($content));
+        return $mapping->toNewIssue(
+            $this->fileFormat->parse($content)->getDetails()
+        );
     }
 }

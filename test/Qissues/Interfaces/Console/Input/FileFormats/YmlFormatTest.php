@@ -2,15 +2,18 @@
 
 namespace Qissues\Interfaces\Console\Input\FileFormats;
 
-use Qissues\Application\Input\Field;
+use Qissues\Domain\Shared\Details;
+use Qissues\Domain\Shared\ExpectedDetail;
+use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Interfaces\Console\Input\FileFormats\YmlFormat;
 
 class YmlFormatTest extends \PHPUnit_Framework_TestCase
 {
-    public function testSeed()
+    public function testSeedBasicFields()
     {
-        $in = array('a' => 'b');
-        $out = 'Y: ML';
+        $in = new ExpectedDetails(array(new ExpectedDetail('input', 'default')));
+        $pairs = array('input' => 'default');
+        $out = "input: default";
 
         $format = new YmlFormat(
             $this->getMockBuilder('Symfony\Component\Yaml\Parser')->disableOriginalConstructor()->getMock(),
@@ -21,21 +24,18 @@ class YmlFormatTest extends \PHPUnit_Framework_TestCase
         $dumper
             ->expects($this->once())
             ->method('dump', $depth)
-            ->with($in)
+            ->with($pairs)
             ->will($this->returnValue($out))
         ;
 
         $this->assertEquals($out, $format->seed($in));
     }
 
-    public function testSeedIncludesHintsIfFieldObjects()
+    public function testSeedIncludesOptionsAsComments()
     {
-        $in = array(
-            new Field('a', "def", array(1, 2, 3)),
-            new Field('b', 'asdf', array(2, 3, 4))
-        );
-
-        $out = "\na: def\nb: ";
+        $in = new ExpectedDetails(array(new ExpectedDetail('priority', 3, array(1, 2, 3, 4, 5))));
+        $pairs = array('priority' => 3);
+        $out = "priority: 3";
 
         $format = new YmlFormat(
             $this->getMockBuilder('Symfony\Component\Yaml\Parser')->disableOriginalConstructor()->getMock(),
@@ -46,14 +46,34 @@ class YmlFormatTest extends \PHPUnit_Framework_TestCase
         $dumper
             ->expects($this->once())
             ->method('dump', $depth)
-            ->with(array(
-                'a' => 'def',
-                'b' => 'asdf'
-            ))
+            ->with($pairs)
             ->will($this->returnValue($out))
         ;
 
-        $this->assertEquals("# a: [1, 2, 3]\n# b: [2, 3, 4]\n$out", $format->seed($in));
+        $this->assertEquals("# [1, 2, 3, 4, 5]\n$out", $format->seed($in));
+    }
+
+    public function testSeedUnquotesEmptyStrings()
+    {
+        $in = new ExpectedDetails(array(new ExpectedDetail('input')));
+        $pairs = array('input' => '');
+        $yml = "input: ''";
+        $out = "input: ";
+
+        $format = new YmlFormat(
+            $this->getMockBuilder('Symfony\Component\Yaml\Parser')->disableOriginalConstructor()->getMock(),
+            $dumper = $this->getMockBuilder('Symfony\Component\Yaml\Dumper')->disableOriginalConstructor()->getMock(),
+            $depth = 500
+        );
+
+        $dumper
+            ->expects($this->once())
+            ->method('dump', $depth)
+            ->with($pairs)
+            ->will($this->returnValue($yml))
+        ;
+
+        $this->assertEquals($out, $format->seed($in));
     }
 
     public function testParse()
@@ -73,6 +93,6 @@ class YmlFormatTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($out))
         ;
 
-        $this->assertEquals($out, $format->parse($in));
+        $this->assertEquals(new Details($out), $format->parse($in));
     }
 }

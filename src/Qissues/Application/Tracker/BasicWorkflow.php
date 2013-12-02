@@ -6,7 +6,7 @@ use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\Transition;
 use Qissues\Domain\Model\Workflow;
 use Qissues\Domain\Shared\Details;
-use Qissues\Domain\Shared\RequiredDetails;
+use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Domain\Shared\Status;
 
 class BasicWorkflow implements Workflow
@@ -47,6 +47,6 @@ class BasicWorkflow implements Workflow
      */
     public function getRequirements(Transition $transition)
     {
-        return new RequiredDetails();
+        return new ExpectedDetails(array());
     }
 }

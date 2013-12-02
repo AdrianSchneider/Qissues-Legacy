@@ -2,6 +2,8 @@
 
 namespace Qissues\Interfaces\Console\Input\FileFormats;
 
+use Qissues\Domain\Shared\ExpectedDetails;
+
 interface FileFormat
 {
     /**
@@ -9,12 +11,12 @@ interface FileFormat
      * @param array $fields
      * @return string file contents
      */
-    function seed(array $fields);
+    function seed(ExpectedDetails $expectations);
 
     /**
-     * Extract fields from $input
+     * Extract Details from $input
      * @param string $input (user populated seed content)
-     * @return array fields
+     * @return Details
      */
     function parse($input);
 }

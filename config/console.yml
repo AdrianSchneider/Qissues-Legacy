@@ -111,6 +111,7 @@ services:
         class: Qissues\Interfaces\Console\Input\FileFormats\FrontMatterFormat
         arguments:
             - @frontmatter_parser
+            - @yaml_builder
 
     console.input.format.json:
         class: Qissues\Interfaces\Console\Input\FileFormats\JsonFormat

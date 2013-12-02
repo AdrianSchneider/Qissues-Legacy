@@ -47,4 +47,19 @@ class JiraMetadata implements Metadata
 
         throw new \Exception('Label not found; supported labels: ' . implode(', ', $components));
     }
+
+    public function getAllowedTypes()
+    {
+        return array();
+    }
+
+    public function getAllowedLabels()
+    {
+        $labels = array();
+        foreach ($this->project['components'] as $component) {
+            $labels[] = $component['name'];
+        }
+
+        return $labels;
+    }
 }

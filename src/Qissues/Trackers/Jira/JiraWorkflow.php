@@ -2,7 +2,6 @@
 
 namespace Qissues\Trackers\Jira;
 
-use Qissues\Application\Input\Field;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\Workflow;
 use Qissues\Domain\Model\Transition;

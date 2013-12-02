@@ -6,12 +6,15 @@ use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Model\Comment;
 use Qissues\Domain\Model\Request\NewIssue;
 use Qissues\Domain\Model\Message;
+use Qissues\Domain\Model\SearchCriteria;
+use Qissues\Domain\Shared\Details;
+use Qissues\Domain\Shared\ExpectedDetail;
+use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\Label;
 use Qissues\Application\Tracker\FieldMapping;
-use Qissues\Domain\Model\SearchCriteria;
 
 class GitHubMapping implements FieldMapping
 {
@@ -21,23 +24,21 @@ class GitHubMapping implements FieldMapping
     public function getExpectedDetails(Issue $issue = null)
     {
         if ($issue) {
-            return array(
-                'title' => $issue->getTitle(),
-                'assignee' => $issue->getAssignee() ? $issue->getAssignee()->getAccount() : '',
-                'description' => $issue->getDescription(),
-                'labels' => $issue->getLabels()
-                    ? implode(', ', array_map('strval', $issue->getLabels()))
-                    : ''
-            );
+            return new ExpectedDetails(array(
+                new ExpectedDetail('title', $issue->getTitle()),
+                new ExpectedDetail('description', $issue->getDescription()),
+                new ExpectedDetail('assignee', $issue->getAssignee() ? $issue->getAssignee()->getAccount() : ''),
+                new ExpectedDetail('labels', $issue->getLabels() ? implode(', ', array_map('strval', $issue->getLabels())) : '')
+            ));
         }
 
-        return array(
-            'title' => '',
-            'assignee' => 'me',
-            'labels' => '',
-            'milestone' => '',
-            'description' => ''
-        );
+        return new ExpectedDetails(array(
+            new ExpectedDetail('title'),
+            new ExpectedDetail('description'),
+            new ExpectedDetail('assignee', 'me'),
+            new ExpectedDetail('labels'),
+            new ExpectedDetail('milestone')
+        ));
     }
 
     /**

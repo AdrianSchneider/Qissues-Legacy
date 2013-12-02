@@ -2,16 +2,25 @@
 
 namespace Qissues\Tests\Trackers\BitBucket;
 
-use Qissues\Trackers\BitBucket\BitBucketMapping;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Priority;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\Label;
 use Qissues\Domain\Model\SearchCriteria;
+use Qissues\Trackers\BitBucket\BitBucketMapping;
 
 class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
 {
+    public function testGetExpectedDetails()
+    {
+        $mapping = new BitBucketMapping();
+        $details = $mapping->getExpectedDetails();
+        foreach (array('title', 'description', 'assignee', 'type', 'label', 'priority') as $field) {
+            $this->assertTrue(isset($details[$field]));
+        }
+    }
+
     public function testQueryFilterByType()
     {
         $criteria = new SearchCriteria();

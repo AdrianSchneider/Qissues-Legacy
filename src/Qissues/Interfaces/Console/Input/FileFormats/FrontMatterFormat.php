@@ -45,12 +45,39 @@ class FrontMatterFormat implements FileFormat
      */
     protected function buildYml(ExpectedDetails $expectations)
     {
-        $metaFields = $expectations->getDefaults();
-        unset($metaFields[$this->contentField]);
+        $requiredPairs = array();
+        $optionalPairs = array();
 
+        foreach ($expectations as $field) {
+            if ($field->getName() == 'description') {
+                continue;
+            }
+
+            if ($field->isRequired()) {
+                $requiredPairs[$field->getName()] = $field->getDefault();
+            } else {
+                $optionalPairs[$field->getName()] = $field->getDefault();
+            }
+        }
+
+        $out = '';
+        if ($requiredPairs) {
+            $out .= "# Required Fields\n";
+            $out .= $this->buildYmlPortion($requiredPairs, $expectations);
+        }
+        if ($optionalPairs) {
+            $out .= "\n\n# Optional Fields\n";
+            $out .= $this->buildYmlPortion($optionalPairs, $expectations);
+        }
+
+        return $out;
+    }
+
+    protected function buildYmlPortion(array $fields, $expectations)
+    {
         return $this->stripQuotedEmptyStrings(
             $this->addComments(
-                $this->ymlDumper->dump($metaFields, 500),
+                $this->ymlDumper->dump($fields, 500),
                 $expectations
             )
         );

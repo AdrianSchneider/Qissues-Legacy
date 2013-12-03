@@ -31,7 +31,7 @@ class FrontMatterFormat implements FileFormat
     public function seed(ExpectedDetails $expectations)
     {
         return sprintf(
-            "---\n%s\n---%s\n",
+            "---\n%s\n---\n%s",
             $this->buildYml($expectations),
             $this->buildContent($expectations[$this->contentField])
         );
@@ -72,6 +72,12 @@ class FrontMatterFormat implements FileFormat
         return $out;
     }
 
+    /**
+     * Builds a chunk of YL
+     * @param array $fields
+     * @param ExpectedDetails $expectations
+     * @return string yml
+     */
     protected function buildYmlPortion(array $fields, $expectations)
     {
         return $this->stripQuotedEmptyStrings(
@@ -139,7 +145,7 @@ class FrontMatterFormat implements FileFormat
      */
     protected function buildContent(ExpectedDetail $expectation)
     {
-        return "";
+        return $expectation->getDefault();
     }
 
     /**

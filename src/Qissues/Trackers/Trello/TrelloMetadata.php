@@ -28,6 +28,16 @@ class TrelloMetadata implements Metadata
         return false;
     }
 
+    public function getAllowedLists()
+    {
+        $lists = array();
+        foreach ($this->board['lists'] as $list) {
+            $lists[] = $list['name'];
+        }
+
+        return $lists;
+    }
+
     /**
      * Find a list name by its ID
      *

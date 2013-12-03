@@ -34,7 +34,7 @@ class Details
             }
 
             if ($options = $expectation->getOptions()) {
-                if ($this->details[$field] and !in_array($this->details[$field], $options)) {
+                if (!empty($this->details[$field]) and !in_array($this->details[$field], $options)) {
                     $this->violations[] = "$field only accepts one of [" . implode(', ', $options) . "]";
                     return false;
                 }

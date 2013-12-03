@@ -24,6 +24,19 @@ class TrelloMetadataTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($metadata->hasList('New'));
     }
 
+    public function testGetLists()
+    {
+        $metadata = new TrelloMetadata(array('lists' => array(
+            array('id' => 1, 'name' => 'New'),
+            array('id' => 2, 'name' => 'Doing'),
+            array('id' => 3, 'name' => 'Done')
+        )));
+
+        $lists = $metadata->getAllowedLists();
+
+        $this->assertEquals(array('New', 'Doing', 'Done'), $lists);
+    }
+
     public function testGetListNameById()
     {
         $metadata = new TrelloMetadata(array('lists' => array(array('name' => 'New', 'id' => 5))));

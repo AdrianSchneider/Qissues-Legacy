@@ -52,7 +52,7 @@ class TrelloMapping implements FieldMapping
         return new ExpectedDetails(array(
             new ExpectedDetail('title'),
             new ExpectedDetail('description', false),
-            new ExpectedDetail('status', true, $this->metadata->getFirstListName()), // lsit names
+            new ExpectedDetail('status', true, $this->metadata->getFirstListName(), $this->metadata->getAllowedLists()),
             new ExpectedDetail('labels', false),
             new ExpectedDetail('assignee', false),
             new ExpectedDetail('priority', false, 'bottom', array('bottom', 'top'))

@@ -209,14 +209,11 @@ class TrelloRepository implements IssueRepository, BasicTransitioner
         $request->getQuery()->merge(array('lists' => 'open', 'members' => 'all', 'memberships_member' => true, 'memberships_member_fields' => 'all', 'member_fields' => 'all'));
         $response = $request->send()->json();
 
-        $found = false;
-
         foreach ($response as $board) {
             if ($board['name'] != $this->boardName) {
                 continue;
             }
 
-            $found = true;
             $lists = array();
             foreach ($board['lists'] as $list) {
                 $lists[$list['name']] = array(
@@ -254,9 +251,7 @@ class TrelloRepository implements IssueRepository, BasicTransitioner
             );
         }
 
-        if (!$found) {
-            throw new \Exception('Could not find Trello board; do you have the right name?');
-        }
+        throw new \Exception('Could not find Trello board; do you have the right name?');
 
     }
 }

@@ -32,42 +32,43 @@ class Command extends BaseCommand
     }
 
     /**
-     * Retrieves a CommentStrategy ready for use
+     * Get an optional comment from the user
      *
      * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return CommentStrategy
+     * @param OutputInerface $output
+     * @return Message|null
      */
-    protected function getCommentStrategy(InputInterface $input, OutputInterface $output)
+    protected function getOptionalComment(InputInterface $input, OutputInterface $output)
     {
-        $selected = $this->getCommentStrategyType($input);
-        $strategy = sprintf('console.input.comment_strategy.%s', $selected);
-
-        if (!$this->getApplication()->getContainer()->has($strategy)) {
-            throw new \BadMethodCallException("Could not find strategy $strategy");
+        if (!$type = $this->getOptionalCommentStrategyType($input)) {
+            return;
         }
 
-        $strategy = $this->get($strategy);
+        $strategyService = sprintf('console.input.comment_strategy.%s', $type);
+        if (!$this->getApplication()->getContainer()->has($strategyService)) {
+            throw new \BadMethodCallException("Could not find strategy $type");
+        }
+
+        $strategy = $this->get($strategyService);
         $strategy->init($input, $output, $this->getApplication());
 
-        return $strategy;
+        return $strategy->createNew($this->getApplication()->getTracker());
     }
 
     /**
-     * Determine the strategy to use
+     * Get the optional comment strategy
+     * Uses -m value, or explict strategy, otherwise nothing
      * @param InputInterface $input
-     * @return string strategy suffix
+     * @return string|null strategy
      */
-    protected function getCommentStrategyType(InputInterface $input)
+    protected function getOptionalCommentStrategyType(InputInterface $input)
     {
         if ($input->getOption('message') !== null) {
             return 'option';
         }
-        if ($strategy = $input->getOption('strategy')) {
+        if ($strategy = $input->getOption('comment-strategy')) {
             return $strategy;
         }
-
-        return $this->getParameter('console.input.default_strategy');
     }
 
     /**
@@ -83,12 +84,6 @@ class Command extends BaseCommand
             $strategy = $input->getOption('strategy');
         } elseif ($input->getOption('data')) {
             $strategy = 'option';
-    /*
-        possible without blocking?
-
-        } elseif (strlen(trim(file_get_contents('php://stdin'))) {
-            $strategy = 'stdin';
-    */
         } else {
             $strategy = $this->getParameter('console.input.default_strategy');
         }
@@ -103,18 +98,5 @@ class Command extends BaseCommand
         $strategy->init($input, $output, $this->getApplication());
 
         return $strategy;
-    }
-
-    /**
-     * Gets a populated Message from the selected strategy
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return Message|null
-     */
-    protected function getComment(InputInterface $input, OutputInterface $output)
-    {
-        $strategy = $this->getCommentStrategy($input, $output);
-        return $strategy->createNew($this->getApplication()->getTracker());
     }
 }

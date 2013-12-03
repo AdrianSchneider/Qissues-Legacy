@@ -25,6 +25,7 @@ class MoveCommand extends Command
                 new InputOption('status', 's', InputOption::VALUE_OPTIONAL, 'New status'),
                 new InputOption('message', 'm', InputOption::VALUE_OPTIONAL, 'Specify message', null),
                 new InputOption('strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy'),
+                new InputOption('comment-strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy'),
                 new InputOption('data', 'd', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Specify fields manually')
             ))
         ;
@@ -64,7 +65,7 @@ class MoveCommand extends Command
                     $strategy->init($input, $output, $command->getApplication());
                     return $strategy->create($requirements);
                 },
-                $this->getComment($input, $output)
+                $this->getOptionalComment($input, $output)
             ));
 
             $output->writeln("Issue <info>#$number</info> is now $status");

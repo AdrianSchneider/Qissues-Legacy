@@ -23,7 +23,7 @@ class AssignCommand extends Command
                 new InputArgument('issue', InputArgument::OPTIONAL, 'The Issue ID'),
                 new InputArgument('assignee', InputArgument::OPTIONAL, 'The assignee', null),
                 new InputOption('message', 'm', InputOption::VALUE_OPTIONAL, 'Specify message', null),
-                new InputOption('strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy')
+                new InputOption('comment-strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy')
             ))
         ;
     }
@@ -44,16 +44,11 @@ class AssignCommand extends Command
             return 1;
         }
 
-        if (!$strategy = $this->getCommentStrategy($input, $output)) {
-            $output->writeln("<error>Invalid commenting strategy specified</error>");
-            return 1;
-        }
-
         $assignIssue = new AssignIssue($repository);
         $assignIssue(new IssueAssignment(
             $number,
             new User($assignee),
-            $strategy->createNew($tracker)
+            $this->getOptionalComment($input, $output)
         ));
 
         $output->writeln("Issue <info>#$number</info> has been assigned to <info>$assignee</info>");

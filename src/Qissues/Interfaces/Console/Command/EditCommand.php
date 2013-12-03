@@ -3,6 +3,8 @@
 namespace Qissues\Interfaces\Console\Command;
 
 use Qissues\Domain\Model\Number;
+use Qissues\Domain\Model\Request\IssueChanges;
+use Qissues\Domain\Service\EditIssue;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -48,7 +50,9 @@ class EditCommand extends Command
             return 1;
         }
 
-        $repository->update($changes, $number);
+        $editIssue = new EditIssue($repository);
+        $editIssue(new IssueChanges($number, $changes));
+
         $output->writeln("Issue <info>#$number</info> has been updated");
     }
 }

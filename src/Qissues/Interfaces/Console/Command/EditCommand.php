@@ -29,8 +29,11 @@ class EditCommand extends Command
         $tracker = $this->getApplication()->getTracker();
         $repository = $tracker->getRepository();
 
-        $number = new Number($this->get('console.input.git_id')->getId($input));
-        if (!$issue = $repository->lookup($number)) {
+        if (!$num = $this->get('console.input.git_id')->getId($input)) {
+            $output->writeln('<error>No issue specified</error>');
+            return 1;
+        }
+        if (!$issue = $repository->lookup($number = new Number($num))) {
             $output->writeln('<error>Issue not found.</error>');
             return 1;
         }

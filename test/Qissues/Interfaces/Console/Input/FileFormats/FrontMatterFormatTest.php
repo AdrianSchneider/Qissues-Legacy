@@ -28,7 +28,7 @@ class FrontMatterFormatTest extends \PHPUnit_Framework_TestCase
             new ExpectedDetail('b', true, 2)
         ));
 
-        $this->assertEquals("---\n# Required Fields\na: 1\nb: 2\n---\n", $format->seed($expectations));
+        $this->assertEquals("---\na: 1\nb: 2\n---\n", $format->seed($expectations));
     }
 
     public function testSeedWithOptionsComment()
@@ -49,7 +49,7 @@ class FrontMatterFormatTest extends \PHPUnit_Framework_TestCase
             new ExpectedDetail('input', true, 'default', array('a', 'b', 'c'))
         ));
 
-        $this->assertEquals("---\n# Required Fields\ninput: 'default' # [a, b, c]\n---\n", $format->seed($expectations));
+        $this->assertEquals("---\ninput: 'default' # [a, b, c]\n---\n", $format->seed($expectations));
     }
 
     public function testSeedWithMultipleOptionFieldsWorks()
@@ -73,7 +73,7 @@ class FrontMatterFormatTest extends \PHPUnit_Framework_TestCase
 
         $yml = $format->seed($expectations);
 
-        $this->assertEquals("---\n# Required Fields\ninput: 'default' # [a, b, c]\npriority: 3 # [1, 2, 3, 4, 5]\n---\n", $yml);
+        $this->assertEquals("---\ninput: 'default' # [a, b, c]\npriority: 3 # [1, 2, 3, 4, 5]\n---\n", $yml);
     }
 
     public function testSeedStripsQuotingFromEmptyStrings()
@@ -94,7 +94,7 @@ class FrontMatterFormatTest extends \PHPUnit_Framework_TestCase
             new ExpectedDetail('input')
         ));
 
-        $this->assertEquals("---\n# Required Fields\ninput: \n---\n", $format->seed($expectations));
+        $this->assertEquals("---\ninput: \n---\n", $format->seed($expectations));
     }
 
     public function testParsesUsingFrontMatter()

@@ -62,7 +62,6 @@ class FrontMatterFormat implements FileFormat
 
         $out = '';
         if ($requiredPairs) {
-            $out .= "# Required Fields\n";
             $out .= $this->buildYmlPortion($requiredPairs, $expectations);
         }
         if ($optionalPairs) {

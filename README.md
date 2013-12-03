@@ -20,7 +20,7 @@ Currently supported:
 - **Views** - Supports alternate views (large table view, smaller list with metadata, and tiny list). Automatically detects, but can be overridden.
 - **Post/Edit Issues** - Submit and modify issues from comfort of your own terminal.
 - **Workflow Integration** - For systems that support it, workflows (in progress -> resolved, prompting for resolution)
-- **Git Integration** - Easily query active issue based on branch name. "feature-x", would allow `qissues view`, `qissues edit`, without remembering 'x'.
+- **Git Context** - Easily query active issue based on branch name. "feature-x", would allow `qissues view`, `qissues edit`, without remembering 'x'.
 
 ## Installation
 
@@ -49,14 +49,14 @@ After configuring a project,
 
 Will output something similar to:
 
-    +-----------------------------------------------------------------------------------
+    +----+---------------------------------------------+----------+--------------------+
     | Id | Title                                       | Status   | Date updated       |
-    +-----------------------------------------------------------------------------------
+    +----+---------------------------------------------+----------+--------------------+
     | 1  | Dividing by zero upgrades PHP               | new      | 2013-11-03 7:01pm  |
     | 2  | Qissues doesn't work in Python              | new      | 2013-11-03 7:00pm  |
     | 3  | Insert coin here does not accept bitcoin    | new      | 2013-11-03 6:57pm  |
     | 4  | Working with JIRA is frustrating            | resolved | 2013-04-16 2:36am  |
-    +-----------------------------------------------------------------------------------
+    +----+---------------------------------------------+----------+--------------------+
 
 Save common queries to `.qissues` as reports.
 

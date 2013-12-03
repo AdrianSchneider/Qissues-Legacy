@@ -17,7 +17,7 @@ class JsonFormatTest extends \PHPUnit_Framework_TestCase
         $format = new JsonFormat();
         $formatted = $format->seed($expectations);
 
-        $this->assertEquals(json_encode($rawPayload), $formatted);
+        $this->assertEquals(json_decode(json_encode($rawPayload)), json_decode($formatted));
     }
 
     public function testParseJustDecodes()

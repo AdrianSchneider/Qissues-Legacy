@@ -76,6 +76,9 @@ class EditStrategy implements IssueStrategy
         $template = $this->fileFormat->seed($expectations);
 
         do {
+            if (!empty($e)) {
+                $this->outputViolations(array($e->getMessage()));
+            }
             if (!empty($details)) {
                 $this->outputViolations($details->getViolations());
             }
@@ -84,11 +87,14 @@ class EditStrategy implements IssueStrategy
                 return;
             }
 
-            $details = $this->fileFormat->parse($content);
+            try {
+                $e = null;
+                $details = $this->fileFormat->parse($content);
+            } catch (\InvalidArgumentException $e) { }
+
             $template = $content;
 
-
-        } while (!$details->satisfy($expectations));
+        } while ($e or !$details->satisfy($expectations));
 
         return $mapping->toNewIssue($details->getDetails());
     }

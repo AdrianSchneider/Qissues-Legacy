@@ -109,4 +109,41 @@ class JiraWorkflowTest extends \PHPUnit_Framework_TestCase
             }
         );
     }
+
+    public function testBuildsRequirementsWithOptions()
+    {
+        $test = $this;
+
+        $repository = $this->getMockBuilder('Qissues\Trackers\Jira\JiraRepository')->disableOriginalConstructor()->getMock();
+        $repository
+            ->expects($this->once())
+            ->method('lookupTransitions')
+            ->with($this->isInstanceOf('Qissues\Domain\Model\Number'))
+            ->will($this->returnValue(array(
+                array(
+                    'to' => array('name' => 'closed'),
+                    'fields' => array(
+                        'resolution' => array(
+                            'required' => true,
+                            'allowedValues' => array(
+                                array('name' => 'Fixed'),
+                                array('name' => 'Dupe')
+                            )
+                        ),
+                        'stupidfield' => array('required' => false)
+                    )
+                )
+            )))
+        ;
+
+        $workflow = new JiraWorkflow($repository);
+        $transition = $workflow->buildTransition(
+            new Number(1),
+            new Status('closed'),
+            function(ExpectedDetails $required) use ($test) {
+                $test->assertEquals(array('Fixed', 'Dupe'), $required['resolution']->getOptions());
+                return new Details();
+            }
+        );
+    }
 }

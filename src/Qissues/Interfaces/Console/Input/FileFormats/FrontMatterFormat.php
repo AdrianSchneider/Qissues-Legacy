@@ -64,30 +64,45 @@ class FrontMatterFormat implements FileFormat
      */
     protected function addComments($yml, ExpectedDetails $expectations)
     {
-        $yml = "\n$yml";
+        $yml = "\n$yml\n";
+
         foreach ($expectations as $field => $expectation) {
             if ($options = $expectation->getOptions()) {
-                $yml = str_replace(
-                    "\n$field: ",
-                    "\n# [" . implode(', ', $options) . "]\n$field: ",
-                    $yml
-                );
+                $matches = null;
+                if (preg_match("/\n$field\:(.*)$/im", $yml, $matches, \PREG_OFFSET_CAPTURE)) {
+                    $before = substr($yml, 0, $matches[0][1] + strlen($matches[0][0]));
+                    $after = substr($yml, $matches[1][1] + strlen($matches[1][0]));
+
+                    $comment = ' # [' . implode(', ', $options) . ']';
+                    $yml = trim($before, "\n") . $comment . $after;
+                }
             }
         }
 
-        return trim($yml);
+        return trim($yml, "\n");
     }
 
     /**
      * Removes quotes around empty strings
-     * emptyField: ""\n turns to emptyField: \n
      *
      * @param string $yml
      * @return string
      */
     protected function stripQuotedEmptyStrings($yml)
     {
-        return trim(str_replace("''\n", "\n", "$yml\n"), "\n");
+        $replacements = array(
+            "''\n" => "\n",
+            "'' #" => ' #'
+        );
+
+        return trim(
+            str_replace(
+                array_keys($replacements),
+                array_values($replacements),
+                "\n$yml\n"
+            ),
+            "\n"
+        );
     }
 
     /**

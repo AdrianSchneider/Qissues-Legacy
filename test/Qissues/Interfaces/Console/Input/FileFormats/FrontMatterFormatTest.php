@@ -49,7 +49,31 @@ class FrontMatterFormatTest extends \PHPUnit_Framework_TestCase
             new ExpectedDetail('input', 'default', array('a', 'b', 'c'))
         ));
 
-        $this->assertEquals("---\n# [a, b, c]\ninput: 'default'\n---\n", $format->seed($expectations));
+        $this->assertEquals("---\ninput: 'default' # [a, b, c]\n---\n", $format->seed($expectations));
+    }
+
+    public function testSeedWithMultipleOptionFieldsWorks()
+    {
+        $parser = $this->getMockBuilder('Qissues\Application\Input\FrontMatterParser')->disableOriginalConstructor()->getMock();
+        $dumper = $this->getMockBuilder('Symfony\Component\Yaml\Dumper')->disableOriginalConstructor()->getMock();
+        $dumper
+            ->expects($this->once())
+            ->method('dump')
+            ->with(array('input' => 'default', 'priority' => 3))
+            ->will($this->returnValue("input: 'default'\npriority: 3"))
+        ;
+
+        $format = new FrontMatterFormat($parser, $dumper);
+
+        $expectations = new ExpectedDetails(array(
+            new ExpectedDetail('description'),
+            new ExpectedDetail('input', 'default', array('a', 'b', 'c')),
+            new ExpectedDetail('priority', 3, range(1, 5))
+        ));
+
+        $yml = $format->seed($expectations);
+
+        $this->assertEquals("---\ninput: 'default' # [a, b, c]\npriority: 3 # [1, 2, 3, 4, 5]\n---\n", $yml);
     }
 
     public function testSeedStripsQuotingFromEmptyStrings()

@@ -142,6 +142,22 @@ class TrelloMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('top', $issue->getPriority()->getName());
     }
 
+    public function testToComment()
+    {
+        $mapping = $this->getMapper(array());
+        $comment = $mapping->toComment(array(
+            'data' => array( 'text' => 'Hello World'),
+            'memberCreator' => array(
+                'username' => 'adr',
+                'fullName' => 'Adrian'
+            ),
+            'date' => '2013-01-01'
+        ));
+
+        $this->assertEquals('Hello World', $comment->getMessage());
+        $this->assertEquals('adr', $comment->getAuthor()->getAccount());
+    }
+
     public function testQueryByKeywords()
     {
         $criteria = new SearchCriteria();

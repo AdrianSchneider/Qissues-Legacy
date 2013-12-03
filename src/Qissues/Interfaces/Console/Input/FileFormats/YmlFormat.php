@@ -31,14 +31,48 @@ class YmlFormat implements FileFormat
      */
     public function seed(ExpectedDetails $expectations)
     {
+        $requiredPairs = array();
+        $optionalPairs = array();
+
+        foreach ($expectations as $field) {
+            if ($field->getName() == 'description') {
+                continue;
+            }
+
+            if ($field->isRequired()) {
+                $requiredPairs[$field->getName()] = $field->getDefault();
+            } else {
+                $optionalPairs[$field->getName()] = $field->getDefault();
+            }
+        }
+
+        $out = '';
+        if ($requiredPairs) {
+            $out .= $this->buildYmlPortion($requiredPairs, $expectations);
+        }
+        if ($optionalPairs) {
+            $out .= "\n\n# Optional Fields\n";
+            $out .= $this->buildYmlPortion($optionalPairs, $expectations);
+        }
+
+        return $out;
+    }
+
+    /**
+     * Build the YML from fields
+     * @param array $fields
+     * @param ExpectedDetails $expectations
+     * @return string yml
+     */
+    protected function buildYmlPortion(array $fields, $expectations)
+    {
         return $this->stripQuotedEmptyStrings(
             $this->addComments(
-                $this->dumper->dump($expectations->getDefaults(), $this->depth),
+                $this->dumper->dump($fields, 500),
                 $expectations
             )
         );
     }
-
     /**
      * Add comments above each field if there are options
      *
@@ -47,18 +81,22 @@ class YmlFormat implements FileFormat
      */
     protected function addComments($yml, ExpectedDetails $expectations)
     {
-        $yml = "\n$yml";
+        $yml = "\n$yml\n";
+
         foreach ($expectations as $field => $expectation) {
             if ($options = $expectation->getOptions()) {
-                $yml = str_replace(
-                    "\n$field: ",
-                    "\n# [" . implode(', ', $options) . "]\n$field: ",
-                    $yml
-                );
+                $matches = null;
+                if (preg_match("/\n$field\:(.*)$/im", $yml, $matches, \PREG_OFFSET_CAPTURE)) {
+                    $before = substr($yml, 0, $matches[0][1] + strlen($matches[0][0]));
+                    $after = substr($yml, $matches[1][1] + strlen($matches[1][0]));
+
+                    $comment = ' # [' . implode(', ', $options) . ']';
+                    $yml = trim($before, "\n") . $comment . $after;
+                }
             }
         }
 
-        return trim($yml);
+        return trim($yml, "\n");
     }
 
     /**

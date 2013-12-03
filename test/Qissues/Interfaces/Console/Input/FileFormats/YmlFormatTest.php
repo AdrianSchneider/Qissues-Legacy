@@ -50,7 +50,7 @@ class YmlFormatTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($out))
         ;
 
-        $this->assertEquals("# [1, 2, 3, 4, 5]\n$out", $format->seed($in));
+        $this->assertEquals("priority: 3 # [1, 2, 3, 4, 5]", $format->seed($in));
     }
 
     public function testSeedUnquotesEmptyStrings()

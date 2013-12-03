@@ -16,7 +16,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         $parsed = new Details(array('user' => 'input'));
 
         $expectations = new ExpectedDetails(array(
-            new ExpectedDetail('resolution', 'fixed'),
+            new ExpectedDetail('resolution', true, 'fixed'),
             new ExpectedDetail('comment')
         ));
 
@@ -68,7 +68,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         $template = 'enter input here';
         $content = '';
         $expectations = new ExpectedDetails(array(
-            new ExpectedDetail('resolution', 'fixed'),
+            new ExpectedDetail('resolution', true, 'fixed'),
             new ExpectedDetail('comment')
         ));
 

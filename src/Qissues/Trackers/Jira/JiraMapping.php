@@ -47,34 +47,22 @@ class JiraMapping implements FieldMapping
             }
 
             return new ExpectedDetails(array(
-                new ExpectedDetail('title', $issue->getTitle()),
-                new ExpectedDetail('assignee', $assignee, $this->metadata->getAllowedAssignees($issue)),
-                new ExpectedDetail('type', strval($issue->getType()), $this->metadata->getAllowedTypes()),
-                new ExpectedDetail('priority', 3, range(1, 5)),
-                new ExpectedDetail('labels', '', $this->metadata->getAllowedLabels()),
-                new ExpectedDetail('description')
+                new ExpectedDetail('title', true, $issue->getTitle()),
+                new ExpectedDetail('description'),
+                new ExpectedDetail('type', true, strval($issue->getType()), $this->metadata->getAllowedTypes()),
+                new ExpectedDetail('assignee', false, $assignee, $this->metadata->getAllowedAssignees($issue)),
+                new ExpectedDetail('priority', false, 3, range(1, 5)),
+                new ExpectedDetail('labels', false, '', $this->metadata->getAllowedLabels()),
             ));
-
-
-            return array(
-                'title' => $issue->getTitle(),
-                'assignee' => $issue->getAssignee() ? $issue->getAssignee()->getAccount() : '',
-                'description' => $issue->getDescription(),
-                'type' => $issue->getType() ? strval($issue->getType()) : '',
-                'priority' => $issue->getPriority()->getPriority(),
-                'labels' => $issue->getLabels()
-                    ? implode(', ', array_map('strval', $issue->getLabels()))
-                    : ''
-            );
         }
 
         return new ExpectedDetails(array(
             new ExpectedDetail('title'),
             new ExpectedDetail('description'),
-            new ExpectedDetail('assignee'),
-            new ExpectedDetail('type', '', $this->metadata->getAllowedTypes()),
-            new ExpectedDetail('priority', 3, range(1, 5)),
-            new ExpectedDetail('labels', '', $this->metadata->getAllowedLabels()),
+            new ExpectedDetail('assignee', false),
+            new ExpectedDetail('type', true, '', $this->metadata->getAllowedTypes()),
+            new ExpectedDetail('priority', false, 3, range(1, 5)),
+            new ExpectedDetail('labels', false, '', $this->metadata->getAllowedLabels()),
         ));
     }
 

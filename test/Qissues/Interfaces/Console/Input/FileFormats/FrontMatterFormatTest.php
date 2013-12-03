@@ -24,8 +24,8 @@ class FrontMatterFormatTest extends \PHPUnit_Framework_TestCase
 
         $expectations = new ExpectedDetails(array(
             new ExpectedDetail('description'),
-            new ExpectedDetail('a', 1),
-            new ExpectedDetail('b', 2)
+            new ExpectedDetail('a', true, 1),
+            new ExpectedDetail('b', true, 2)
         ));
 
         $this->assertEquals("---\na: 1\nb: 2\n---\n", $format->seed($expectations));
@@ -46,7 +46,7 @@ class FrontMatterFormatTest extends \PHPUnit_Framework_TestCase
 
         $expectations = new ExpectedDetails(array(
             new ExpectedDetail('description'),
-            new ExpectedDetail('input', 'default', array('a', 'b', 'c'))
+            new ExpectedDetail('input', true, 'default', array('a', 'b', 'c'))
         ));
 
         $this->assertEquals("---\ninput: 'default' # [a, b, c]\n---\n", $format->seed($expectations));
@@ -67,8 +67,8 @@ class FrontMatterFormatTest extends \PHPUnit_Framework_TestCase
 
         $expectations = new ExpectedDetails(array(
             new ExpectedDetail('description'),
-            new ExpectedDetail('input', 'default', array('a', 'b', 'c')),
-            new ExpectedDetail('priority', 3, range(1, 5))
+            new ExpectedDetail('input', true, 'default', array('a', 'b', 'c')),
+            new ExpectedDetail('priority', true, 3, range(1, 5))
         ));
 
         $yml = $format->seed($expectations);

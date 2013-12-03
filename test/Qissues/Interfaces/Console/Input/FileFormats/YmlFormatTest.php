@@ -11,7 +11,7 @@ class YmlFormatTest extends \PHPUnit_Framework_TestCase
 {
     public function testSeedBasicFields()
     {
-        $in = new ExpectedDetails(array(new ExpectedDetail('input', 'default')));
+        $in = new ExpectedDetails(array(new ExpectedDetail('input', true, 'default')));
         $pairs = array('input' => 'default');
         $out = "input: default";
 
@@ -33,7 +33,7 @@ class YmlFormatTest extends \PHPUnit_Framework_TestCase
 
     public function testSeedIncludesOptionsAsComments()
     {
-        $in = new ExpectedDetails(array(new ExpectedDetail('priority', 3, array(1, 2, 3, 4, 5))));
+        $in = new ExpectedDetails(array(new ExpectedDetail('priority', true, 3, array(1, 2, 3, 4, 5))));
         $pairs = array('priority' => 3);
         $out = "priority: 3";
 

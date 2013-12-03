@@ -28,13 +28,13 @@ class Details
         $this->violations = array();
 
         foreach ($expectations as $field => $expectation) {
-            if (!isset($this->details[$field])) {
+            if ($expectation->isRequired() and !isset($this->details[$field])) {
                 $this->violations[] = "Required field '$field' was missing";
                 return false;
             }
 
             if ($options = $expectation->getOptions()) {
-                if (!in_array($this->details[$field], $options)) {
+                if ($this->details[$field] and !in_array($this->details[$field], $options)) {
                     $this->violations[] = "$field only accepts one of [" . implode(', ', $options) . "]";
                     return false;
                 }

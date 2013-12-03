@@ -32,7 +32,7 @@ class DetailsTest extends \PHPUnit_Framework_TestCase
     public function testNotSatisfiedWhenFieldNotAllowed()
     {
         $expectations = new ExpectedDetails(array(
-            new ExpectedDetail('color', '', array('red', 'blue'))
+            new ExpectedDetail('color', true, '', array('red', 'blue'))
         ));
 
         $details = new Details(array('color' => 'green'));

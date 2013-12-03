@@ -14,7 +14,7 @@ class ExpectedDetailsTest extends \PHPUnit_Framework_TestCase
 
     public function testGetDefaults()
     {
-        $details = new ExpectedDetails( array($detail = new ExpectedDetail('name', 'adrian')));
+        $details = new ExpectedDetails( array($detail = new ExpectedDetail('name', true, 'adrian')));
         $this->assertEquals(array('name' => 'adrian'), $details->getDefaults());
     }
 

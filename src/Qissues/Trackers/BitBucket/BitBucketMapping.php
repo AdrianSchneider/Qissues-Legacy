@@ -41,22 +41,22 @@ class BitBucketMapping implements FieldMapping
     {
         if ($issue) {
             return new ExpectedDetails(array(
-                new ExpectedDetail('title', $issue->getTitle()),
-                new ExpectedDetail('description', $issue->getDescription()),
-                new ExpectedDetail('assignee', $issue->getAssignee() ? $issue->getAssignee()->getAccount() : ''),
-                new ExpectedDetail('type', $issue->getType() ? strval($issue->getType()) : ''),
-                new ExpectedDetail('label', $issue->getLabels() ? implode(', ', array_map('strval', $issue->getLabels())) : ''),
-                new ExpectedDetail('priority', $issue->getPriority()->getPriority())
+                new ExpectedDetail('title', true, $issue->getTitle()),
+                new ExpectedDetail('description', true, $issue->getDescription()),
+                new ExpectedDetail('assignee', false, $issue->getAssignee() ? $issue->getAssignee()->getAccount() : ''),
+                new ExpectedDetail('type', false, $issue->getType() ? strval($issue->getType()) : ''),
+                new ExpectedDetail('label', false, $issue->getLabels() ? implode(', ', array_map('strval', $issue->getLabels())) : ''),
+                new ExpectedDetail('priority', false, $issue->getPriority()->getPriority())
             ));
         }
 
         return new ExpectedDetails(array(
             new ExpectedDetail('title'),
             new ExpectedDetail('description'),
-            new ExpectedDetail('assignee', 'me'),
-            new ExpectedDetail('type'),
-            new ExpectedDetail('label'),
-            new ExpectedDetail('priority')
+            new ExpectedDetail('assignee', false, 'me'),
+            new ExpectedDetail('type', false),
+            new ExpectedDetail('label', false),
+            new ExpectedDetail('priority', false)
         ));
     }
 

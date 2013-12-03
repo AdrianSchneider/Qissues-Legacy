@@ -88,7 +88,7 @@ class JiraWorkflow implements Workflow
                 }
             }
 
-            $expectations[] = new ExpectedDetail($fieldName, '', $options); 
+            $expectations[] = new ExpectedDetail($fieldName, true, '', $options); 
         }
 
         return new ExpectedDetails($expectations);

@@ -18,7 +18,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         $content = 'user input';
         $parsed = new Details($parsedRaw = array('user' => 'input'));
         $expectations = new ExpectedDetails(array(
-            new ExpectedDetail('user', 'input')
+            new ExpectedDetail('user', true, 'input')
         ));
 
         $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
@@ -81,7 +81,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         $content = array('incorrect input', 'correct input');
         $parsedRaw = array(array('bad' => 'value'), array('user' => 'input'));
         $details = array(new Details($parsedRaw[0]), new Details($parsedRaw[1]));
-        $expectations = new ExpectedDetails(array( new ExpectedDetail('user', 'input')));
+        $expectations = new ExpectedDetails(array( new ExpectedDetail('user', true, 'input')));
 
 
         $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
@@ -168,7 +168,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         $content = '';
         $parsed = new Details($parsedRaw = array('user' => 'input'));
         $expectations = new ExpectedDetails(array(
-            new ExpectedDetail('user', 'input')
+            new ExpectedDetail('user', true, 'input')
         ));
 
         $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();
@@ -214,7 +214,7 @@ class EditStrategyTest extends \PHPUnit_Framework_TestCase
         $content = 'user input';
         $parsed = new Details($parsedRaw = array('user' => 'input'));
         $expectations = new ExpectedDetails(array(
-            new ExpectedDetail('user', 'input')
+            new ExpectedDetail('user', true, 'input')
         ));
 
         $fileFormat = $this->getMockBuilder('Qissues\Interfaces\Console\Input\FileFormats\FileFormat')->disableOriginalConstructor()->getMock();

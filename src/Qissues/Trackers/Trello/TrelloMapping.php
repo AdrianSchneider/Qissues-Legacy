@@ -40,22 +40,22 @@ class TrelloMapping implements FieldMapping
             }
 
             return new ExpectedDetails(array(
-                new ExpectedDetail('title', $issue->getTitle()),
-                new ExpectedDetail('description', $description),
-                new ExpectedDetail('status', $issue->getStatus()->getStatus()),
-                new ExpectedDetail('labels', $issue->getLabels() ? implode(', ', array_map('strval', $issue->getLabels())) : ''),
-                new ExpectedDetail('assignee', $issue->getAssignee() ? $issue->getAssignee()->getAccount : null),
-                new ExpectedDetail('priority', 'bottom', array('bottom', 'top'))
+                new ExpectedDetail('title', true, $issue->getTitle()),
+                new ExpectedDetail('description', false, $description),
+                new ExpectedDetail('status', true, $issue->getStatus()->getStatus()),
+                new ExpectedDetail('labels', false, $issue->getLabels() ? implode(', ', array_map('strval', $issue->getLabels())) : ''),
+                new ExpectedDetail('assignee', false, $issue->getAssignee() ? $issue->getAssignee()->getAccount : null),
+                new ExpectedDetail('priority', false, 'bottom', array('bottom', 'top'))
             ));
         }
 
         return new ExpectedDetails(array(
             new ExpectedDetail('title'),
-            new ExpectedDetail('description'),
-            new ExpectedDetail('status', $this->metadata->getFirstListName()), // lsit names
-            new ExpectedDetail('labels'),
-            new ExpectedDetail('assignee'),
-            new ExpectedDetail('priority', 'bottom', array('bottom', 'top'))
+            new ExpectedDetail('description', false),
+            new ExpectedDetail('status', true, $this->metadata->getFirstListName()), // lsit names
+            new ExpectedDetail('labels', false),
+            new ExpectedDetail('assignee', false),
+            new ExpectedDetail('priority', false, 'bottom', array('bottom', 'top'))
         ));
     }
 

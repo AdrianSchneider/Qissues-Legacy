@@ -12,7 +12,7 @@ class JsonFormatTest extends \PHPUnit_Framework_TestCase
     public function testSeedJustEncodes()
     {
         $rawPayload = array('field' => 'value');
-        $expectations = new ExpectedDetails(array(new ExpectedDetail('field', 'value')));
+        $expectations = new ExpectedDetails(array(new ExpectedDetail('field', true, 'value')));
 
         $format = new JsonFormat();
         $formatted = $format->seed($expectations);

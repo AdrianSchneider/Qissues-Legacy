@@ -5,6 +5,7 @@ namespace Qissues\Trackers\Trello;
 use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Label;
+use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Priority;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Trackers\Trello\TrelloMapping;
@@ -225,6 +226,35 @@ class TrelloMappingTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(1, $filtered);
         $this->assertSame($issues[0], $filtered[0]);
+    }
+
+    public function testFilterByAssignee()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addAssignee(new User('adr'));
+
+        $getIssue = function($assignee) {
+            return new Issue(1, 't', 'd', new Status('open'), new \DateTime, new \DateTime, $assignee);
+        };
+
+        $issues = array(
+            // match account
+            $getIssue(new User('adrian')),
+            $getIssue(new User('adrian')),
+            // match name
+            $getIssue(new User('a', 1, 'adrian s')),
+            // no match
+            $getIssue(new User('joe')),
+            $getIssue(null)
+        );
+
+        $mapper = $this->getMapper(array());
+        $filtered = $mapper->filterIssues($issues, $criteria);
+
+        $this->assertCount(3, $filtered);
+        $this->assertSame($issues[0], $filtered[0]);
+        $this->assertSame($issues[1], $filtered[1]);
+        $this->assertSame($issues[2], $filtered[2]);
     }
 
     public function testFilterSortByCreated()

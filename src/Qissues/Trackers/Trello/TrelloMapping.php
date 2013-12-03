@@ -259,11 +259,17 @@ class TrelloMapping implements FieldMapping
                 if (!$issue->getAssignee()) {
                     continue;
                 }
+                $matches = false;
                 foreach ($assignees as $assignee) {
-                    if (stripos($issue->getAssignee()->getAccount(), $assignee->getAccount()) === false and
-                        stripos($issue->getAssignee()->getName(), $assignee->getAccount()) === false) {
-                        continue;
+                    if (stripos($issue->getAssignee()->getAccount(), $assignee->getAccount()) !== false) {
+                        $matches = true;
                     }
+                    if ($issue->getAssignee()->getName() and stripos($issue->getAssignee()->getName(), $assignee->getAccount()) !== false) {
+                        $matches = true;
+                    }
+                }
+                if (!$matches) {
+                    continue;
                 }
             }
 

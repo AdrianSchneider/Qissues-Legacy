@@ -162,7 +162,7 @@ class JiraRepository implements IssueRepository
     {
         $payload = array(
             'transition' => array('id' => $transitionId),
-            'fields' => $fields
+            'fields' => $fields->getDetails()
         );
 
         if (!empty($payload['fields']['resolution'])) {

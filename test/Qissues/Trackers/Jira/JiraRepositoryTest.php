@@ -3,13 +3,14 @@
 namespace Qissues\Trackers\Jira;
 
 use Qissues\Domain\Model\Number;
+use Qissues\Domain\Model\Message;
+use Qissues\Domain\Model\SearchCriteria;
+use Qissues\Domain\Shared\Details;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Label;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Priority;
-use Qissues\Domain\Model\Message;
-use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Trackers\Jira\JiraRepository;
 use Guzzle\Http\Client;
 use Guzzle\Http\Message\Response;
@@ -161,7 +162,7 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->mock->addResponse(new Response(200));
 
         $repository = $this->getRepository();
-        $repository->changeStatus(new Number(5), new Status('open'), 5, array('a' => 'b'));
+        $repository->changeStatus(new Number(5), new Status('open'), 5, new Details(array('a' => 'b')));
 
         $this->assertRequestMethod('POST');
         $this->assertRequestUrl("/rest/api/2/issue/PRE-5/transitions");

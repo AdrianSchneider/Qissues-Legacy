@@ -76,7 +76,7 @@ class MoveCommand extends Command
         }
     }
 
-    protected function getStrategy(InputInterface $input)
+    public function getStrategy(InputInterface $input)
     {
         return $this->get(sprintf(
             'console.input.details_strategy.%s',

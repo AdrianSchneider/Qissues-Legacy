@@ -44,6 +44,10 @@ class Details
         return true;
     }
 
+    /**
+     * Get the violations from the last satisfy call
+     * @return array
+     */
     public function getViolations()
     {
         return $this->violations;

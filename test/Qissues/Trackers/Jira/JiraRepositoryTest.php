@@ -170,6 +170,56 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertRequestKeyEquals('fields', array('a' => 'b'));
     }
 
+    public function testChangeStatusFixesResolution()
+    {
+        $this->mock->addResponse(new Response(200));
+
+        $repository = $this->getRepository();
+        $repository->changeStatus(new Number(5), new Status('open'), 5, new Details(array('resolution' => 'Fixed')));
+
+        $this->assertRequestMethod('POST');
+        $this->assertRequestUrl("/rest/api/2/issue/PRE-5/transitions");
+        $this->assertRequestKeyEquals('fields', array('resolution' => array('name' => 'Fixed')));
+    }
+
+    public function testChangeStatusKillsEmptyFieldsPayload()
+    {
+        $this->mock->addResponse(new Response(200));
+
+        $repository = $this->getRepository();
+        $repository->changeStatus(new Number(5), new Status('open'), 5, new Details(array()));
+
+        $this->assertRequestMethod('POST');
+        $this->assertRequestUrl("/rest/api/2/issue/PRE-5/transitions");
+
+        $body = json_decode((string)$this->history->getLastRequest()->getBody(), true);
+        $this->assertFalse(isset($body['fields']));
+    }
+
+    public function testLookupTransitions()
+    {
+        $payload = array('transitions' => 'some data');
+        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
+
+        $repository = $this->getRepository();
+        $transition = $repository->lookupTransitions(new Number(5));
+
+        $this->assertRequestMethod('GET');
+        $this->assertRequestUrl("/rest/api/2/issue/PRE-5/transitions");
+    }
+
+    public function testLookupTransitionsCachesRequests()
+    {
+        $number = new Number(5);
+        $payload = array('transitions' => 'some data');
+        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
+        $this->mock->addResponse(new Response(400));
+
+        $repository = $this->getRepository();
+        $transition = $repository->lookupTransitions($number);
+        $transition = $repository->lookupTransitions($number);
+    }
+
     public function testUpdate()
     {
         $issue = $this->getMockBuilder('Qissues\Domain\Model\Request\NewIssue')->disableOriginalConstructor()->getMock();

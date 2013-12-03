@@ -50,7 +50,12 @@ class JiraMetadata implements Metadata
 
     public function getAllowedTypes()
     {
-        return array();
+        $types = array();
+        foreach ($this->project['types'] as $type) {
+            $types[] = $type['name'];
+        }
+
+        return $types;
     }
 
     public function getAllowedLabels()

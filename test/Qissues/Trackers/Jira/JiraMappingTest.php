@@ -4,6 +4,7 @@ namespace Qissues\Trackers\Jira;
 
 use Qissues\Trackers\Jira\JiraMapping;
 use Qissues\Trackers\Jira\JiraMetadata;
+use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Model\Request\NewIssue;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Status;
@@ -16,7 +17,7 @@ class JiraMappingTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetsCorrectExpectedDetails()
     {
-        $mapping = $this->getMapping(array( 'components' => array()));
+        $mapping = $this->getMapping(array( 'components' => array(), 'types' => array()));
         $details = $mapping->getExpectedDetails();
 
         $this->assertInstanceOf('Qissues\Domain\Shared\ExpectedDetails', $details);
@@ -51,6 +52,9 @@ class JiraMappingTest extends \PHPUnit_Framework_TestCase
                 array('id' => 1, 'name' => 'a'),
                 array('id' => 2, 'name' => 'b'),
                 array('id' => 3, 'name' => 'c'),
+            ),
+            'types' => array(
+                array('id' => 1, 'name' => 'Bug')
             )
         ));
 
@@ -58,6 +62,27 @@ class JiraMappingTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(range(1, 5), $details['priority']->getOptions());
         $this->assertEquals(array('a', 'b', 'c'), $details['labels']->getOptions());
+        $this->assertEquals(array('Bug'), $details['type']->getOptions());
+    }
+
+    public function testExpectsWhenEditing()
+    {
+        $issue = new Issue(1, 't', 'd', new Status('open'), new \DateTime, new \DateTime, new User('adrian'));
+
+        $mapping = $this->getMapping(array(
+            'components' => array(
+                array('id' => 1, 'name' => 'a'),
+                array('id' => 2, 'name' => 'b'),
+                array('id' => 3, 'name' => 'c'),
+            ),
+            'types' => array(
+                array('id' => 1, 'name' => 'Bug')
+            )
+        ));
+
+        $details = $mapping->getExpectedDetails($issue);
+
+        $this->assertEquals('t', $details['title']->getDefault());
     }
 
     public function testToIssueCreatesIssue()

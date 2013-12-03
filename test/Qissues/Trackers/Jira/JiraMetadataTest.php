@@ -45,4 +45,24 @@ class JiraMetadataTest extends \PHPUnit_Framework_TestCase
         $metadata = new JiraMetadata(array('components' => array()));
         $metadata->getMatchingStatusName('jira');
     }
+
+    public function testGetAllowedTypes()
+    {
+        $metadata = new JiraMetadata(array('types' => array(
+            array('id' => 1, 'name' => 'Bug'),
+            array('id' => 2, 'name' => 'Feature')
+        )));
+
+        $this->assertEquals(array('Bug', 'Feature'), $metadata->getAllowedTypes());
+    }
+
+    public function testGetAllowedLabels()
+    {
+        $metadata = new JiraMetadata(array('components' => array(
+            array('id' => 1, 'name' => 'UX'),
+            array('id' => 2, 'name' => 'Infrastructure')
+        )));
+
+        $this->assertEquals(array('UX', 'Infrastructure'), $metadata->getAllowedLabels());
+    }
 }

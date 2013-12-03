@@ -38,21 +38,13 @@ class JiraMapping implements FieldMapping
     public function getExpectedDetails(Issue $issue = null)
     {
         if ($issue) {
-            $priority = $labels;
-
-            if ($user = $issue->getAssignee()) {
-                $assignee = $user->getAccount();
-            } else {
-                $assignee = '';
-            }
-
             return new ExpectedDetails(array(
                 new ExpectedDetail('title', true, $issue->getTitle()),
                 new ExpectedDetail('description'),
                 new ExpectedDetail('type', true, strval($issue->getType()), $this->metadata->getAllowedTypes()),
-                new ExpectedDetail('assignee', false, $assignee, $this->metadata->getAllowedAssignees($issue)),
+                new ExpectedDetail('assignee', false, $issue->getAssignee() ? $issue->getAssignee()->getAccount() : ''),
                 new ExpectedDetail('priority', false, 3, range(1, 5)),
-                new ExpectedDetail('labels', false, '', $this->metadata->getAllowedLabels()),
+                new ExpectedDetail('labels', false, $issue->getLabels() ? array_map('strval', $issue->getLabels()) : '', $this->metadata->getAllowedLabels()),
             ));
         }
 

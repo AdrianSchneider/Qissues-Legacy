@@ -40,7 +40,7 @@ class JiraMapping implements FieldMapping
         if ($issue) {
             return new ExpectedDetails(array(
                 new ExpectedDetail('title', true, $issue->getTitle()),
-                new ExpectedDetail('description'),
+                new ExpectedDetail('description', false),
                 new ExpectedDetail('type', true, strval($issue->getType()), $this->metadata->getAllowedTypes()),
                 new ExpectedDetail('assignee', false, $issue->getAssignee() ? $issue->getAssignee()->getAccount() : ''),
                 new ExpectedDetail('priority', false, 3, range(1, 5)),
@@ -50,7 +50,7 @@ class JiraMapping implements FieldMapping
 
         return new ExpectedDetails(array(
             new ExpectedDetail('title'),
-            new ExpectedDetail('description'),
+            new ExpectedDetail('description', false),
             new ExpectedDetail('assignee', false),
             new ExpectedDetail('type', true, '', $this->metadata->getAllowedTypes()),
             new ExpectedDetail('priority', false, 3, range(1, 5)),

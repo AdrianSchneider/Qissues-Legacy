@@ -25,19 +25,19 @@ class GitHubMapping implements FieldMapping
     {
         if ($issue) {
             return new ExpectedDetails(array(
-                new ExpectedDetail('title', $issue->getTitle()),
-                new ExpectedDetail('description', $issue->getDescription()),
-                new ExpectedDetail('assignee', $issue->getAssignee() ? $issue->getAssignee()->getAccount() : ''),
-                new ExpectedDetail('labels', $issue->getLabels() ? implode(', ', array_map('strval', $issue->getLabels())) : '')
+                new ExpectedDetail('title', true, $issue->getTitle()),
+                new ExpectedDetail('description', false, $issue->getDescription()),
+                new ExpectedDetail('assignee', false, $issue->getAssignee() ? $issue->getAssignee()->getAccount() : ''),
+                new ExpectedDetail('labels', false, $issue->getLabels() ? implode(', ', array_map('strval', $issue->getLabels())) : '')
             ));
         }
 
         return new ExpectedDetails(array(
             new ExpectedDetail('title'),
-            new ExpectedDetail('description'),
-            new ExpectedDetail('assignee', 'me'),
-            new ExpectedDetail('labels'),
-            new ExpectedDetail('milestone')
+            new ExpectedDetail('description', false),
+            new ExpectedDetail('assignee', false),
+            new ExpectedDetail('labels', false),
+            new ExpectedDetail('milestone', false)
         ));
     }
 

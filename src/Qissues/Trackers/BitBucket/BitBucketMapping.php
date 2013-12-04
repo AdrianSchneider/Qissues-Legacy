@@ -53,7 +53,7 @@ class BitBucketMapping implements FieldMapping
         return new ExpectedDetails(array(
             new ExpectedDetail('title'),
             new ExpectedDetail('description'),
-            new ExpectedDetail('assignee', false, 'me'),
+            new ExpectedDetail('assignee', false),
             new ExpectedDetail('type', false),
             new ExpectedDetail('label', false),
             new ExpectedDetail('priority', false)

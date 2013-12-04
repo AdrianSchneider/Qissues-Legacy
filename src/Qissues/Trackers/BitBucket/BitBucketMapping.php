@@ -42,7 +42,7 @@ class BitBucketMapping implements FieldMapping
         if ($issue) {
             return new ExpectedDetails(array(
                 new ExpectedDetail('title', true, $issue->getTitle()),
-                new ExpectedDetail('description', true, $issue->getDescription()),
+                new ExpectedDetail('description', false, $issue->getDescription()),
                 new ExpectedDetail('assignee', false, $issue->getAssignee() ? $issue->getAssignee()->getAccount() : ''),
                 new ExpectedDetail('type', false, $issue->getType() ? strval($issue->getType()) : ''),
                 new ExpectedDetail('label', false, $issue->getLabels() ? implode(', ', array_map('strval', $issue->getLabels())) : ''),
@@ -52,7 +52,7 @@ class BitBucketMapping implements FieldMapping
 
         return new ExpectedDetails(array(
             new ExpectedDetail('title'),
-            new ExpectedDetail('description'),
+            new ExpectedDetail('description', false),
             new ExpectedDetail('assignee', false),
             new ExpectedDetail('type', false),
             new ExpectedDetail('label', false),

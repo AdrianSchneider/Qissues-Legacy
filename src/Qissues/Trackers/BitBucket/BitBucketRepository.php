@@ -125,7 +125,7 @@ class BitBucketRepository implements IssueRepository, BasicTransitioner
      */
     public function delete(Number $issue)
     {
-        $request = $this->request('DELETE', $this->getIssueUrl($issue, '/comments'));
+        $request = $this->request('DELETE', $this->getIssueUrl($issue));
         $request->send();
     }
 

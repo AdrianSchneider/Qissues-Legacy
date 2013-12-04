@@ -90,6 +90,9 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(1, $issues);
         $this->assertEquals('real issue', $issues[0]);
+
+        $this->assertRequestMethod('GET');
+        $this->assertRequestUrl('/1.0/repositories/repo/sitory/issues');
     }
 
     public function testFindComments()
@@ -111,6 +114,8 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(1, $comments);
         $this->assertEquals('real comment', $comments[0]);
+        $this->assertRequestMethod('GET');
+        $this->assertRequestUrl('/1.0/repositories/repo/sitory/issues/1/comments');
     }
 
     public function testPersist()
@@ -134,6 +139,8 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
         $number = $repository->persist($newIssue);
 
         $this->assertEquals(new Number(5), $number);
+        $this->assertRequestMethod('POST');
+        $this->assertRequestUrl('/1.0/repositories/repo/sitory/issues');
         $this->assertBodyEquals($issue);
     }
 
@@ -157,6 +164,8 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
         $repository->update($newIssue, $number);
 
         $this->assertBodyEquals($issue);
+        $this->assertRequestMethod('PUT');
+        $this->assertRequestUrl('/1.0/repositories/repo/sitory/issues/4');
     }
 
     public function testComment()
@@ -167,6 +176,8 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
         $repository = $this->getRepository();
         $number = $repository->comment(new Number(5), $comment);
 
+        $this->assertRequestMethod('POST');
+        $this->assertRequestUrl('/1.0/repositories/repo/sitory/issues/5/comments');
         $this->assertBodyEquals('content=hello+world');
     }
 
@@ -176,6 +187,9 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $repository = $this->getRepository();
         $repository->delete(new Number(5));
+
+        $this->assertRequestMethod('DELETE');
+        $this->assertRequestUrl('/1.0/repositories/repo/sitory/issues/5');
     }
 
     public function testChangeStatus()
@@ -235,5 +249,27 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertEquals($body, $lastBody);
+    }
+
+    protected function assertRequestMethod($method)
+    {
+        $this->assertEquals(
+            $method,
+            $this->history->getLastRequest()->getMethod()
+        );
+    }
+
+    protected function assertRequestUrl($url)
+    {
+        $this->assertEquals(
+            $url,
+            $this->history->getLastRequest()->getPath()
+        );
+    }
+
+    protected function assertRequestKeyEquals($key, $value)
+    {
+        $body = json_decode((string)$this->history->getLastRequest()->getBody(), true);
+        $this->assertEquals($value, $body[$key]);
     }
 }

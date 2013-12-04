@@ -16,10 +16,6 @@ class ExpectedDetail
     public function __construct($name, $required = true, $default = '', array $options = array())
     {
         $this->name = $name;
-        if ($required !== true and $required !== false) {
-            throw new \Exception('$required must be boolean (refactor');
-        }
-
         $this->default = $default;
         $this->required = !!$required;
         $this->options = $options;

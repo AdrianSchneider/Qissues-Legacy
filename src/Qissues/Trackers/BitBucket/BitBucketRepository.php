@@ -138,6 +138,8 @@ class BitBucketRepository implements IssueRepository, BasicTransitioner
             $status = new Status('resolved');
         }
 
+        $status = $this->mapping->getStatusMatching($status);
+
         $request = $this->request('PUT', $this->getIssueUrl($issue));
         $request->setBody(array('status' => $status->getStatus()));
         $request->send();

@@ -158,4 +158,25 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
     {
         // TODO
     }
+
+    public function testGetStatusMatching()
+    {
+        $mapping = new BitBucketMapping();
+        $status = $mapping->getStatusMatching(new Status('open'));
+        $this->assertEquals('open', $status->getStatus());
+    }
+
+    public function testGetStatusFuzzyMatching()
+    {
+        $mapping = new BitBucketMapping();
+        $status = $mapping->getStatusMatching(new Status('hold'));
+        $this->assertEquals('on hold', $status->getStatus());
+    }
+
+    public function testGetStatusThrowsException()
+    {
+        $this->setExpectedException('DomainException', 'invalid');
+        $mapping = new BitBucketMapping();
+        $mapping->getStatusMatching(new Status('pizza'));
+    }
 }

@@ -194,20 +194,39 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testChangeStatus()
     {
+        $status = new Status('resolved');
         $this->mock->addResponse(new Response(200));
 
-        $repository = $this->getRepository();
-        $repository->changeStatus(new Number(5), new Status('resolved'));
+        $mapping = $this->getMockBuilder('Qissues\Trackers\BitBucket\BitBucketMapping')->disableOriginalConstructor()->getMock();
+        $mapping
+            ->expects($this->once())
+            ->method('getStatusMatching')
+            ->with($status)
+            ->will($this->returnValue($status))
+        ;
+
+        $repository = $this->getRepository($mapping);
+        $repository->changeStatus(new Number(5), $status);
 
         $this->assertBodyEquals('status=resolved');
     }
 
     public function testChangeStatusConvertsClosedToResolved()
     {
+        $status = new ClosedStatus();
         $this->mock->addResponse(new Response(200));
 
-        $repository = $this->getRepository();
-        $repository->changeStatus(new Number(5), new ClosedStatus());
+        $mapping = $this->getMockBuilder('Qissues\Trackers\BitBucket\BitBucketMapping')->disableOriginalConstructor()->getMock();
+        $mapping
+            ->expects($this->once())
+            ->method('getStatusMatching')
+            ->will($this->returnCallback(function($status) {
+                return $status;
+            }))
+        ;
+
+        $repository = $this->getRepository($mapping);
+        $repository->changeStatus(new Number(5), $status);
 
         $this->assertBodyEquals('status=resolved');
     }

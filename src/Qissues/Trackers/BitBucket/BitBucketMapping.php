@@ -19,6 +19,16 @@ use Qissues\Domain\Model\SearchCriteria;
 
 class BitBucketMapping implements FieldMapping
 {
+    protected $statuses = array(
+        'new',
+        'open',
+        'resolved',
+        'on hold',
+        'invalid',
+        'duplicate',
+        'wontfix'
+    );
+
     protected $priorities = array(
         'trivial'  => 1,
         'minor'    => 2,
@@ -220,5 +230,23 @@ class BitBucketMapping implements FieldMapping
         $query['offset'] = ($page - 1) * $limit;
 
         return $query;
+    }
+
+    /**
+     * Get the matching status
+     *
+     * @param Status $findStatus
+     * @return Status
+     * @throws DomainException when not found
+     */
+    public function getStatusMatching(Status $findStatus)
+    {
+        foreach ($this->statuses as $status) {
+            if (strpos($status, $findStatus->getStatus()) !== false) {
+                return new Status($status);
+            }
+        }
+
+        throw new \DomainException('invalid status; valid statuses: ' . implode(', ', $this->statuses));
     }
 }

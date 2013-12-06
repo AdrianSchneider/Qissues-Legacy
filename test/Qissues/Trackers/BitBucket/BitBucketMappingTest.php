@@ -11,12 +11,16 @@ use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Domain\Model\Request\NewIssue;
 use Qissues\Trackers\BitBucket\BitBucketMapping;
+use Qissues\Trackers\BitBucket\BitBucketMetadata;
 
 class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetExpectedDetails()
     {
-        $mapping = $this->getMapping();
+        $mapping = $this->getMapping(array('components' => array(
+            array('id' => 1, 'name' => 'label')
+        )));
+
         $details = $mapping->getExpectedDetails();
         foreach (array('title', 'description', 'assignee', 'type', 'label', 'priority') as $field) {
             $this->assertTrue(isset($details[$field]));
@@ -30,6 +34,8 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
             array('trivial', 'minor', 'major', 'critical', 'blocker'),
             $details['priority']->getOptions()
         );
+
+        $this->assertEquals(array('label'), $details['label']->getOptions());
     }
 
     public function testGetExpectedDetailsForExistingIssue()
@@ -343,7 +349,9 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
     protected function getMapping($metadata = null)
     {
         return new BitBucketMapping(
-            $metadata ?: $this->getMockBuilder('Qissues\Trackers\BitBucket\BitBucketMetadata')->disableOriginalConstructor()->getMock()
+            $metadata
+                ? new BitBucketMetadata($metadata)
+                : $this->getMockBuilder('Qissues\Trackers\BitBucket\BitBucketMetadata')->disableOriginalConstructor()->getMock()
         );
     }
 }

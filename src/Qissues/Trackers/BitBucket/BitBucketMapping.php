@@ -85,7 +85,7 @@ class BitBucketMapping implements FieldMapping
             !empty($issue['responsible']) ? new User($issue['responsible']['username'], null, $issue['responsible']['display_name']) : null,
             !empty($issue['priority']) ? new Priority($this->priorities[$issue['priority']], $issue['priority']) : null,
             !empty($issue['metadata']['kind']) ? new Type($issue['metadata']['kind']) : null,
-            !empty($issue['metadata']['component']) ? new Label($issue['metadata']['component']) : array(),
+            !empty($issue['metadata']['component']) ? array(new Label($issue['metadata']['component'])) : array(),
             !empty($issue['comment_count']) ? intval($issue['comment_count']) : 0
         );
     }

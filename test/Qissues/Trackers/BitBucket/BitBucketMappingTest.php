@@ -7,7 +7,9 @@ use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Priority;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\Label;
+use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Model\SearchCriteria;
+use Qissues\Domain\Model\Request\NewIssue;
 use Qissues\Trackers\BitBucket\BitBucketMapping;
 
 class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
@@ -19,6 +21,155 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
         foreach (array('title', 'description', 'assignee', 'type', 'label', 'priority') as $field) {
             $this->assertTrue(isset($details[$field]));
         }
+    }
+
+    public function testGetExpectedDetailsForExistingIssue()
+    {
+        $issue = new Issue(1, 't', 'd', new Status('open'), new \DateTime, new \DateTime, new User('adr'), new Priority(1, 'low'), new Type('bug'), array(new Label('ux')));
+
+        $mapping = new BitBucketMapping();
+        $details = $mapping->getExpectedDetails($issue);
+
+        $this->assertEquals('t', $details['title']->getDefault());
+        $this->assertEquals('d', $details['description']->getDefault());
+        $this->assertEquals('adr', $details['assignee']->getDefault());
+        $this->assertEquals('bug', $details['type']->getDefault());
+        $this->assertEquals('ux', $details['label']->getDefault());
+    }
+
+    public function testToIssueBasics()
+    {
+        $mapping = new BitBucketMapping();
+        $issue = $mapping->toIssue(array(
+            'local_id' => 1,
+            'title' => 'hello world',
+            'content' => 'oh hai',
+            'status' => 'new',
+            'utc_created_on' => '2013-01-01',
+            'utc_last_updated' => '2013-01-01'
+        ));
+
+        $this->assertEquals(1, $issue->getId());
+        $this->assertEquals('hello world', $issue->getTitle());
+        $this->assertEquals('oh hai', $issue->getDescription());
+        $this->assertEquals('new', $issue->getStatus()->getStatus());
+        $this->assertEquals('2013-01-01', $issue->getDateCreated()->format('Y-m-d'));
+        $this->assertEquals('2013-01-01', $issue->getDateUpdated()->format('Y-m-d'));
+
+        $this->assertNull($issue->getAssignee());
+        $this->assertNull($issue->getPriority());
+        $this->assertNull($issue->getType());
+        $this->assertEmpty($issue->getLabels());
+    }
+
+    public function testToIssueWithOptionals()
+    {
+        $mapping = new BitBucketMapping();
+        $issue = $mapping->toIssue(array(
+            'local_id' => 1,
+            'title' => 'hello world',
+            'content' => 'oh hai',
+            'status' => 'new',
+            'utc_created_on' => '2013-01-01',
+            'utc_last_updated' => '2013-01-01',
+            'responsible' => array('username' => 'adrian', 'display_name' => 'adrsch'),
+            'priority' => 'minor',
+            'metadata' => array(
+                'kind' => 'bug',
+                'component' => 'ux'
+            )
+        ));
+
+        $this->assertEquals('adrian', $issue->getAssignee()->getAccount());
+        $this->assertEquals('adrsch', $issue->getAssignee()->getName());
+        $this->assertEquals(2, $issue->getPriority()->getPriority());
+        $this->assertEquals('bug', $issue->getType()->getName());
+        $this->assertEquals('ux', implode(',', array_map('strval', $issue->getLabels())));
+    }
+
+    public function testToNewIssueBasics()
+    {
+        $mapping = new BitBucketMapping();
+        $issue = $mapping->toNewIssue(array(
+            'title' => 'hello world',
+            'description' => 'oh hai'
+        ));
+
+        $this->assertEquals('hello world', $issue->getTitle());
+        $this->assertEquals('oh hai', $issue->getDescription());
+    }
+
+    public function testToNewIssueWithOptionals()
+    {
+        $mapping = new BitBucketMapping();
+        $issue = $mapping->toNewIssue(array(
+            'title' => '',
+            'description' => '',
+            'priority' => 'major',
+            'assignee' => 'adrian',
+            'type' => 'bug',
+            'label' => 'ux'
+        ));
+
+        $this->assertEquals('adrian', $issue->getAssignee()->getAccount());
+        $this->assertEquals('major', $issue->getPriority()->getName());
+        $this->assertEquals('bug', $issue->getType()->getName());
+        $this->assertEquals('ux', implode(',', array_map('strval', $issue->getLabels())));
+    }
+
+    public function testToNewIssueAlsoAcceptsNumericPriorities()
+    {
+        $mapping = new BitBucketMapping();
+        $issue = $mapping->toNewIssue(array(
+            'title' => '',
+            'description' => '',
+            'priority' => 3
+        ));
+
+        $this->assertEquals('major', $issue->getPriority()->getName());
+    }
+
+    public function testToNewIssueThrowsExceptionWithMultipleLabels()
+    {
+        $this->setExpectedException('DomainException', 'single');
+        $mapping = new BitBucketMapping();
+        $issue = $mapping->toNewIssue(array(
+            'title' => '',
+            'description' => '',
+            'label' => 'bug, feature'
+        ));
+    }
+
+    public function testIssueToArray()
+    {
+        $issue = new NewIssue('hello world', 'oh hai', new User('myself'), new Priority(1, 'trivial'), new Type('bug'), array(new Label('ux')));
+
+        $mapping = new BitBucketMapping();
+        $data = $mapping->issueToArray($issue);
+
+        $this->assertEquals('hello world', $data['title']);
+        $this->assertEquals('oh hai', $data['content']);
+        $this->assertEquals('myself', $data['responsible']);
+        $this->assertEquals('trivial', $data['priority']);
+        $this->assertEquals('bug', $data['kind']);
+    }
+
+    public function testToComment()
+    {
+        $mapping = new BitBucketMapping();
+        $comment = $mapping->toComment(array(
+            'content' => 'hello world',
+            'author_info' => array(
+                'username' => 'adr',
+                'display_name' => 'adrian'
+            ),
+            'utc_created_on' => '2013-01-01'
+        ));
+
+        $this->assertEquals('hello world', $comment->getMessage());
+        $this->assertEquals('adr', $comment->getAuthor()->getAccount());
+        $this->assertEquals('adrian', $comment->getAuthor()->getName());
+        $this->assertEquals('2013-01-01', $comment->getDate()->format('Y-m-d'));
     }
 
     public function testQueryFilterByType()

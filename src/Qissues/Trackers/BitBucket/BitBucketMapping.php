@@ -183,9 +183,8 @@ class BitBucketMapping implements FieldMapping
         }
 
         if ($statuses = $criteria->getStatuses()) {
-            $validStatuses = array('new', 'open', 'resolved', 'on hold', 'invalid', 'duplicate', 'wontfix');
             foreach ($statuses as $status) {
-                if (!in_array($status->getStatus(), $validStatuses)) {
+                if (!in_array($status->getStatus(), $this->statuses)) {
                     throw new \DomainException("'$status' is an unknown status to BitBucket");
                 }
                 $query['status'][] = $status->getStatus();

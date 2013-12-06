@@ -8,6 +8,7 @@ use Qissues\Domain\Shared\ClosedStatus;
 use Qissues\Domain\Shared\Label;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\CurrentUser;
 use Qissues\Domain\Shared\Priority;
 use Qissues\Domain\Model\Message;
 use Qissues\Domain\Model\SearchCriteria;
@@ -239,6 +240,16 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
         $number = $repository->assign(new Number(5), new User('adrian'));
 
         $this->assertBodyEquals('responsible=adrian');
+    }
+
+    public function testAssignSwapsCurrentUserForUsername()
+    {
+        $this->mock->addResponse(new Response(200));
+
+        $repository = $this->getRepository();
+        $number = $repository->assign(new Number(5), new CurrentUser());
+
+        $this->assertBodyEquals('responsible=username');
     }
 
     public function testFetchMetadataThrowsDomainException()

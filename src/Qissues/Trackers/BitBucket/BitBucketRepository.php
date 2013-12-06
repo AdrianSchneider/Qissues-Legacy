@@ -8,6 +8,7 @@ use Qissues\Domain\Model\Message;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Domain\Model\IssueRepository;
 use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\CurrentUser;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\ClosedStatus;
 use Qissues\Application\Tracker\BasicTransitioner;
@@ -150,6 +151,10 @@ class BitBucketRepository implements IssueRepository, BasicTransitioner
      */
     public function assign(Number $issue, User $user)
     {
+        if ($user instanceof CurrentUser) {
+            $user = new User($this->username);
+        }
+
         $request = $this->request('PUT', $this->getIssueUrl($issue));
         $request->setBody(array('responsible' => $user->getAccount()));
         $request->send();

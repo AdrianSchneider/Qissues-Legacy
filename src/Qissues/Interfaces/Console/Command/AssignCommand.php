@@ -6,6 +6,7 @@ use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\Request\IssueAssignment;
 use Qissues\Domain\Service\AssignIssue;
 use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\CurrentUser;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,6 +23,7 @@ class AssignCommand extends Command
             ->setDefinition(array(
                 new InputArgument('issue', InputArgument::OPTIONAL, 'The Issue ID'),
                 new InputArgument('assignee', InputArgument::OPTIONAL, 'The assignee', null),
+                new InputOption('me', null, InputOption::VALUE_NONE, 'Assign to me', null),
                 new InputOption('message', 'm', InputOption::VALUE_OPTIONAL, 'Specify message', null),
                 new InputOption('comment-strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy')
             ))
@@ -39,7 +41,11 @@ class AssignCommand extends Command
             return 1;
         }
 
-        if (!$assignee = $input->getArgument('assignee')) {
+        if ($input->getOption('me')) {
+            $assignee = new CurrentUser();
+        } elseif ($account = $input->getArgument('assignee')) {
+            $assignee = new User($account);
+        } else {
             $output->writeln("<error>No assignee</error>");
             return 1;
         }
@@ -47,7 +53,7 @@ class AssignCommand extends Command
         $assignIssue = new AssignIssue($repository);
         $assignIssue(new IssueAssignment(
             $number,
-            new User($assignee),
+            $assignee,
             $this->getOptionalComment($input, $output)
         ));
 

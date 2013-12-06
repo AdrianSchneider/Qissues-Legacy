@@ -46,8 +46,12 @@ class BitBucketMapping implements FieldMapping
 
     protected $priorityMap;
 
-    public function __construct()
+    /**
+     * @param BitBucketMetadata $metadata
+     */
+    public function __construct(BitBucketMetadata $metadata)
     {
+        $this->metadata = $metadata;
         $this->priorityMap = array_flip($this->priorities);
     }
 
@@ -72,7 +76,7 @@ class BitBucketMapping implements FieldMapping
             new ExpectedDetail('description', false),
             new ExpectedDetail('assignee', false),
             new ExpectedDetail('type', false, '', $this->types),
-            new ExpectedDetail('label', false),
+            new ExpectedDetail('label', false, '', $this->metadata->getAllowedComponents()),
             new ExpectedDetail('priority', false, 'major', array_keys($this->priorities))
         ));
     }

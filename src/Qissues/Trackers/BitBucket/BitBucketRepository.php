@@ -189,6 +189,12 @@ class BitBucketRepository implements IssueRepository, BasicTransitioner
 
     public function fetchMetadata()
     {
-        throw new \DomainException('No metadata necessary for BitBucket');
+        $data = array();
+
+        $request = $this->request('GET', sprintf('/repositories/%s/issues/components', $this->repository));
+        $response = $request->send()->json();
+
+        $data['components'] = $response;
+        return $data;
     }
 }

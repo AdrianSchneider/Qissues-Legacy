@@ -22,6 +22,11 @@ services:
 
     tracker.bitbucket.mapping:
         class: Qissues\Trackers\BitBucket\BitBucketMapping
+        arguments:
+            - @tracker.metadata
+
+    tracker.bitbucket.metadata:
+        class: Qissues\Trackers\BitBucket\BitBucketMetadata
 
     tracker.bitbucket.features:
         class: Qissues\Application\Tracker\Support\FeatureSet

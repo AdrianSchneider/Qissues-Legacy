@@ -252,10 +252,19 @@ class BitBucketRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertBodyEquals('responsible=username');
     }
 
-    public function testFetchMetadataThrowsDomainException()
+    public function testFetchMetadataGrabsComponents()
     {
-        $this->setExpectedException('DomainException', 'No metadata');
-        $this->getRepository()->fetchMetadata();
+        $payload = array(
+            array('id' => 1, 'debt'),
+            array('id' => 2, 'customer facing')
+        );
+
+        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
+
+        $tracker = $this->getRepository();
+        $metadata = $tracker->fetchMetadata();
+
+        $this->assertEquals($payload, $metadata['components']);
     }
 
     protected function getRepository($mapping = null)

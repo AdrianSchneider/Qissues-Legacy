@@ -16,7 +16,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetExpectedDetails()
     {
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $details = $mapping->getExpectedDetails();
         foreach (array('title', 'description', 'assignee', 'type', 'label', 'priority') as $field) {
             $this->assertTrue(isset($details[$field]));
@@ -36,7 +36,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
     {
         $issue = new Issue(1, 't', 'd', new Status('open'), new \DateTime, new \DateTime, new User('adr'), new Priority(1, 'low'), new Type('bug'), array(new Label('ux')));
 
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $details = $mapping->getExpectedDetails($issue);
 
         $this->assertEquals('t', $details['title']->getDefault());
@@ -48,7 +48,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
 
     public function testToIssueBasics()
     {
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $issue = $mapping->toIssue(array(
             'local_id' => 1,
             'title' => 'hello world',
@@ -73,7 +73,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
 
     public function testToIssueWithOptionals()
     {
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $issue = $mapping->toIssue(array(
             'local_id' => 1,
             'title' => 'hello world',
@@ -98,7 +98,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
 
     public function testToNewIssueBasics()
     {
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $issue = $mapping->toNewIssue(array(
             'title' => 'hello world',
             'description' => 'oh hai'
@@ -110,7 +110,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
 
     public function testToNewIssueWithOptionals()
     {
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $issue = $mapping->toNewIssue(array(
             'title' => '',
             'description' => '',
@@ -128,7 +128,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
 
     public function testToNewIssueAlsoAcceptsNumericPriorities()
     {
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $issue = $mapping->toNewIssue(array(
             'title' => '',
             'description' => '',
@@ -141,7 +141,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
     public function testToNewIssueThrowsExceptionWithMultipleLabels()
     {
         $this->setExpectedException('DomainException', 'single');
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $issue = $mapping->toNewIssue(array(
             'title' => '',
             'description' => '',
@@ -153,7 +153,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
     {
         $issue = new NewIssue('hello world', 'oh hai', new User('myself'), new Priority(1, 'trivial'), new Type('bug'), array(new Label('ux')));
 
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $data = $mapping->issueToArray($issue);
 
         $this->assertEquals('hello world', $data['title']);
@@ -165,7 +165,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
 
     public function testToComment()
     {
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $comment = $mapping->toComment(array(
             'content' => 'hello world',
             'author_info' => array(
@@ -186,7 +186,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
         $criteria = new SearchCriteria();
         $criteria->addType(new Type('bug'));
 
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $query = $mapping->buildSearchQuery($criteria);
 
         $this->assertEquals(array('bug'), $query['kind']);
@@ -199,7 +199,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
         $criteria = new SearchCriteria();
         $criteria->addType(new Type('peanut'));
 
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $mapping->buildSearchQuery($criteria);
     }
 
@@ -208,7 +208,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
         $criteria = new SearchCriteria();
         $criteria->addStatus(new Status('resolved'));
 
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $query = $mapping->buildSearchQuery($criteria);
 
         $this->assertEquals(array('resolved'), $query['status']);
@@ -221,7 +221,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
         $criteria = new SearchCriteria();
         $criteria->addStatus(new Status('lame'));
 
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $mapping->buildSearchQuery($criteria);
     }
 
@@ -230,7 +230,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
         $criteria = new SearchCriteria();
         $criteria->addAssignee(new User('joe'));
 
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $query = $mapping->buildSearchQuery($criteria);
 
         $this->assertEquals(array('joe'), $query['responsible']);
@@ -241,7 +241,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
         $criteria = new SearchCriteria();
         $criteria->addLabel(new Label('cool'));
 
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $query = $mapping->buildSearchQuery($criteria);
 
         $this->assertEquals(array('cool'), $query['component']);
@@ -252,7 +252,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
         $criteria = new SearchCriteria();
         $criteria->setKeywords('eggnog');
 
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $query = $mapping->buildSearchQuery($criteria);
 
         $this->assertEquals('eggnog', $query['search']);
@@ -263,7 +263,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
         $criteria = new SearchCriteria();
         $criteria->addPriority(new Priority(0, 'major'));
 
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $query = $mapping->buildSearchQuery($criteria);
 
         $this->assertEquals(array('major'), $query['priority']);
@@ -274,7 +274,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
         $criteria = new SearchCriteria();
         $criteria->addPriority(new Priority(3, ''));
 
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $query = $mapping->buildSearchQuery($criteria);
 
         $this->assertEquals(array('major'), $query['priority']);
@@ -287,7 +287,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
         $criteria = new SearchCriteria();
         $criteria->addPriority(new Priority(99, 'made up'));
 
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $mapping->buildSearchQuery($criteria);
     }
 
@@ -298,7 +298,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
         $criteria = new SearchCriteria();
         $criteria->setNumbers(array(1, 2, 3));
 
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $mapping->buildSearchQuery($criteria);
     }
 
@@ -307,7 +307,7 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
         $criteria = new SearchCriteria();
         $criteria->setPaging(3, 25);
 
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $query = $mapping->buildSearchQuery($criteria);
 
         $this->assertEquals(25, $query['limit']);
@@ -321,14 +321,14 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
 
     public function testGetStatusMatching()
     {
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $status = $mapping->getStatusMatching(new Status('open'));
         $this->assertEquals('open', $status->getStatus());
     }
 
     public function testGetStatusFuzzyMatching()
     {
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $status = $mapping->getStatusMatching(new Status('hold'));
         $this->assertEquals('on hold', $status->getStatus());
     }
@@ -336,7 +336,14 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
     public function testGetStatusThrowsException()
     {
         $this->setExpectedException('DomainException', 'invalid');
-        $mapping = new BitBucketMapping();
+        $mapping = $this->getMapping();
         $mapping->getStatusMatching(new Status('pizza'));
+    }
+
+    protected function getMapping($metadata = null)
+    {
+        return new BitBucketMapping(
+            $metadata ?: $this->getMockBuilder('Qissues\Trackers\BitBucket\BitBucketMetadata')->disableOriginalConstructor()->getMock()
+        );
     }
 }

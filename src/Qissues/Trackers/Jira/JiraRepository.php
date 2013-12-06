@@ -3,6 +3,7 @@
 namespace Qissues\Trackers\Jira;
 
 use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\CurrentUser;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\SearchCriteria;
@@ -183,6 +184,10 @@ class JiraRepository implements IssueRepository
      */
     public function assign(Number $issue, User $user)
     {
+        if ($user instanceof CurrentUser) {
+            $user = new User($this->username);
+        }
+
         $request = $this->request('PUT', $this->getIssueUrl($issue, "/assignee"));
         $request->setBody(json_encode(array('name' => $user->getAccount())), 'application/json');
         $response = $request->send()->json();

@@ -3,6 +3,7 @@
 namespace Qissues\Trackers\Jira;
 
 use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\CurrentUser;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\Status;
 use Qissues\Trackers\Jira\JqlQueryBuilder;
@@ -40,6 +41,18 @@ class JqlQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $jql = $builder->build($criteria);
 
         $this->assertContains("assignee IN ('adrian','jim')", $jql);
+    }
+
+    public function testFilterByCurrentUserAssignee()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addAssignee(new User('adrian'));
+        $criteria->addAssignee(new CurrentUser());
+
+        $builder = $this->getBuilder(array('id' => 5), 'aaa');
+        $jql = $builder->build($criteria);
+
+        $this->assertContains("assignee IN ('adrian','aaa')", $jql);
     }
 
     public function testFilterByTypes()
@@ -122,8 +135,8 @@ class JqlQueryBuilderTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    protected function getBuilder(array $metadata = array())
+    protected function getBuilder(array $metadata = array(), $un = '')
     {
-        return new JqlQueryBuilder(new JiraMetadata($metadata));
+        return new JqlQueryBuilder(new JiraMetadata($metadata), $un);
     }
 }

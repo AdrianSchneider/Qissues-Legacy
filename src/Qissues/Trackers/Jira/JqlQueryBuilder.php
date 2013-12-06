@@ -2,18 +2,21 @@
 
 namespace Qissues\Trackers\Jira;
 
+use Qissues\Domain\Shared\CurrentUser;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Application\Tracker\Metadata\Metadata;
 
 class JqlQueryBuilder
 {
     protected $metadata;
+    protected $username;
     protected $where;
     protected $sort;
 
-    public function __construct(Metadata $metadata)
+    public function __construct(Metadata $metadata, $username = '')
     {
         $this->metadata = $metadata;
+        $this->username = $username;
     }
 
     /**
@@ -70,7 +73,13 @@ class JqlQueryBuilder
     protected function handleAssignees(SearchCriteria $criteria)
     {
         if ($assignees = $criteria->getAssignees()) {
-            $this->where[] = $this->whereEquals('assignee', array_map('strval', $assignees));
+            $myUsername = $this->username;
+            $this->where[] = $this->whereEquals('assignee', array_map(
+                function($assignee) use ($myUsername) {
+                    return $assignee instanceof CurrentUser ? $myUsername : $assignee->getAccount();
+                },
+                $assignees
+            ));
         }
     }
 

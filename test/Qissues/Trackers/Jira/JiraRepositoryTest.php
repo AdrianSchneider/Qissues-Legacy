@@ -10,6 +10,7 @@ use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Label;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\CurrentUser;
 use Qissues\Domain\Shared\Priority;
 use Qissues\Trackers\Jira\JiraRepository;
 use Guzzle\Http\Client;
@@ -155,6 +156,18 @@ class JiraRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertRequestMethod('PUT');
         $this->assertRequestUrl("/rest/api/2/issue/PRE-5/assignee");
         $this->assertRequestKeyEquals('name', 'joe');
+    }
+
+    public function testAssignToCurrentUser()
+    {
+        $this->mock->addResponse(new Response(200));
+
+        $repository = $this->getRepository();
+        $repository->assign(new Number(5), new CurrentUser());
+
+        $this->assertRequestMethod('PUT');
+        $this->assertRequestUrl("/rest/api/2/issue/PRE-5/assignee");
+        $this->assertRequestKeyEquals('name', 'username');
     }
 
     public function testStatusChange()

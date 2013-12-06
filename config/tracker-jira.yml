@@ -35,6 +35,7 @@ services:
         class: Qissues\Trackers\Jira\JqlQueryBuilder
         arguments:
             - @tracker.metadata
+            - %jira.username%
 
     tracker.jira.features:
         class: Qissues\Application\Tracker\Support\FeatureSet

@@ -22,6 +22,8 @@ services:
 
     tracker.github.mapping:
         class: Qissues\Trackers\GitHub\GitHubMapping
+        arguments:
+            - %github.username%
 
     tracker.github.features:
         class: Qissues\Application\Tracker\Support\FeatureSet

@@ -4,6 +4,7 @@ namespace Qissues\Tests\Trackers\GitHub;
 
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\CurrentUser;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Model\Message;
 use Qissues\Domain\Model\SearchCriteria;
@@ -194,6 +195,19 @@ class GitHubRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertRequestMethod('PATCH');
         $this->assertRequestUrl("/repos/adrian/peanuts/issues/5");
         $this->assertRequestKeyEquals('assignee', 'joe');
+    }
+
+    public function testAssignToCurrentUser()
+    {
+        $payload = array();
+        $this->mock->addResponse(new Response(200, null, json_encode($payload)));
+
+        $tracker = $this->getRepository();
+        $tracker->assign(new Number(5), new CurrentUser());
+
+        $this->assertRequestMethod('PATCH');
+        $this->assertRequestUrl("/repos/adrian/peanuts/issues/5");
+        $this->assertRequestKeyEquals('assignee', 'adrian');
     }
 
     public function testChangeStatus()

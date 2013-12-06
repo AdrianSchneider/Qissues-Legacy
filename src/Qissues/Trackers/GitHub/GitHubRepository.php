@@ -3,6 +3,7 @@
 namespace Qissues\Trackers\GitHub;
 
 use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\CurrentUser;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\SearchCriteria;
@@ -142,6 +143,10 @@ class GitHubRepository implements IssueRepository, BasicTransitioner
      */
     public function assign(Number $issue, User $user)
     {
+        if ($user instanceof CurrentUser) {
+            $user = new User($this->username);
+        }
+
         $request = $this->request('PATCH', sprintf('/repos/%s/issues/%d', $this->repository, $issue->getNumber()));
         $request->setBody(json_encode(array('assignee' => $user->getAccount())), 'application/json');
         $request->send();

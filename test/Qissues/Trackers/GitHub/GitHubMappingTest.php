@@ -5,6 +5,7 @@ namespace Qissues\Tests\Trackers\GitHub;
 use Qissues\Domain\Model\Request\NewIssue;
 use Qissues\Trackers\GitHub\GitHubMapping;
 use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\CurrentUser;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\Label;
@@ -77,6 +78,40 @@ class GitHubMappingTest extends \PHPUnit_Framework_TestCase
         $query = $mapping->buildSearchQuery($criteria);
 
         $this->assertEquals('open', $query['state']);
+    }
+
+    public function testQueryByAssignee()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addAssignee(new User('joe'));
+
+        $mapping = new GitHubMapping();
+        $query = $mapping->buildSearchQuery($criteria);
+
+        $this->assertEquals('joe', $query['assignee']);
+    }
+
+    public function testQueryByAssigneeAsCurrentUser()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addAssignee(new CurrentUser());
+
+        $mapping = new GitHubMapping('joe');
+        $query = $mapping->buildSearchQuery($criteria);
+
+        $this->assertEquals('joe', $query['assignee']);
+    }
+
+    public function testQueryingMultipleAssigneesIsUnsupported()
+    {
+        $this->setExpectedException('DomainException', 'multiple assignees');
+
+        $criteria = new SearchCriteria();
+        $criteria->addAssignee(new User('a'));
+        $criteria->addAssignee(new User('b'));
+
+        $mapping = new GitHubMapping();
+        $mapping->buildSearchQuery($criteria);
     }
 
     public function testQueryingMultipleStatusesIsUnsupported()

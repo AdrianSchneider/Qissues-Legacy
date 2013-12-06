@@ -11,6 +11,7 @@ use Qissues\Domain\Shared\Details;
 use Qissues\Domain\Shared\ExpectedDetail;
 use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\CurrentUser;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\Label;
@@ -18,6 +19,13 @@ use Qissues\Application\Tracker\FieldMapping;
 
 class GitHubMapping implements FieldMapping
 {
+    protected $username;
+
+    public function __construct($username = '')
+    {
+        $this->username = $username;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -103,18 +111,6 @@ class GitHubMapping implements FieldMapping
             $new['labels'] = array_map('strval', $labels);
         }
 
-        /*
-        if (!empty($issue['labels'])) {
-            $new['labels'] = $issue['labels'];
-        }
-        if (!empty($issue['milestone'])) {
-            $new['milestone'] = $issue['milestone'];
-        }
-        if (!empty($issue['assignee'])) {
-            $new['assignee'] = $issue['assignee'];
-        }
-         */
-
         return $new;
     }
 
@@ -158,6 +154,18 @@ class GitHubMapping implements FieldMapping
             }
 
             $query['state'] = $statuses[0]->getStatus();
+        }
+
+        if ($assignees = $criteria->getAssignees()) {
+            if (count($assignees) > 1) {
+                throw new \DomainException('Github cannot support multiple assignees');
+            }
+            if ($assignees[0] instanceof CurrentUser) {
+                $query['assignee'] = $this->username;
+            } else {
+                $query['assignee'] = $assignees[0]->getAccount();
+            }
+
         }
 
         if ($labels = $criteria->getLabels()) {

@@ -32,7 +32,7 @@ class OptionStrategy implements IssueStrategy
 
     protected function buildData()
     {
-        $out = array();
+        $out = array('description' => '');
         foreach ($this->input->getOption('data') as $option) {
             list($key, $value) = explode('=', $option, 2);
             $out[$key] = $value;

@@ -318,6 +318,11 @@ class TrelloRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testFetchMetadata()
     {
+        $this->mock->addResponse(new Response(200, null, json_encode(array(
+            'id' => 'asdf',
+            'username' => 'adrian'
+        ))));
+
         $payload = array(
             array(
                 'id' => 2,
@@ -351,6 +356,10 @@ class TrelloRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'id' => 2,
+            'me' => array(
+                'id' => 'asdf',
+                'username' => 'adrian'
+            ),
             'name' => 'testing',
             'lists' => array(
                 array(
@@ -375,6 +384,11 @@ class TrelloRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testFetchMetadataSortsListsByPos()
     {
+        $this->mock->addResponse(new Response(200, null, json_encode(array(
+            'id' => 1,
+            'username' => 'asdf'
+        ))));
+
         $payload = array(
             array(
                 'id' => 2,
@@ -401,6 +415,11 @@ class TrelloRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testFetchMetadataThrowsExceptionIfBoardNotFound()
     {
+        $this->mock->addResponse(new Response(200, null, json_encode(array(
+            'id' => 1, 
+            'username' => ''
+        ))));
+
         $payload = array(
             array(
                 'id' => 2,

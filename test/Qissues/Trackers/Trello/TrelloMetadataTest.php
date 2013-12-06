@@ -3,6 +3,8 @@
 namespace Qissues\Trackers\Trello;
 
 use Qissues\Trackers\Trello\TrelloMetadata;
+use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\CurrentUser;
 
 class TrelloMetadataTest extends \PHPUnit_Framework_TestCase
 {
@@ -137,6 +139,18 @@ class TrelloMetadataTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('LogicException', 'not found');
         $metadata = new TrelloMetadata(array('members' => array(array('id' => 2, 'username' => 'jimbob', 'fullName' => 'Jim Bob'))));
         $metadata->getMemberIdByName('robert');
+    }
+
+    public function testGetMemberIdByUserReturnsName()
+    {
+        $metadata = new TrelloMetadata(array('members' => array(array('id' => 5, 'username' => 'Bob'))));
+        $this->assertEquals(5, $metadata->getMemberIdByUser(new User('bob')));
+    }
+
+    public function testGetMemberIdByCurrentUserReturnsMyName()
+    {
+        $metadata = new TrelloMetadata(array('me' => array('id' => 'asdf', 'username' => 'freddy')));
+        $this->assertEquals('asdf', $metadata->getMemberIdByUser(new CurrentUser()));
     }
 
     public function testGetFirstListName()

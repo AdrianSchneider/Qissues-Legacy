@@ -10,6 +10,7 @@ use Qissues\Domain\Shared\Details;
 use Qissues\Domain\Shared\ExpectedDetail;
 use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\CurrentUser;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Priority;
 use Qissues\Domain\Shared\Type;
@@ -261,6 +262,11 @@ class TrelloMapping implements FieldMapping
                 }
                 $matches = false;
                 foreach ($assignees as $assignee) {
+                    if ($assignee instanceof CurrentUser) {
+                        if ($issue->getAssignee()->getAccount() === $this->metadata->getMyAccount()) {
+                            $matches = true;
+                        }
+                    }
                     if (stripos($issue->getAssignee()->getAccount(), $assignee->getAccount()) !== false) {
                         $matches = true;
                     }

@@ -2,6 +2,8 @@
 
 namespace Qissues\Trackers\Trello;
 
+use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\CurrentUser;
 use Qissues\Application\Tracker\Metadata\Metadata;
 
 class TrelloMetadata implements Metadata
@@ -134,5 +136,19 @@ class TrelloMetadata implements Metadata
 
         $members = implode(', ', $names);
         throw new \LogicException("$name not found; available members: $members");
+    }
+
+    public function getMemberIdByUser(User $user)
+    {
+        if ($user instanceof CurrentUser) {
+            return $this->board['me']['id'];
+        }
+
+        return $this->getMemberIdByName($user->getAccount());
+    }
+
+    public function getMyAccount()
+    {
+        return $this->board['me']['username'];
     }
 }

@@ -179,7 +179,7 @@ class TrelloRepository implements IssueRepository, BasicTransitioner
      */
     public function assign(Number $issue, User $user)
     {
-        $id = $this->metadata->getMemberIdByName($user->getAccount());
+        $id = $this->metadata->getMemberIdByUser($user);
         $request = $this->request('PUT', sprintf("/cards/%s", $this->lookupId($issue)));
         $request->setBody(json_encode(array('idMembers' => $id)), 'application/json');
         $request->send();
@@ -204,6 +204,10 @@ class TrelloRepository implements IssueRepository, BasicTransitioner
      */
     public function fetchMetadata()
     {
+        $request = $this->client->get('/1/members/me');
+        $request->getQuery()->merge($this->query);
+        $me = $response = $request->send()->json();
+
         $request = $this->client->get('/1/members/my/boards');
         $request->getQuery()->merge($this->query);
         $request->getQuery()->merge(array('lists' => 'open', 'members' => 'all', 'memberships_member' => true, 'memberships_member_fields' => 'all', 'member_fields' => 'all'));
@@ -247,7 +251,11 @@ class TrelloRepository implements IssueRepository, BasicTransitioner
                 'name' => $board['name'],
                 'labels' => $board['labelNames'],
                 'lists' => $lists,
-                'members' => $members
+                'members' => $members,
+                'me' => array(
+                    'id' => $me['id'],
+                    'username' => $me['username']
+                )
             );
         }
 

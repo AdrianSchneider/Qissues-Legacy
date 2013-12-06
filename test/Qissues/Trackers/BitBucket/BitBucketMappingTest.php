@@ -21,6 +21,15 @@ class BitBucketMappingTest extends \PHPUnit_Framework_TestCase
         foreach (array('title', 'description', 'assignee', 'type', 'label', 'priority') as $field) {
             $this->assertTrue(isset($details[$field]));
         }
+
+        $this->assertEquals(
+            array('bug', 'enhancement', 'proposal', 'task'),
+            $details['type']->getOptions()
+        );
+        $this->assertEquals(
+            array('trivial', 'minor', 'major', 'critical', 'blocker'),
+            $details['priority']->getOptions()
+        );
     }
 
     public function testGetExpectedDetailsForExistingIssue()

@@ -29,6 +29,13 @@ class BitBucketMapping implements FieldMapping
         'wontfix'
     );
 
+    protected $types = array(
+        'bug',
+        'enhancement',
+        'proposal',
+        'task'
+    );
+
     protected $priorities = array(
         'trivial'  => 1,
         'minor'    => 2,
@@ -64,9 +71,9 @@ class BitBucketMapping implements FieldMapping
             new ExpectedDetail('title'),
             new ExpectedDetail('description', false),
             new ExpectedDetail('assignee', false),
-            new ExpectedDetail('type', false),
+            new ExpectedDetail('type', false, '', $this->types),
             new ExpectedDetail('label', false),
-            new ExpectedDetail('priority', false)
+            new ExpectedDetail('priority', false, 'major', array_keys($this->priorities))
         ));
     }
 
@@ -173,9 +180,8 @@ class BitBucketMapping implements FieldMapping
         $query = array();
 
         if ($types = $criteria->getTypes()) {
-            $validTypes = array('bug', 'enhancement', 'proposal', 'task');
             foreach ($types as $type) {
-                if (!in_array($type->getName(), $validTypes)) {
+                if (!in_array($type->getName(), $this->types)) {
                     throw new \DomainException('That is an unknown type to BitBucket');
                 }
                 $query['kind'][] = $type->getName();

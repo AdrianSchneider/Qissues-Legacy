@@ -3,6 +3,7 @@
 namespace Qissues\Interfaces\Console\Input\Strategy\Issue;
 
 use Qissues\Domain\Model\Issue;
+use Qissues\Domain\Shared\Details;
 use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Application\Tracker\IssueTracker;
 use Qissues\Application\Tracker\FieldMapping;
@@ -35,7 +36,9 @@ class OptionStrategy implements IssueStrategy
     public function createNew(IssueTracker $tracker)
     {
         $mapping = $tracker->getMapping();
-        return $mapping->toNewIssue($this->buildData($mapping->getExpectedDetails()));
+        $details = $this->buildDetails($expectations = $mapping->getExpectedDetails());
+
+        return $mapping->toNewIssue($details->getDetails());
     }
 
     /**
@@ -46,16 +49,18 @@ class OptionStrategy implements IssueStrategy
     public function updateExisting(IssueTracker $tracker, Issue $existing)
     {
         $mapping = $tracker->getMapping();
-        return $mapping->toNewIssue($this->buildData($mapping->getExpectedDetails($existing)));
+        $details = $this->buildDetails($mapping->getExpectedDetails($existing));
+
+        return $mapping->toNewIssue($details->getDetails());
     }
 
     /**
      * Constructs the array of data
-     * 
+     *
      * @param ExpectedDetails $expectations
-     * @return array
+     * @return Details
      */
-    protected function buildData(ExpectedDetails $expectations)
+    protected function buildDetails(ExpectedDetails $expectations)
     {
         $out = $expectations->getDefaults();
         foreach ($this->input->getOption('data') as $option) {
@@ -63,6 +68,11 @@ class OptionStrategy implements IssueStrategy
             $out[$key] = $value;
         }
 
-        return $out;
+        $details = new Details($out);
+        if (!$details->satisfy($expectations)) {
+            throw new \DomainException('Issue validation failed: ' . implode(',', $details->getViolations()));
+        }
+
+        return $details;
     }
 }

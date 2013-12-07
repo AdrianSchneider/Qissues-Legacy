@@ -28,7 +28,7 @@ class Details
         $this->violations = array();
 
         foreach ($expectations as $field => $expectation) {
-            if ($expectation->isRequired() and !isset($this->details[$field])) {
+            if ($expectation->isRequired() and empty($this->details[$field])) {
                 $this->violations[] = "Required field '$field' was missing";
                 return false;
             }

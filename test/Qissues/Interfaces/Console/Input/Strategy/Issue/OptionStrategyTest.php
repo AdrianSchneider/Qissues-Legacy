@@ -15,7 +15,7 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
             'title=Hello',
             'description=World'
         );
-        
+
         $strategy = new OptionStrategy();
         $strategy->init(
             $input = $this->getMock('Symfony\Component\Console\Input\InputInterface'),
@@ -69,7 +69,7 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
         );
 
         $originalIssue = $this->getMockBuilder('Qissues\Domain\Model\Issue')->disableOriginalConstructor()->getMock();
-        
+
         $strategy = new OptionStrategy();
         $strategy->init(
             $input = $this->getMock('Symfony\Component\Console\Input\InputInterface'),
@@ -113,5 +113,46 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
         ;
 
         $issue = $strategy->updateExisting($tracker, $originalIssue);
+    }
+
+    public function testThrowsDomainExceptionWhenValidationFails()
+    {
+        $data = array(
+            'title=',
+            'description='
+        );
+
+        $details = new ExpectedDetails(array(new ExpectedDetail('title', true, '')));
+
+        $strategy = new OptionStrategy();
+        $strategy->init(
+            $input = $this->getMock('Symfony\Component\Console\Input\InputInterface'),
+            $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface'),
+            $application = $this->getMockBuilder('Symfony\Component\Console\Application')->disableOriginalConstructor()->getMock()
+        );
+
+        $tracker = new IssueTracker(
+            $repository = $this->getMock('Qissues\Domain\Model\IssueRepository'),
+            $mapping = $this->getMock('Qissues\Application\Tracker\FieldMapping'),
+            $features = $this->getMock('Qissues\Application\Tracker\Support\FeatureSet'),
+            $workflow = $this->getMock('Qissues\Domain\Model\Workflow')
+        );
+
+        $input
+            ->expects($this->once())
+            ->method('getOption')
+            ->with('data')
+            ->will($this->returnValue($data))
+        ;
+
+        $mapping
+            ->expects($this->once())
+            ->method('getExpectedDetails')
+            ->with(null)
+            ->will($this->returnValue($details))
+        ;
+
+        $this->setExpectedException('DomainException', 'validation failed');
+        $strategy->createNew($tracker);
     }
 }

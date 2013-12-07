@@ -27,9 +27,15 @@ class QueryIssues
     public function __invoke(SearchCriteria $criteria)
     {
         $issues = new Issues($this->repository->query($criteria));
-        $filter = new CriteriaFilter($criteria);
-        $sorter = new CriteriaSorter($criteria);
 
-        return $issues->filter($filter)->sort($sorter);
+        $filter = new CriteriaFilter($criteria);
+        $issues = $issues->filter($filter);
+
+        if ($criteria->getSortFields()) {
+            $sorter = new CriteriaSorter($criteria);
+            $issues = $issues->sort($sorter);
+        }
+
+        return $issues;
     }
 }

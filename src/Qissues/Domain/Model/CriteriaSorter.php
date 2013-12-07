@@ -6,6 +6,13 @@ class CriteriaSorter
 {
     protected $criteria;
 
+    protected $fieldMapping = array(
+        'title'       => 'compareStrings',
+        'description' => 'compareStrings',
+        'dateCreated' => 'compareDates',
+        'dateUpdated' => 'compareDates'
+    );
+
     /**
      * @param SearchCriteria $criteria
      */
@@ -27,12 +34,48 @@ class CriteriaSorter
      */
     public function __invoke(Issue $a, Issue $b)
     {
-        return 0;
-
-        /*
-            foreach (array_reverse($this->criteria->getSortFields()) as $field => $value) {
-
+        foreach ($this->buildSortingStack($a, $b) as $score) {
+            if ($score) {
+                return $score;
             }
-        */
+        }
+
+        return 0;
+    }
+
+    /**
+     * Creates a list of scores
+     *
+     * @param Issue $issue
+     * @param Issue $issue
+     * @return array
+     */
+    protected function buildSortingStack(Issue $a, Issue $b)
+    {
+        $out = array();
+        foreach ($this->criteria->getSortFields() as $field) {
+            $comparison = $this->fieldMapping[$field];
+            $getter = 'get' . ucfirst($field);
+
+            $out[] = call_user_func(
+                array($this, $comparison),
+                $a->$getter(),
+                $b->$getter()
+            );
+        }
+
+        return $out;
+    }
+
+    /**
+     * Wraps strcmp to limit results within -1 and 1
+     *
+     * @param string $a
+     * @param string $b
+     * @return integer -1, 0, 1
+     */
+    protected function compareStrings($a, $b)
+    {
+        return max(-1, min(1, strcmp($a, $b)));
     }
 }

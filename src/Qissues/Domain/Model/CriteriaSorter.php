@@ -78,4 +78,16 @@ class CriteriaSorter
     {
         return max(-1, min(1, strcmp($a, $b)));
     }
+
+    /**
+     * Sort comparison on dates
+     *
+     * @param DateTime $a
+     * @param DateTime $b
+     * @return integer -1, 0, 1
+     */
+    protected function compareDates(\DateTime $a, \DateTime $b)
+    {
+        return $a == $b ? 0 : ($a < $b ? -1 : 1);
+    }
 }

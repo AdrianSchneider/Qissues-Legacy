@@ -7,6 +7,17 @@ use Qissues\Domain\Shared\Status;
 
 class CriteriaSorterTest extends \PHPUnit_Framework_TestCase
 {
+    public function testDefaultsToZero()
+    {
+        $sorter = new CriteriaSorter(new SearchCriteria);
+        $score = $sorter(
+            new Issue(1, 't', 'd', new Status('open'), new \DateTime, new \DateTime),
+            new Issue(2, 't', 'd', new Status('open'), new \DateTime, new \DateTime)
+        );
+
+        $this->assertEquals(0, $score);
+    }
+
     public function testSortByTitle()
     {
         $criteria = new SearchCriteria();
@@ -34,6 +45,20 @@ class CriteriaSorterTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals(-1, $score);
+    }
+
+    public function testSortsByDates()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('dateCreated');
+
+        $sorter = new CriteriaSorter($criteria);
+        $score = $sorter(
+            new Issue(1, 't', 'd', new Status('open'), new \DateTime('2014-01-01'), new \DateTime),
+            new Issue(2, 't', 'd', new Status('open'), new \DateTime('2013-01-01'), new \DateTime)
+        );
+
+        $this->assertEquals(1, $score);
     }
 
     public function testMultiSortProcess()

@@ -23,6 +23,11 @@ class ExpectedDetails implements \ArrayAccess, \IteratorAggregate, \Countable
         $this->expected = $expected;
     }
 
+    /**
+     * Returns key/value pairs of the default values
+     *
+     * @return array [fieldName => default value]
+     */
     public function getDefaults()
     {
         $defaults = array();
@@ -32,31 +37,64 @@ class ExpectedDetails implements \ArrayAccess, \IteratorAggregate, \Countable
         return $defaults;
     }
 
+    /**
+     * Implements \ArrayAccess
+     *
+     * @param string $offset
+     * @return boolean
+     */
     public function offsetExists($offset)
     {
         return isset($this->indexed[$offset]);
     }
 
+    /**
+     * Implements \ArrayAccess
+     *
+     * @param string $offset
+     * @return ExpectedDetail
+     */
     public function offsetGet($offset)
     {
         return $this->indexed[$offset];
     }
 
+    /**
+     * Implements \ArrayAccess
+     *
+     * @param string $offset
+     * @param mixed $value
+     * @throws \BadMethodCallException always
+     */
     public function offsetSet($offset, $value)
     {
         throw new \BadMethodCallException('ExpectedDetails is immutable');
     }
 
+    /**
+     * Implements \ArrayAccess
+     *
+     * @param string $offset
+     * @throws \BadMethodCallException always
+     */
     public function offsetUnset($offset)
     {
         throw new \BadMethodCallException('ExpectedDetails is immutable');
     }
 
+    /**
+     * Implements /IteratorAggregate
+     * @return ArrayIterator
+     */
     public function getIterator()
     {
         return new \ArrayIterator($this->indexed);
     }
 
+    /**
+     * Implements \Countable
+     * @return integer number of items
+     */
     public function count()
     {
         return count($this->expected);

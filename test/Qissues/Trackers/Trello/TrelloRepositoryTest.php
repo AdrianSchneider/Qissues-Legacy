@@ -105,12 +105,6 @@ class TrelloRepositoryTest extends \PHPUnit_Framework_TestCase
             ->with(array('issue'))
             ->will($this->returnValue($issues[0]))
         ;
-        $mapping
-            ->expects($this->once())
-            ->method('filterIssues')
-            ->with($issues)
-            ->will($this->returnValue($issues))
-        ;
 
         $this->mock->addResponse(new Response(200, null, json_encode($payload)));
 
@@ -142,12 +136,6 @@ class TrelloRepositoryTest extends \PHPUnit_Framework_TestCase
             ->method('toIssue')
             ->with(array('issue'))
             ->will($this->returnValue($issues[0]))
-        ;
-        $mapping
-            ->expects($this->once())
-            ->method('filterIssues')
-            ->with($issues)
-            ->will($this->returnValue($issues))
         ;
 
         $this->mock->addResponse(new Response(200, null, json_encode($payload)));

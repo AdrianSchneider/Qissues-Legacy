@@ -3,6 +3,7 @@
 namespace Qissues\Domain\Service;
 
 use Qissues\Domain\Model\CriteriaFilter;
+use Qissues\Domain\Model\CriteriaSorter;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Domain\Model\IssueRepository;
 use Qissues\Domain\Model\Response\Issues;
@@ -26,6 +27,9 @@ class QueryIssues
     public function __invoke(SearchCriteria $criteria)
     {
         $issues = new Issues($this->repository->query($criteria));
-        return $issues->filter(new CriteriaFilter($criteria));
+        $filter = new CriteriaFilter($criteria);
+        $sorter = new CriteriaSorter($criteria);
+
+        return $issues->filter($filter)->sort($sorter);
     }
 }

@@ -102,8 +102,7 @@ class TrelloRepository implements IssueRepository, BasicTransitioner
             $response = $response['cards'];
         }
 
-        $issues = array_map(array($this->mapping, 'toIssue'), $response);
-        return $this->mapping->filterIssues($issues, $criteria);
+        return array_map(array($this->mapping, 'toIssue'), $response);
     }
 
     /**

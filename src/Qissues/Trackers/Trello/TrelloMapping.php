@@ -225,63 +225,7 @@ class TrelloMapping implements FieldMapping
      */
     public function filterIssues(array $issues, SearchCriteria $criteria)
     {
-        $out = array();
-        foreach ($issues as $issue) {
-            $matchesStatus = false;
-
-            if ($statuses = $criteria->getStatuses()) {
-                foreach ($criteria->getStatuses() as $status) {
-                    if (stripos($issue->getStatus()->getStatus(), $status->getStatus()) !== false) {
-                        $matchesStatus = true;
-                        break;
-                    }
-                }
-                if (!$matchesStatus) {
-                    continue;
-                }
-            }
-
-            $matchesLabel = false;
-            if ($labels = $criteria->getLabels()) {
-                foreach ($criteria->getLabels() as $label) {
-                    foreach ($issue->getLabels() as $issueLabel) {
-                        if (stripos($issueLabel->getName(), $label->getName()) !== false) {
-                            $matchesLabel = true;
-                            break 2;
-                        }
-                    }
-                }
-                if (!$matchesLabel) {
-                    continue;
-                }
-            }
-
-            if ($assignees = $criteria->getAssignees()) {
-                if (!$issue->getAssignee()) {
-                    continue;
-                }
-                $matches = false;
-                foreach ($assignees as $assignee) {
-                    if ($assignee instanceof CurrentUser) {
-                        if ($issue->getAssignee()->getAccount() === $this->metadata->getMyAccount()) {
-                            $matches = true;
-                        }
-                    }
-                    if (stripos($issue->getAssignee()->getAccount(), $assignee->getAccount()) !== false) {
-                        $matches = true;
-                    }
-                    if ($issue->getAssignee()->getName() and stripos($issue->getAssignee()->getName(), $assignee->getAccount()) !== false) {
-                        $matches = true;
-                    }
-                }
-                if (!$matches) {
-                    continue;
-                }
-            }
-
-            $out[] = $issue;
-        }
-
+        $out = $issues;
         if ($sortFields = $criteria->getSortFields()) {
             if (count($sortFields) > 1) {
                 throw new \DomainException('Cannot multisort on Trello');

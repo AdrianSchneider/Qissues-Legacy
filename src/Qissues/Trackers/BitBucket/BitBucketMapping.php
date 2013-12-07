@@ -14,6 +14,7 @@ use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Priority;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\Label;
+use Qissues\Application\Tracker\Metadata\Metadata;
 use Qissues\Application\Tracker\FieldMapping;
 use Qissues\Domain\Model\SearchCriteria;
 
@@ -49,7 +50,7 @@ class BitBucketMapping implements FieldMapping
     /**
      * @param BitBucketMetadata $metadata
      */
-    public function __construct(BitBucketMetadata $metadata)
+    public function __construct(Metadata $metadata)
     {
         $this->metadata = $metadata;
         $this->priorityMap = array_flip($this->priorities);

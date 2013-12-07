@@ -3,6 +3,8 @@
 namespace Qissues\Tests\Console\Input\Strategy\Issue;
 
 use Qissues\Application\Tracker\IssueTracker;
+use Qissues\Domain\Shared\ExpectedDetail;
+use Qissues\Domain\Shared\ExpectedDetails;
 use Qissues\Interfaces\Console\Input\Strategy\Issue\OptionStrategy;
 
 class OptionStrategyTest extends \PHPUnit_Framework_TestCase
@@ -35,14 +37,25 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($data))
         ;
 
+        $details = new ExpectedDetails(array(
+            new ExpectedDetail('field', true, 'value')
+        ));
+
         $mapping
             ->expects($this->once())
             ->method('toNewIssue')
             ->with(array(
                 'title' => 'Hello',
-                'description' => 'World'
+                'description' => 'World',
+                'field' => 'value'
             ))
             ->will($this->returnValue($this->getMockBuilder('Qissues\Domain\Model\Request\NewIssue')->disableOriginalConstructor()->getMock()))
+        ;
+        $mapping
+            ->expects($this->once())
+            ->method('getExpectedDetails')
+            ->with(null)
+            ->will($this->returnValue($details))
         ;
 
         $issue = $strategy->createNew($tracker);
@@ -54,6 +67,8 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
             'title=Hello',
             'description=World'
         );
+
+        $originalIssue = $this->getMockBuilder('Qissues\Domain\Model\Issue')->disableOriginalConstructor()->getMock();
         
         $strategy = new OptionStrategy();
         $strategy->init(
@@ -76,16 +91,27 @@ class OptionStrategyTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($data))
         ;
 
+        $details = new ExpectedDetails(array(
+            new ExpectedDetail('field', true, 'value')
+        ));
+
         $mapping
             ->expects($this->once())
             ->method('toNewIssue')
             ->with(array(
                 'title' => 'Hello',
-                'description' => 'World'
+                'description' => 'World',
+                'field' => 'value'
             ))
             ->will($this->returnValue($this->getMockBuilder('Qissues\Domain\Model\Request\NewIssue')->disableOriginalConstructor()->getMock()))
         ;
+        $mapping
+            ->expects($this->once())
+            ->method('getExpectedDetails')
+            ->with($originalIssue)
+            ->will($this->returnValue($details))
+        ;
 
-        $issue = $strategy->updateExisting($tracker, $this->getMockBuilder('Qissues\Domain\Model\Issue')->disableOriginalConstructor()->getMock());
+        $issue = $strategy->updateExisting($tracker, $originalIssue);
     }
 }

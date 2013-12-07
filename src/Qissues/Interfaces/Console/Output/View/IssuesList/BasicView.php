@@ -2,6 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Output\View\IssuesList;
 
+use Qissues\Domain\Model\Response\Issues;
 use Qissues\Interfaces\Console\Output\Renderer\TableRenderer;
 use Qissues\Application\Tracker\Support\FeatureSet;
 
@@ -14,7 +15,7 @@ class BasicView
         $this->tableRenderer = $tableRenderer;
     }
 
-    public function render(array $issues, FeatureSet $features, $width, $height)
+    public function render(Issues $issues, FeatureSet $features, $width, $height)
     {
         $renderIssues = array();
         foreach ($issues as $issue) {

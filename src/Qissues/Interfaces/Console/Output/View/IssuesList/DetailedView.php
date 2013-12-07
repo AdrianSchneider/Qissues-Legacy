@@ -2,6 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Output\View\IssuesList;
 
+use Qissues\Domain\Model\Response\Issues;
 use Qissues\Application\Tracker\Support\Feature;
 use Qissues\Application\Tracker\Support\FeatureSet;
 use Qissues\Application\Tracker\Support\SupportLevel;
@@ -16,7 +17,7 @@ class DetailedView
         $this->tableRenderer = $tableRenderer;
     }
 
-    public function render(array $issues, FeatureSet $features, $width, $height)
+    public function render(Issues $issues, FeatureSet $features, $width, $height)
     {
         $renderIssues = array();
         foreach ($issues as $issue) {

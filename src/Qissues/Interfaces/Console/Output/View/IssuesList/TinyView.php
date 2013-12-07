@@ -3,6 +3,7 @@
 namespace Qissues\Interfaces\Console\Output\View\IssuesList;
 
 use Qissues\Domain\Model\Issue;
+use Qissues\Domain\Model\Response\Issues;
 use Qissues\Application\Tracker\Support\FeatureSet;
 use Qissues\Interfaces\Console\Output\Renderer\SpacedTableRenderer;
 
@@ -19,7 +20,7 @@ class TinyView
         $this->colors = $colors;
     }
 
-    public function render(array $issues, FeatureSet $features, $width, $height)
+    public function render(Issues $issues, FeatureSet $features, $width, $height)
     {
         $maxLength = 0;
         foreach ($issues as $issue) {

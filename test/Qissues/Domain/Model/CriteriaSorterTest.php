@@ -4,6 +4,7 @@ namespace Qissues\Domain\Model;
 
 use Qissues\Domain\Model\CriteriaSorter;
 use Qissues\Domain\Shared\Status;
+use Qissues\Domain\Shared\Priority;
 
 class CriteriaSorterTest extends \PHPUnit_Framework_TestCase
 {
@@ -56,6 +57,20 @@ class CriteriaSorterTest extends \PHPUnit_Framework_TestCase
         $score = $sorter(
             new Issue(1, 't', 'd', new Status('open'), new \DateTime('2014-01-01'), new \DateTime),
             new Issue(2, 't', 'd', new Status('open'), new \DateTime('2013-01-01'), new \DateTime)
+        );
+
+        $this->assertEquals(1, $score);
+    }
+
+    public function testSortsByPriorities()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('priority');
+
+        $sorter = new CriteriaSorter($criteria);
+        $score = $sorter(
+            new Issue(1, 't', 'd', new Status('open'), new \DateTime('2014-01-01'), new \DateTime, null, new Priority(1, 'low')),
+            new Issue(2, 't', 'd', new Status('open'), new \DateTime('2013-01-01'), new \DateTime, null, new Priority(5, 'high'))
         );
 
         $this->assertEquals(1, $score);

@@ -2,6 +2,8 @@
 
 namespace Qissues\Domain\Model;
 
+use Qissues\Domain\Shared\Priority;
+
 class CriteriaSorter
 {
     protected $criteria;
@@ -10,7 +12,8 @@ class CriteriaSorter
         'title'       => 'compareStrings',
         'description' => 'compareStrings',
         'dateCreated' => 'compareDates',
-        'dateUpdated' => 'compareDates'
+        'dateUpdated' => 'compareDates',
+        'priority'    => 'comparePriorities'
     );
 
     /**
@@ -89,5 +92,20 @@ class CriteriaSorter
     protected function compareDates(\DateTime $a, \DateTime $b)
     {
         return $a == $b ? 0 : ($a < $b ? -1 : 1);
+    }
+
+    /**
+     * Sort comparison on Priorities (DESC)
+     *
+     * @param Priority $a
+     * @param Priority $b
+     * @return integer -1, 0, 1
+     */
+    protected function comparePriorities(Priority $a, Priority $b)
+    {
+        $a = $a->getPriority();
+        $b = $b->getPriority();
+
+        return $a == $b ? 0 : ($a > $b ? -1 : 1);
     }
 }

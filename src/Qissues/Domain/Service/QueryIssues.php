@@ -20,6 +20,8 @@ class QueryIssues
 
     /**
      * Query the issue repository
+     * The repository is responsible for as much filtering as possible,
+     * finally re-filtering and sorting at run-time afterward.
      *
      * @param SearchCriteria $criteria
      * @return Issues

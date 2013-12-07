@@ -15,6 +15,10 @@ class ReportManager
 
     public function findReport(InputInterface $input)
     {
+        if ($input->getOption('no-report')) {
+            return;
+        }
+
         if ($name = $input->getOption('report')) {
             if (!isset($this->reports[$name])) {
                 throw new Exception('Could not find report');

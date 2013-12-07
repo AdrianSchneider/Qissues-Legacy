@@ -34,6 +34,7 @@ class QueryCommand extends Command
             ->addOption('ids', 'i', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by IDs', null)
             ->addOption('labels', 'l', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Filter by labels', null)
             ->addOption('report', 'r', InputOption::VALUE_OPTIONAL, 'Load a report from configuration')
+            ->addOption('no-report', null, InputOption::VALUE_NONE, 'Ignore the default report')
 
             // sorting or limiting
             ->addOption('sort', 'o', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Sort results by [priority]', array())

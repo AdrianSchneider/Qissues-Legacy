@@ -37,6 +37,13 @@ class ReportManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('allthebugs'), $report);
     }
 
+    public function testUseNoReportIfNoReportFlagPassed()
+    {
+        $manager = new ReportManager(array('default' => array('allthebugs')));
+        $report = $manager->findReport($this->getInput('', true));
+        $this->assertNull($report);
+    }
+
     public function testUseNoReportWhenAnyCriteriaAlreadyExists()
     {
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
@@ -68,14 +75,19 @@ class ReportManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($report);
     }
 
-    protected function getInput($returningValue)
+    protected function getInput($returningValue, $noReport = false)
     {
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
         $input
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('getOption')
-            ->with('report')
-            ->will($this->returnValue($returningValue))
+            ->will($this->returnCallback(function($option) use ($returningValue, $noReport) {
+                if ($option == 'no-report') {
+                    return $noReport;
+                }
+
+                return $returningValue;
+            }))
         ;
 
         return $input;

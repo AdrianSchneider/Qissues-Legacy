@@ -49,7 +49,11 @@ class Issues implements \Countable, \IteratorAggregate, \ArrayAccess
     public function sort($cb)
     {
         $localIssues = $this->results;
-        usort($localIssues, $cb);
+
+        // https://bugs.php.net/bug.php?id=50688
+        // throwing an exception within sort causes a PHP warning
+        @usort($localIssues, $cb);
+
         return new self($localIssues);
     }
 

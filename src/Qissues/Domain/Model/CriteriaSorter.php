@@ -8,9 +8,16 @@ class CriteriaSorter
 {
     protected $criteria;
 
+    protected $fieldTranslations = array(
+        'created' => 'dateCreated',
+        'updated' => 'dateUpdated'
+    );
+
     protected $fieldMapping = array(
         'title'       => 'compareStrings',
         'description' => 'compareStrings',
+        'created'     => 'compareDates',
+        'updated'     => 'compareDates',
         'dateCreated' => 'compareDates',
         'dateUpdated' => 'compareDates',
         'priority'    => 'comparePriorities'
@@ -37,7 +44,7 @@ class CriteriaSorter
      */
     public function __invoke(Issue $a, Issue $b)
     {
-        foreach ($this->buildSortingStack($a, $b) as $score) {
+        foreach ($this->getSortValues($a, $b) as $score) {
             if ($score) {
                 return $score;
             }
@@ -53,18 +60,23 @@ class CriteriaSorter
      * @param Issue $issue
      * @return array
      */
-    protected function buildSortingStack(Issue $a, Issue $b)
+    protected function getSortValues(Issue $a, Issue $b)
     {
         $out = array();
         foreach ($this->criteria->getSortFields() as $field) {
+            if (isset($this->fieldTranslations[$field])) {
+                $field = $this->fieldTranslations[$field];
+            }
+
+            if (!isset($this->fieldMapping[$field])) {
+                $fields = implode(', ', array_keys($this->fieldMapping));
+                throw new \DomainException("$field is an invalid sort field; valid fields: $fields");
+            }
+
             $comparison = $this->fieldMapping[$field];
             $getter = 'get' . ucfirst($field);
 
-            $out[] = call_user_func(
-                array($this, $comparison),
-                $a->$getter(),
-                $b->$getter()
-            );
+            $out[] = call_user_func(array($this, $comparison), $a->$getter(), $b->$getter());
         }
 
         return $out;
@@ -101,10 +113,10 @@ class CriteriaSorter
      * @param Priority $b
      * @return integer -1, 0, 1
      */
-    protected function comparePriorities(Priority $a, Priority $b)
+    protected function comparePriorities(Priority $a = null, Priority $b = null)
     {
-        $a = $a->getPriority();
-        $b = $b->getPriority();
+        $a = $a ? $a->getPriority() : 0;
+        $b = $b ? $b->getPriority() : 0;
 
         return $a == $b ? 0 : ($a > $b ? -1 : 1);
     }

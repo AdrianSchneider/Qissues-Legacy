@@ -51,7 +51,7 @@ class CriteriaSorterTest extends \PHPUnit_Framework_TestCase
     public function testSortsByDates()
     {
         $criteria = new SearchCriteria();
-        $criteria->addSortField('dateCreated');
+        $criteria->addSortField('created');
 
         $sorter = new CriteriaSorter($criteria);
         $score = $sorter(
@@ -92,5 +92,19 @@ class CriteriaSorterTest extends \PHPUnit_Framework_TestCase
 
         $ids = array_map(function($i) { return $i->getId(); }, $issues);
         $this->assertEquals(array(3, 2, 1), $ids);
+    }
+
+    public function testThrowsExceptionOnInvalidField()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('wat');
+
+        $this->setExpectedException('DomainException', 'invalid');
+
+        $sorter = new CriteriaSorter($criteria);
+        $sorter(
+            new Issue(1, 't', 'd', new Status('open'), new \DateTime('2014-01-01'), new \DateTime, null, new Priority(1, 'low')),
+            new Issue(2, 't', 'd', new Status('open'), new \DateTime('2013-01-01'), new \DateTime, null, new Priority(5, 'high'))
+        );
     }
 }

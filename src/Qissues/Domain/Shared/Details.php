@@ -34,7 +34,7 @@ class Details
             }
 
             if ($options = $expectation->getOptions()) {
-                if (!empty($this->details[$field]) and !in_array($this->details[$field], $options)) {
+                if (!empty($this->details[$field]) and !$this->valueMatchesOptions($this->details[$field], $options)) {
                     $this->violations[] = "$field only accepts one of [" . implode(', ', $options) . "]";
                     return false;
                 }
@@ -42,6 +42,24 @@ class Details
         }
 
         return true;
+    }
+
+    /**
+     * Fuzzy match in_array replacement
+     *
+     * @param string $value
+     * @param array $options
+     * @return boolean
+     */
+    protected function valueMatchesOptions($value, array $options)
+    {
+        foreach ($options as $option) {
+            if (stripos($option, $value) !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

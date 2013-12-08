@@ -40,4 +40,15 @@ class DetailsTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($details->satisfy($expectations));
         $this->assertEquals(array("color only accepts one of [red, blue]"), $details->getViolations());
     }
+
+    public function testSatisfiedWhenFieldFuzzyMatches()
+    {
+        $expectations = new ExpectedDetails(array(
+            new ExpectedDetail('color', true, '', array('cherry red', 'deep blue'))
+        ));
+
+        $details = new Details(array('color' => 'red'));
+
+        $this->assertTrue($details->satisfy($expectations));
+    }
 }

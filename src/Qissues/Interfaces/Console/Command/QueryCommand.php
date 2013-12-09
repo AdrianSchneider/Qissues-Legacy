@@ -63,7 +63,9 @@ class QueryCommand extends Command
         }
 
         $queryIssues = new QueryIssues($repository);
-        if (!$issues = $queryIssues($criteria)) {
+        $issues = $queryIssues($criteria);
+
+        if (!count($issues)) {
             $output->writeln("<info>No issues found!</info>");
             return 0;
         }

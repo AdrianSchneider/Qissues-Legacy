@@ -194,7 +194,7 @@ class BitBucketRepository implements IssueRepository, BasicTransitioner
         $request = $this->request('GET', sprintf('/repositories/%s/issues/components', $this->repository));
         $response = $request->send()->json();
 
-        $data['components'] = $response;
+        $data['components'] = $response ?: array();
         return $data;
     }
 }

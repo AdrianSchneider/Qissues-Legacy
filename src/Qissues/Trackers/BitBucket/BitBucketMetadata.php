@@ -19,6 +19,7 @@ class BitBucketMetadata implements Metadata
 
     public function getAllowedComponents()
     {
+        $components = array();
         foreach ($this->components as $component) {
             $components[] = $component['name'];
         }

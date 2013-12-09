@@ -22,5 +22,5 @@ use Qissues\Interfaces\Console\Application;
 error_reporting(-1);
 ini_set('display_errors', 1);
 
-$application = new Application();
+$application = new Application('qissues', '1.0.0');
 $application->run();

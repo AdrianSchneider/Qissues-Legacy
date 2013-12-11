@@ -33,6 +33,20 @@ class CriteriaSorterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $score);
     }
 
+    public function testSortByStringIsCaseInsensitive()
+    {
+        $criteria = new SearchCriteria();
+        $criteria->addSortField('title');
+
+        $sorter = new CriteriaSorter($criteria);
+        $score = $sorter(
+            new Issue(1, 'Z', 'xxx', new Status('open'), new \DateTime, new \DateTime),
+            new Issue(2, 'a', 'zzz', new Status('open'), new \DateTime, new \DateTime)
+        );
+
+        $this->assertEquals(1, $score);
+    }
+
     public function testSortsByMultipleFields()
     {
         $criteria = new SearchCriteria();

@@ -91,7 +91,7 @@ class CriteriaSorter
      */
     protected function compareStrings($a, $b)
     {
-        return max(-1, min(1, strcmp($a, $b)));
+        return max(-1, min(1, strcmp(strtolower($a), strtolower($b))));
     }
 
     /**

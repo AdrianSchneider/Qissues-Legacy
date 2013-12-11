@@ -24,12 +24,23 @@ Currently supported:
 
 ## Installation
 
-Clone or download the repository, and run `make`. This will create a `qissues.phar` build in the current directory.
+You can either download the latest release, or compile it yourself.
 
-### Adding it to your $PATH
-`make install` will move the phar build to `~/bin/qissues` so it's always accessible as `qissues`. If you don't already have `~/bin` in your path, you can add it via:
+### Install Latest Release
 
-    export PATH="$PATH":~/bin
+You can download the latest [release from GitHub](https://github.com/AdrianSchneider/Qissues/releases) or from [qissuescli.com](http://qissuescli.com/qissues.phar). For the copy and pasters:
+
+    wget http://qissuescli.com/qissues.phar
+    chmod +x qissues.phar
+    mv qissues.phar ~/bin/qissues
+
+### Compile from source
+This method will require PHP's `phar.readonly` setting to be enabled.
+
+    https://github.com/AdrianSchneider/Qissues.git
+    make && make install
+
+Both of these methods will install qissues to `~/bin/qissues`, which will require `~/bin` in your $PATH.
 
 ## Project Setup
 

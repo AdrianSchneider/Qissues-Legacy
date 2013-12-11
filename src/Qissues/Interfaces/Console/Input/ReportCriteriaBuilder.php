@@ -22,6 +22,7 @@ class ReportCriteriaBuilder
         $this->handleTypes($reportConfig, $criteria);
         $this->handleAssignees($reportConfig, $criteria);
         $this->handleIds($reportConfig, $criteria);
+        $this->handleSorting($reportConfig, $criteria);
 
         return $criteria;
     }
@@ -78,6 +79,15 @@ class ReportCriteriaBuilder
             }
 
             $criteria->setNumbers($numbers);
+        }
+    }
+
+    protected function handleSorting($reportConfig, $criteria)
+    {
+        if (!empty($reportConfig['sortFields'])) {
+            foreach ($reportConfig['sortFields'] as $field) {
+                $criteria->addSortField($field);
+            }
         }
     }
 }

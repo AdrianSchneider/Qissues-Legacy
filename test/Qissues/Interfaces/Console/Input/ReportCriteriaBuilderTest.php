@@ -68,4 +68,12 @@ class ReportCriteriaBuilderTest extends \PHPUnit_Framework_TestCase
         $ids = $criteria->getNumbers();
         $this->assertEquals(array(5, 4, 3, 2, 1), array_map('strval', $ids));
     }
+
+    public function testHandleSorting()
+    {
+        $builder = new ReportCriteriaBuilder();
+        $criteria = $builder->build(array('sortFields' => array('a', 'b')));
+
+        $this->assertEquals(array('a', 'b'), $criteria->getSortFields());
+    }
 }

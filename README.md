@@ -37,7 +37,8 @@ You can download the latest [release from GitHub](https://github.com/AdrianSchne
 ### Compile from source
 This method will require PHP's `phar.readonly` setting to be enabled.
 
-    https://github.com/AdrianSchneider/Qissues.git
+    git clone https://github.com/AdrianSchneider/Qissues.git qissues
+    cd qissues
     make && make install
 
 Both of these methods will install qissues to `~/bin/qissues`, which will require `~/bin` in your $PATH.

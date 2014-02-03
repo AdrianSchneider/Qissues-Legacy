@@ -35,20 +35,20 @@ class TableRenderer
         $rows[0] = array_keys($data[0]);
 
         foreach ($data as $info) {
-            $rows[] = array_values($info);
+            $rows[] = array_values(array_map('trim', $info));
         }
 
         foreach ($rows as $row) {
             foreach ($row as $key => $value) {
-                if (!isset($this->lengths[$key]) or strlen($value) > $this->lengths[$key]) {
-                    $this->lengths[$key] = strlen($value);
+                if (!isset($this->lengths[$key]) or mb_strlen($value, 'utf-8') > $this->lengths[$key]) {
+                    $this->lengths[$key] = mb_strlen($value, 'utf-8');
                 }
             }
         }
 
         foreach ($rows as $i => $row) {
             foreach ($row as $key => $value) {
-                $rows[$i][$key] = str_pad($value, $this->lengths[$key], ' ');
+                $rows[$i][$key] = $this->pad($value, $this->lengths[$key], ' ');
                 if (!$i) {
                     $rows[$i][$key] = str_replace((string)$value, "<info>$value</info>", $rows[$i][$key]);
                 } else if (!$key) {
@@ -93,5 +93,22 @@ class TableRenderer
         }
 
         return " $left$center$right ";
+    }
+
+    /**
+     * Basic utf-8 compatible padder
+     *
+     * @param string $str
+     * @param integer $len length to pad until
+     * @param string $with pad with string
+     * @return $str padding with $with to length $len
+     */
+    protected function pad($str, $len, $with)
+    {
+        while (mb_strlen($str, 'utf-8') < $len) {
+            $str .= $with;
+        }
+
+        return $str;
     }
 }

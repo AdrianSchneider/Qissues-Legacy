@@ -54,7 +54,7 @@ class Details
     protected function valueMatchesOptions($value, array $options)
     {
         foreach ($options as $option) {
-            if (stripos($option, $value) !== false) {
+            if (stripos((string)$option, (string)$value) !== false) {
                 return true;
             }
         }

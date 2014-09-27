@@ -35,6 +35,13 @@ interface IssueRepository
     function delete(Number $num);
 
     /**
+     * Plan an issue for a specific milestone
+     * @param Number $issue
+     * @param Milestone $milestoneNumber
+     */
+    function plan(Number $issue, Milestone $milestone);
+
+    /**
      * Assign an Issue to User
      * @param Number $issue
      * @param User $user

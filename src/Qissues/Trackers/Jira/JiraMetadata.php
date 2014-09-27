@@ -67,4 +67,13 @@ class JiraMetadata implements Metadata
 
         return $labels;
     }
+
+    public function getAllowedSprints()
+    {
+        $sprints = [];
+        foreach ($this->project['sprints'] as $sprint) {
+            $sprints[] = $sprint['name'];
+        }
+        return $sprints;
+    }
 }

@@ -10,7 +10,8 @@
         "symfony/yaml": "*",
         "symfony/config": "2.1.*",
         "symfony/filesystem": "*",
-        "behat/behat": "2.4.*@stable"
+        "behat/behat": "2.4.*@stable",
+        "underscore": "*"
     },
     "config": {
         "bin-dir": "bin"

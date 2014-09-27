@@ -118,11 +118,32 @@ class JiraRepository implements IssueRepository
      */
     public function persist(NewIssue $issue)
     {
+        $payload = $this->mapping->issueToArray($issue);
+        $sprint = $payload['sprint'];
+        unset($payload['sprint']);
+
         $request = $this->request('POST', "/issue");
         $request->setBody(json_encode($this->mapping->issueToArray($issue)), 'application/json');
         $response = $request->send()->json();
         list($key, $id) = explode('-', $response['key']);
-        return new Number($id);
+        $number = new Number($id);
+
+        if($sprint) {
+            $this->plan($number, $sprint);
+        }
+
+        return $number;
+    }
+
+    public function plan(Number $issue, Milestone $milestone)
+    {
+        $request = $this->sprintRequest('PUT', '/sprint/rank');
+        $request->setBody(json_encode([
+            'customFieldId' => 10600,
+            'idOrKeys'      => array($this->projectKey . '-' . $issue->getNumber()),
+            'sprintId'      => $milestone->getNumber(),
+            'addToBacklog'  => false
+        ]), 'application/json');
     }
 
     /**
@@ -208,6 +229,21 @@ class JiraRepository implements IssueRepository
         return $request;
     }
 
+    /*
+     * Prepares an authenticated HTTP request for sprint interaction
+     *
+     * @param string $method (GET, POST, etc.)
+     * @param string $url
+     * @return Request
+     */
+    protected function sprintRequest($method, $url)
+    {
+        $url = 'rest/greenhopper/1.0' . $url;
+        $request = call_user_func(array($this->client, $method), $url);
+        $request->setAuth($this->username, $this->password);
+        return $request;
+    }
+
     /**
      * Prepare the URL for an issue
      *
@@ -223,6 +259,27 @@ class JiraRepository implements IssueRepository
             $number->getNumber(),
             $append
         );
+    }
+
+    private function getViews()
+    {
+        $request = $this->sprintRequest('GET', '/rapidview');
+        $response = $request->send()->json();
+
+        return $response;
+    }
+
+    private function getSprints()
+    {
+        $request = $this->sprintRequest('GET', '/xboard/plan/backlog/data.json');
+        $request->getQuery()->merge([ 'rapidViewId' => 31 ]);
+
+        $response = $request->send()->json();
+
+        return array_map(function($sprint) {
+            unset($sprint['issuesIds']);
+            return $sprint;
+        }, $response['sprints']);
     }
 
     /**
@@ -280,6 +337,9 @@ class JiraRepository implements IssueRepository
                     'name' => $component['name']
                 );
             }
+
+            $metadata['views'] = $this->getViews();
+            $metadata['sprints'] = $this->getSprints();
 
             return $metadata;
         }

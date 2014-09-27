@@ -19,42 +19,47 @@ class DetailedView
 
     public function render(Issues $issues, FeatureSet $features, $width, $height)
     {
-        $renderIssues = array();
-        foreach ($issues as $issue) {
-            $title = $issue->getTitle();
-            $row = array(
-                '#'            => $issue->getId(),
-                'Title'        => strlen($title) > $width * 0.4
-                    ? (substr($title, 0, $width * 0.4) . '...')
-                    : $title,
-                'Status'       => $issue->getStatus(),
-                'Type'         => $issue->getType(),
-                'Labels'       => $issue->getLabels(),
-                'Priority'     => $issue->getPriority(),
-                'Assignee'     => $issue->getAssignee(),
-                'Date Created' => $issue->getDateCreated()->format('Y-m-d g:ia'),
-                'Date updated' => $issue->getDateUpdated()->format('Y-m-d g:ia'),
-                'Comments'     => $issue->getCommentCount()
-            );
+        return $this->tableRenderer->render(
+            $issues->map(function($issue) use ($width, $features) {
+                return $this->prepare($issue, $width, $features);
+            }),
+            $width
+        );
+    }
 
-            if (!$features->doesSupport('labels')) {
-                unset($row['Label']);
-            } elseif ($row['Labels'] and $features->supports('labels', 'multiple')) {
-                $row['Labels'] = implode(', ', array_map('strval', $row['Labels']));
-            } else {
-                $row['Labels'] = '';
-            }
+    protected function prepare($issue, $width, $features)
+    {
+        $title = $issue->getContent()->getTitle();
+        $row = array(
+            '#'            => $issue->getNumber(),
+            'Title'        => strlen($title) > $width * 0.4
+                ? (substr($title, 0, $width * 0.4) . '...')
+                : $title,
+            'Status'       => $issue->getMetadata()->getStatus(),
+            'Type'         => $issue->getMetadata()->getType(),
+            'Labels'       => $issue->getMetadata()->getLabels(),
+            'Priority'     => $issue->getMetadata()->getPriority(),
+            'Assignee'     => $issue->getMetadata()->getAssignee(),
+            'Date Created' => $issue->getMetadata()->getDateCreated()->format('Y-m-d g:ia'),
+            'Date updated' => $issue->getMetadata()->getDateUpdated()->format('Y-m-d g:ia'),
+            'Comments'     => $issue->getMetadata()->getCommentCount()
+        );
 
-            if (!$features->doesSupport('types')) {
-                unset($row['Type']);
-            }
-            if (!$features->doesSupport('priorities')) {
-                unset($row['Priority']);
-            }
-
-            $renderIssues[] = $row;
+        if (!$features->doesSupport('labels')) {
+            unset($row['Label']);
+        } elseif ($row['Labels'] and $features->supports('labels', 'multiple')) {
+            $row['Labels'] = implode(', ', array_map('strval', $row['Labels']));
+        } else {
+            $row['Labels'] = '';
         }
 
-        return $this->tableRenderer->render($renderIssues, $width);
+        if (!$features->doesSupport('types')) {
+            unset($row['Type']);
+        }
+        if (!$features->doesSupport('priorities')) {
+            unset($row['Priority']);
+        }
+
+        return $row;
     }
 }

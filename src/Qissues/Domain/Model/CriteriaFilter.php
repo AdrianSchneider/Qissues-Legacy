@@ -24,8 +24,10 @@ class CriteriaFilter
      * @param Issue $issue
      * @return boolean (true to keep)
      */
-    public function __invoke(Issue $issue)
+    public function __invoke(/*Issue*/ $issue)
     {
+        return true;
+
         if (!$this->satisfiesStatuses($issue)) {
             return false;
         }

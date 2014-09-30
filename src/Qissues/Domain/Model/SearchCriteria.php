@@ -7,6 +7,7 @@ use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Priority;
 use Qissues\Domain\Shared\Label;
+use Qissues\Domain\Shared\Milestone;
 
 /**
  * Value object for standardizing search criteria for trackers
@@ -19,6 +20,7 @@ class SearchCriteria
     protected $types;
     protected $priorities;
     protected $labels;
+    protected $milestones;
     protected $sortFields;
     protected $paging;
 
@@ -33,6 +35,7 @@ class SearchCriteria
         $this->sortFields = array();
         $this->paging = array(1, 50);
         $this->keywords = '';
+        $this->milestones = array();
     }
 
     public function setKeywords($keywords)
@@ -103,6 +106,16 @@ class SearchCriteria
     public function getLabels()
     {
         return $this->labels;
+    }
+
+    public function addMilestone(Milestone $milestone)
+    {
+        $this->milestones[] = $milestone;
+    }
+
+    public function getMilestones()
+    {
+        return $this->milestones;
     }
 
     public function addSortField($field)

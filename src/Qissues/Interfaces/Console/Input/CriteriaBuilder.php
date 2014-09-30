@@ -10,6 +10,7 @@ use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Priority;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Shared\Label;
+use Qissues\Domain\Shared\Milestone;
 use Symfony\Component\Console\Input\InputInterface;
 
 class CriteriaBuilder
@@ -24,6 +25,7 @@ class CriteriaBuilder
         $this->handleTypes($input, $criteria);
         $this->handleAssignees($input, $criteria);
         $this->handleIds($input, $criteria);
+        $this->handleMilestones($input, $criteria);
         $this->handleLabels($input, $criteria);
 
         $this->handleSorting($input, $criteria);
@@ -103,6 +105,15 @@ class CriteriaBuilder
         if ($labels = $input->getOption('labels')) {
             foreach ($labels as $label) {
                 $criteria->addLabel(new Label($label));
+            }
+        }
+    }
+
+    protected function handleMilestones($input, $criteria)
+    {
+        if ($milestones = $input->getOption('milestone')) {
+            foreach ($milestones as $milestone) {
+                $criteria->addMilestone(new Milestone($milestone));
             }
         }
     }

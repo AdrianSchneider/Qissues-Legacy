@@ -37,6 +37,7 @@ class JqlQueryBuilder
         $this->handleStatuses($criteria);
         $this->handleTypes($criteria);
         $this->handleAssignees($criteria);
+        $this->handleMilestones($criteria);
         $this->handleKeywords($criteria);
         $this->handleSorting($criteria);
         $this->handleIds($criteria);
@@ -63,6 +64,20 @@ class JqlQueryBuilder
     {
         if ($types = $criteria->getTypes()) {
             $this->where[] = $this->whereEquals('issuetype', array_map('strval', $types));
+        }
+    }
+
+    /**
+     * Filter by milestones if specified
+     * @param SearchCriteria $criteria
+     */
+    protected function handleMilestones(SearchCriteria $criteria)
+    {
+        if ($milestones = $criteria->getMilestones()) {
+            $this->where[] = sprintf(
+                'sprint IN (%s)',
+                implode(',', array_map(array($this->metadata, 'getMatchingMilestone'), array_map('strval', $milestones))
+            ));
         }
     }
 

@@ -5,6 +5,7 @@ namespace Qissues\Trackers\Jira;
 use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\CurrentUser;
 use Qissues\Domain\Shared\Status;
+use Qissues\Domain\Shared\Milestone;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Domain\Model\Request\NewIssue;

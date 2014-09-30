@@ -48,6 +48,21 @@ class JiraMetadata implements Metadata
         throw new \Exception('Label not found; supported labels: ' . implode(', ', $components));
     }
 
+    public function getMatchingMilestone($name)
+    {
+        $milestones = array();
+
+        foreach ($this->project['sprints'] as $sprint) {
+            if (stripos($sprint['name'], $name) !== false) {
+                return $sprint['id'];
+            }
+
+            $milestones[] = $sprint['name'];
+        }
+
+        throw new \Exception('Milestone not found; supported milestones: ' . implode(', ', $milestones));
+    }
+
     public function getAllowedTypes()
     {
         $types = array();

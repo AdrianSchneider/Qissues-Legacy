@@ -2,7 +2,7 @@
 
 namespace Qissues\Domain\Model;
 
-class RichIssue
+class RichIssue implements Issue
 {
     public function __construct(Number $number, IssueContent $content, IssueMetadata $metadata)
     {
@@ -11,18 +11,63 @@ class RichIssue
         $this->metadata = $metadata;
     }
 
-    public function getNumber()
+    public function getId()
     {
-        return $this->number;
+        return (string)$this->number;
     }
 
-    public function getContent()
+    public function getTitle()
     {
-        return $this->content;
+        return $this->content->getTitle();
     }
 
-    public function getMetadata()
+    public function getDescription()
     {
-        return $this->metadata;
+        return $this->content->getDescription();
+    }
+
+    public function getStatus()
+    {
+        return $this->metadata->getStatus();
+    }
+
+    public function getPriority()
+    {
+        return $this->metadata->getPriority();
+    }
+
+    public function getType()
+    {
+        return $this->metadata->getType();
+    }
+
+    public function getAssignee()
+    {
+        return $this->metadata->getAssignee();
+    }
+
+    public function getDateCreated()
+    {
+        return $this->metadata->getDateCreated();
+    }
+
+    public function getDateUpdated()
+    {
+        return $this->metadata->getDateUpdated();
+    }
+
+    public function getCommentCount()
+    {
+        return $this->metadata->getCommentCount();
+    }
+
+    public function getLabels()
+    {
+        return $this->metadata->getLabels();
+    }
+
+    public function getMilestone()
+    {
+        return $this->metadata->getMilestone();
     }
 }

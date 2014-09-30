@@ -22,7 +22,7 @@ class Issues implements \Countable, \IteratorAggregate, \ArrayAccess
     {
         foreach ($issues as $issue) {
             if (!($issue instanceof Issue)) {
-                //throw new \InvalidArgumentException('Issues only accepts valid Issue instances');
+                throw new \InvalidArgumentException('Issues only accepts valid Issue instances');
             }
         }
 

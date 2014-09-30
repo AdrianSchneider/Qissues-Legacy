@@ -18,6 +18,7 @@ class IssueMetadata
     protected $priority;
     protected $type;
     protected $milestone;
+    protected $commentCount;
 
     public function __construct(Status $status, \DateTime $dateCreated, \DateTime $dateUpdated)
     {
@@ -91,8 +92,13 @@ class IssueMetadata
         return $this->type;
     }
 
+    public function setCommentCount($count)
+    {
+        $this->commentCount = $count;
+    }
+
     public function getCommentCount()
     {
-        return 5;
+        return $this->commentCount;
     }
 }

@@ -3,6 +3,7 @@
 namespace Qissues\Domain\Model;
 
 use Qissues\Domain\Shared\User;
+use Qissues\Domain\Shared\Milestone;
 use Qissues\Domain\Model\Request\NewIssue;
 use Qissues\Domain\Model\Message;
 

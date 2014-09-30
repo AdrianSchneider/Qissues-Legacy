@@ -2,6 +2,7 @@
 
 namespace Qissues\Interfaces\Console\Output\View\IssuesList;
 
+use Qissues\Domain\Model\Issue;
 use Qissues\Domain\Model\Response\Issues;
 use Qissues\Application\Tracker\Support\Feature;
 use Qissues\Application\Tracker\Support\FeatureSet;
@@ -27,22 +28,22 @@ class DetailedView
         );
     }
 
-    protected function prepare($issue, $width, $features)
+    protected function prepare(Issue $issue, $width, $features)
     {
-        $title = $issue->getContent()->getTitle();
+        $title = $issue->getTitle();
         $row = array(
-            '#'            => $issue->getNumber(),
+            '#'            => $issue->getId(),
             'Title'        => strlen($title) > $width * 0.4
                 ? (substr($title, 0, $width * 0.4) . '...')
                 : $title,
-            'Status'       => $issue->getMetadata()->getStatus(),
-            'Type'         => $issue->getMetadata()->getType(),
-            'Labels'       => $issue->getMetadata()->getLabels(),
-            'Priority'     => $issue->getMetadata()->getPriority(),
-            'Assignee'     => $issue->getMetadata()->getAssignee(),
-            'Date Created' => $issue->getMetadata()->getDateCreated()->format('Y-m-d g:ia'),
-            'Date updated' => $issue->getMetadata()->getDateUpdated()->format('Y-m-d g:ia'),
-            'Comments'     => $issue->getMetadata()->getCommentCount()
+            'Status'       => $issue->getStatus(),
+            'Type'         => $issue->getType(),
+            'Labels'       => $issue->getLabels(),
+            'Priority'     => $issue->getPriority(),
+            'Assignee'     => $issue->getAssignee(),
+            'Date Created' => $issue->getDateCreated()->format('Y-m-d g:ia'),
+            'Date updated' => $issue->getDateUpdated()->format('Y-m-d g:ia'),
+            'Comments'     => $issue->getCommentCount()
         );
 
         if (!$features->doesSupport('labels')) {

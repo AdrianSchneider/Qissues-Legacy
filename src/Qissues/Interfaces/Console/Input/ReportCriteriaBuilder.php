@@ -7,6 +7,7 @@ use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\CurrentUser;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Priority;
+use Qissues\Domain\Shared\Milestone;
 use Qissues\Domain\Shared\Type;
 use Qissues\Domain\Model\SearchCriteria;
 
@@ -21,6 +22,7 @@ class ReportCriteriaBuilder
         $this->handlePriorities($reportConfig, $criteria);
         $this->handleTypes($reportConfig, $criteria);
         $this->handleAssignees($reportConfig, $criteria);
+        $this->handleMilestones($reportConfig, $criteria);
         $this->handleIds($reportConfig, $criteria);
         $this->handleSorting($reportConfig, $criteria);
 
@@ -66,6 +68,15 @@ class ReportCriteriaBuilder
         if (!empty($reportConfig['assignees'])) {
             foreach ($reportConfig['assignees'] as $assignee) {
                 $criteria->addAssignee(new User($assignee));
+            }
+        }
+    }
+
+    protected function handleMilestones($reportConfig, $criteria)
+    {
+        if (!empty($reportConfig['milestones'])) {
+            foreach ($reportConfig['milestones'] as $milestone) {
+                $criteria->addMilestone(new Milestone($milestone));
             }
         }
     }

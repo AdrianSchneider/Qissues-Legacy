@@ -24,15 +24,17 @@ class CriteriaFilter
      * @param Issue $issue
      * @return boolean (true to keep)
      */
-    public function __invoke(/*Issue*/ $issue)
+    public function __invoke(Issue $issue)
     {
-        return true;
-
         if (!$this->satisfiesStatuses($issue)) {
             return false;
         }
 
         if (!$this->satisfiesLabels($issue)) {
+            return false;
+        }
+
+        if (!$this->satisfiesMilestones($issue)) {
             return false;
         }
 
@@ -78,6 +80,12 @@ class CriteriaFilter
             return false;
         }
 
+        return true;
+    }
+
+    protected function satisfiesMilestones(Issue $issue)
+    {
+        // JQL handles it
         return true;
     }
 

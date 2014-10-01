@@ -14,6 +14,7 @@ use Qissues\Domain\Model\Number;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Priority;
 use Qissues\Domain\Shared\Type;
+use Qissues\Domain\Shared\Milestone;
 use Qissues\Domain\Shared\Label;
 use Qissues\Domain\Shared\ExpectedDetail;
 use Qissues\Domain\Shared\ExpectedDetails;
@@ -49,7 +50,7 @@ class JiraMapping implements FieldMapping
                 new ExpectedDetail('assignee', false, $issue->getAssignee() ? $issue->getAssignee()->getAccount() : ''),
                 new ExpectedDetail('priority', false, 3, range(1, 5)),
                 new ExpectedDetail('labels', false, $issue->getLabels() ? array_map('strval', $issue->getLabels()) : '', $this->metadata->getAllowedLabels()),
-                new ExpectedDetail('sprint', false, $issue->getMetadata()->getMilestone(), $this->metadata->getAllowedSprints()),
+                new ExpectedDetail('milestone', false, $issue->getMetadata()->getMilestone(), $this->metadata->getAllowedSprints()),
             ));
         }
 
@@ -60,7 +61,7 @@ class JiraMapping implements FieldMapping
             new ExpectedDetail('type', true, '', $this->metadata->getAllowedTypes()),
             new ExpectedDetail('priority', false, 3, range(1, 5)),
             new ExpectedDetail('labels', false, '', $this->metadata->getAllowedLabels()),
-            new ExpectedDetail('sprint', false, '', $this->metadata->getAllowedSprints())
+            new ExpectedDetail('milestone', false, '', $this->metadata->getAllowedSprints())
         ));
     }
 
@@ -131,12 +132,12 @@ class JiraMapping implements FieldMapping
         if (!empty($input['labels'])) {
             $metadata->setLabels($this->prepareLabels($input['labels']));
         }
+        if(!empty($input['milestone'])) {
+            $metadata->setMilestone(new Milestone($input['milestone']));
+        }
 
         return new NewIssue(
-            new IssueContent(
-                $input['title'],
-                $input['description']
-            ),
+            new IssueContent($input['title'], $input['description']),
             $metadata
         );
     }
@@ -208,5 +209,10 @@ class JiraMapping implements FieldMapping
             'startAt' => ($page - 1) * $perPage,
             'maxResults' => $perPage,
         );
+    }
+
+    public function milestoneToSprint(Milestone $milestone)
+    {
+        return $this->metadata->getMatchingMilestone($milestone->getName());
     }
 }

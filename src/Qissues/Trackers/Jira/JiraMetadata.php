@@ -91,4 +91,9 @@ class JiraMetadata implements Metadata
         }
         return $sprints;
     }
+
+    public function getAllowedStatuses()
+    {
+        return $this->project['statuses'];
+    }
 }

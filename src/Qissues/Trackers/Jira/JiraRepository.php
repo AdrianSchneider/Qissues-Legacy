@@ -6,6 +6,7 @@ use Qissues\Domain\Shared\User;
 use Qissues\Domain\Shared\CurrentUser;
 use Qissues\Domain\Shared\Status;
 use Qissues\Domain\Shared\Milestone;
+use Qissues\Domain\Shared\NotPlanned;
 use Qissues\Domain\Model\Number;
 use Qissues\Domain\Model\SearchCriteria;
 use Qissues\Domain\Model\Request\NewIssue;
@@ -119,32 +120,44 @@ class JiraRepository implements IssueRepository
      */
     public function persist(NewIssue $issue)
     {
-        $payload = $this->mapping->issueToArray($issue);
-        $sprint = $payload['sprint'];
-        unset($payload['sprint']);
-
         $request = $this->request('POST', "/issue");
         $request->setBody(json_encode($this->mapping->issueToArray($issue)), 'application/json');
         $response = $request->send()->json();
+
         list($key, $id) = explode('-', $response['key']);
         $number = new Number($id);
 
-        if($sprint) {
-            $this->plan($number, $sprint);
+        if ($milestone = $issue->getMetadata()->getMilestone()) {
+            $this->plan($number, $milestone);
         }
 
         return $number;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function plan(Number $issue, Milestone $milestone)
     {
         $request = $this->sprintRequest('PUT', '/sprint/rank');
-        $request->setBody(json_encode([
-            'customFieldId' => 10600,
-            'idOrKeys'      => array($this->projectKey . '-' . $issue->getNumber()),
-            'sprintId'      => $milestone->getNumber(),
-            'addToBacklog'  => false
-        ]), 'application/json');
+
+        if ($milestone instanceof NotPlanned) {
+            $request->setBody(json_encode([
+                'customFieldId' => 10600,
+                'idOrKeys'      => array($this->projectKey . '-' . $issue->getNumber()),
+                'sprintId'      => null,
+                'addToBacklog'  => true
+            ]), 'application/json');
+        } else {
+            $request->setBody(json_encode([
+                'customFieldId' => 10600,
+                'idOrKeys'      => array($this->projectKey . '-' . $issue->getNumber()),
+                'sprintId'      => $this->mapping->milestoneToSprint($milestone),
+                'addToBacklog'  => false
+            ]), 'application/json');
+        }
+
+        $request->send()->json();
     }
 
     /**
@@ -326,6 +339,7 @@ class JiraRepository implements IssueRepository
                         'id' => $status['id'],
                         'name' => $status['name']
                     );
+                    $metadata['statuses'][$status['id']] = $status['name'];
                 }
             }
 

@@ -72,7 +72,7 @@ class IssueMetadata
         return $this->priority;
     }
 
-    public function setMilestone()
+    public function setMilestone($milestone)
     {
         $this->milestone = $milestone;
     }

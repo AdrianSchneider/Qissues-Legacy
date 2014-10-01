@@ -168,3 +168,9 @@ services:
         arguments:
             - @console.output.issue_serializer
 
+    console.output.view.issues.sprint:
+        class: Qissues\Interfaces\Console\Output\View\IssuesList\SprintView
+        arguments:
+            - @console.output.table_renderer
+            - @tracker.metadata
+

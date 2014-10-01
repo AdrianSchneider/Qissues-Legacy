@@ -15,4 +15,14 @@ class Milestone
     {
         return $this->name;
     }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
 }

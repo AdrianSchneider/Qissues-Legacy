@@ -34,9 +34,11 @@ class StdinStrategy
     public function createNew(IssueTracker $tracker)
     {
         $mapping = $tracker->getMapping();
-        return $mapping->toNewIssue($this->fileFormat->parse(
+        $details = $this->fileFormat->parse(
             trim(file_get_contents($this->inputStream))
-        ));
+        );
+        
+        return $mapping->toNewIssue($details->getDetails());
     }
 
     /**

@@ -21,7 +21,8 @@ class EditCommand extends Command
             ->setDefinition(array(
                 new InputArgument('issue', InputArgument::OPTIONAL, 'The Issue ID'),
                 new InputOption('strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy'),
-                new InputOption('data', 'd', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Specify fields manually')
+                new InputOption('data', 'd', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Specify fields manually'),
+                new InputOption('dry-run', 'D', InputOption::VALUE_OPTIONAL | InputOption::VALUE_NONE, 'Dump the text out'),
             ))
         ;
     }

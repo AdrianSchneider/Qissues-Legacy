@@ -19,7 +19,8 @@ class CreateCommand extends Command
             ->setDescription('Create a new issue')
             ->setDefinition(array(
                 new InputOption('strategy', null, InputOption::VALUE_OPTIONAL, 'Specify an input strategy'),
-                new InputOption('data', 'd', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Specify fields manually')
+                new InputOption('data', 'd', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Specify fields manually'),
+                new InputOption('template', null, InputOption::VALUE_NONE, 'Dump the text out', null)
             ))
         ;
     }
@@ -40,6 +41,11 @@ class CreateCommand extends Command
 
         $createIssue = new CreateIssue($tracker->getRepository());
         $number = $createIssue($issue);
+
+        if ($input->getOption('strategy') == 'stdin') {
+            $output->write(json_encode(array('number' => (string)$number)));
+            return 0;
+        }
 
         $output->writeln("Issue <info>#$number</info> has been created");
     }

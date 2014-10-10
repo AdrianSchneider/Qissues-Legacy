@@ -75,6 +75,11 @@ class EditStrategy implements IssueStrategy
         $expectations = $mapping->getExpectedDetails($existing);
         $template = $this->fileFormat->seed($expectations);
 
+        if ($this->input->getOption('template')) {
+            $this->output->writeln($template);
+            exit;
+        }
+
         do {
             if (!empty($e)) {
                 $this->outputViolations(array($e->getMessage()));

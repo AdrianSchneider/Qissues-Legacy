@@ -47,7 +47,7 @@ services:
         class: Qissues\Interfaces\Console\Input\Strategy\Issue\StdinStrategy
         arguments:
             - "php://stdin"
-            - @console.input.format.json
+            - @console.input.format.frontmatter
 
     console.input.issue_strategy.option:
         class: Qissues\Interfaces\Console\Input\Strategy\Issue\OptionStrategy
